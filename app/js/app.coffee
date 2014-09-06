@@ -11,4 +11,9 @@
     templateUrl: 'partials/player-controls.html',
   )
 
+  .directive('playerStatus', ->
+    restrict: 'E'
+    templateUrl: 'partials/player-status.html',
+  )
+
 )()
