@@ -67,6 +67,7 @@ module.exports = (grunt) ->
     watch:
       html:
         files: ['**/*.html']
+        tasks: ['copy:main']
       less:
         files: '<%= less.compile.files[0].src %>'
         tasks: ['less']
