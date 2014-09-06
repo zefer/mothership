@@ -6,4 +6,9 @@
   .controller('PlayerController', ->
   )
 
+  .directive('playerControls', ->
+    restrict: 'E'
+    templateUrl: 'partials/play-controls.html',
+  )
+
 )()
