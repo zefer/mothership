@@ -35,6 +35,16 @@ module.exports = (grunt) ->
             'jquery/dist/jquery.min.js'
             'jquery/dist/jquery.min.map'
             'bootstrap/dist/css/bootstrap.min.css'
+            'font-awesome/css/font-awesome.min.css'
+          ]
+        ]
+      fonts:
+        files: [
+          expand: true
+          cwd: 'bower_components/font-awesome',
+          dest: '<%= config.build_dir %>/'
+          src: [
+            'fonts/*'
           ]
         ]
 
