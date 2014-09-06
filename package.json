@@ -1,0 +1,22 @@
+{
+  "name": "mpd-web",
+  "private": true,
+  "version": "0.0.0",
+  "description": "A simple web UI for mpd",
+  "repository": "https://github.com/zefer/mpd-web",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "~0.4.x",
+    "grunt-contrib-coffee": "~0.11.x",
+    "grunt-contrib-less": "~0.11.x",
+    "grunt-contrib-watch": "~0.6.x",
+    "grunt-contrib-copy": "~0.5.x",
+    "grunt-contrib-connect": "~0.8.x",
+    "bower": "^1.3.1"
+  },
+  "scripts": {
+    "postinstall": "bower install",
+    "prestart": "npm install",
+    "pretest": "npm install"
+  }
+}
