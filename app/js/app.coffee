@@ -8,7 +8,7 @@
 
   .directive('playerControls', ->
     restrict: 'E'
-    templateUrl: 'partials/play-controls.html',
+    templateUrl: 'partials/player-controls.html',
   )
 
 )()
