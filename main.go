@@ -27,6 +27,8 @@ func main() {
 	r.HandleFunc("/previous", PreviousHandler)
 	r.HandleFunc("/play", PlayHandler)
 	r.HandleFunc("/pause", PauseHandler)
+	r.HandleFunc("/randomOn", RandomOnHandler)
+	r.HandleFunc("/randomOff", RandomOffHandler)
 
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./frontend/dist/")))
 	http.Handle("/", r)
@@ -116,4 +118,22 @@ func PauseHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
+}
+
+func random(on bool, w http.ResponseWriter) {
+	conn := client()
+	defer conn.Close()
+	err := conn.Random(on)
+	if err != nil {
+		glog.Errorln(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+func RandomOnHandler(w http.ResponseWriter, r *http.Request) {
+	random(true, w)
+}
+func RandomOffHandler(w http.ResponseWriter, r *http.Request) {
+	random(false, w)
 }
