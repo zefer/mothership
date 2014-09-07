@@ -33,6 +33,7 @@ module.exports = (grunt) ->
           src: [
             'angular/angular.min.js'
             'angular/angular.min.js.map'
+            'angular-ui-router/release/angular-ui-router.min.js'
             'jquery/dist/jquery.min.js'
             'jquery/dist/jquery.min.map'
             'bootstrap/dist/css/bootstrap.min.css'

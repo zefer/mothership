@@ -1,12 +1,17 @@
 <div class="row" ng-controller="PlayerCtrl as playerCtrl">
 
   <ul class="nav nav-pills">
-    <li class="active"><a href="#">Playing</a></li>
-    <li><a href="#">Browse</a></li>
-    <li><a href="#">Playlist<span class="badge pull-right">{{playing.track}}</span></a></li>
+    <li ng-class="{active:$state.includes('playing')}">
+      <a ui-sref="playing">Playing</a>
+    </li>
+    <li ng-class="{active:$state.includes('browse')}">
+      <a ui-sref="browse">Browse</a>
+    </li>
+    <li ng-class="{active:$state.includes('playlist')}">
+      <a ui-sref="playlist">Playlist<span class="badge pull-right">{{playing.track}}</span></a>
+    </li>
   </ul>
 
-  <player-status></player-status>
-  <player-controls></player-controls>
+  <div ui-view></div>
 
 </div>
