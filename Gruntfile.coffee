@@ -5,19 +5,20 @@ module.exports = (grunt) ->
 
     config:
       build_dir: 'build'
+      dist_dir: 'dist'
 
     connect:
       server:
         options:
           port: 4000,
-          base: './build'
+          base: './dist'
 
     copy:
       main:
         files: [
           expand: true
           cwd: 'app/',
-          dest: '<%= config.build_dir %>/'
+          dest: '<%= config.dist_dir %>/'
           src: [
             'index.html',
             'partials/*'
@@ -28,7 +29,7 @@ module.exports = (grunt) ->
           expand: true
           flatten: true
           cwd: 'bower_components/',
-          dest: '<%= config.build_dir %>/vendor/'
+          dest: '<%= config.dist_dir %>/vendor/'
           src: [
             'angular/angular.min.js'
             'angular/angular.min.js.map'
@@ -42,7 +43,7 @@ module.exports = (grunt) ->
         files: [
           expand: true
           cwd: 'bower_components/font-awesome',
-          dest: '<%= config.build_dir %>/'
+          dest: '<%= config.dist_dir %>/'
           src: [
             'fonts/*'
           ]
@@ -73,6 +74,20 @@ module.exports = (grunt) ->
           bare: true
           preserve_dirs: true
 
+    # combine js
+    concat:
+      js:
+        options:
+          separator: ';'
+        src: [
+          '<%= config.build_dir %>/js/app.js'
+          '<%= config.build_dir %>/js/**/*.js'
+        ]
+        dest: '<%= config.dist_dir %>/app.js'
+      css:
+        src: ['<%= config.build_dir %>/css/**/*.css']
+        dest: '<%= config.dist_dir %>/style.css'
+
     # grunt watch (or simply grunt)
     watch:
       html:
@@ -93,6 +108,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-copy'
   grunt.loadNpmTasks 'grunt-contrib-connect'
+  grunt.loadNpmTasks 'grunt-contrib-concat'
 
   # tasks
-  grunt.registerTask 'default', ['connect', 'copy', 'less', 'coffee', 'watch']
+  grunt.registerTask 'default', ['connect', 'copy', 'less', 'coffee', 'concat', 'watch']
