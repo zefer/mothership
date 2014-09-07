@@ -1,18 +1,18 @@
 <ul class="list-unstyled">
 
-  <li><button type="button" class="btn btn-default">
+  <li><button ng-click="back()" type="button" class="btn btn-default">
     <i class="fa fa-2x fa-step-backward"></i>
   </button></li>
 
-  <li><button ng-hide="playing.now" type="button" class="btn btn-default">
+  <li><button ng-click="play()" ng-hide="playing.now" type="button" class="btn btn-default">
     <i class="fa fa-2x fa-play"></i>
   </button></li>
 
-  <li><button ng-show="playing.now" type="button" class="btn btn-default">
+  <li><button ng-click="play()" ng-show="playing.now" type="button" class="btn btn-default">
     <i class="fa fa-2x fa-pause"></i>
   </button></li>
 
-  <li><button type="button" class="btn btn-default">
+  <li><button ng-click="next()" type="button" class="btn btn-default">
     <i class="fa fa-2x fa-step-forward"></i>
   </button></li>
 

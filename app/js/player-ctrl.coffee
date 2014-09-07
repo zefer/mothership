@@ -19,5 +19,14 @@ mod.controller('PlayerCtrl', ($scope, $interval) ->
 
   $scope.$on '$destroy', -> $scope.stopMonitoring()
 
+  $scope.play = ->
+    console.log 'play/pause'
+
+  $scope.back = ->
+    console.log 'back'
+
+  $scope.next = ->
+    console.log 'next'
+
   monitorPlayer()
 )
