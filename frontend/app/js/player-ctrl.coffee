@@ -24,11 +24,13 @@ mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
   $scope.play = ->
     console.log 'play/pause'
 
-  $scope.back = ->
-    console.log 'back'
+  $scope.previous = ->
+    console.log 'previous'
+    $http.get('/previous')
 
   $scope.next = ->
     console.log 'next'
+    $http.get('/next')
 
   startMonitoring()
 )

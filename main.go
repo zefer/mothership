@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/davecgh/go-spew/spew"
@@ -24,6 +23,8 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/status", StatusHandler)
+	r.HandleFunc("/next", NextHandler)
+	r.HandleFunc("/previous", PreviousHandler)
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./frontend/dist/")))
 	http.Handle("/", r)
 	glog.Infof("Listening on %s.", *port)
@@ -47,10 +48,30 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	defer conn.Close()
 	data, err := conn.CurrentSong()
 	if err != nil {
-		log.Fatalln(err)
+		glog.Errorln(err)
 	}
 	spew.Dump(data)
 	b, err := json.Marshal(data)
 	w.Header().Add("Content-Type", "application/json")
 	fmt.Fprint(w, string(b))
+}
+
+func NextHandler(w http.ResponseWriter, r *http.Request) {
+	conn := client()
+	defer conn.Close()
+	err := conn.Next()
+	if err != nil {
+		glog.Errorln(err)
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func PreviousHandler(w http.ResponseWriter, r *http.Request) {
+	conn := client()
+	defer conn.Close()
+	err := conn.Previous()
+	if err != nil {
+		glog.Errorln(err)
+	}
+	w.WriteHeader(http.StatusOK)
 }
