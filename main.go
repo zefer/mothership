@@ -99,7 +99,7 @@ func PreviousHandler(w http.ResponseWriter, r *http.Request) {
 func PlayHandler(w http.ResponseWriter, r *http.Request) {
 	conn := client()
 	defer conn.Close()
-	err := conn.Pause(false)
+	err := conn.Play(-1)
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
