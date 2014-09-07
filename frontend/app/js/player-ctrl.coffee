@@ -41,8 +41,8 @@ mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
     console.log 'next'
     $http.get('/next')
 
-  $scope.random = (enable) ->
-    if enable then $http.get('/randomOn') else $http.get('/randomOff')
+  $scope.random = ->
+    if $scope.playing.random then $http.get('/randomOff') else $http.get('/randomOn')
 
   startMonitoring()
 )
