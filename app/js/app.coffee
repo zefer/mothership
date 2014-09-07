@@ -10,8 +10,7 @@
           console.log('player status poll')
 
           $scope.playing =
-            artist: 'joe'
-            song: Math.random().toString(36).replace(/[^a-z]+/g, '')
+            now: 'Joe - ' + Math.random().toString(36).replace(/[^a-z]+/g, '')
 
         ,1000)
 
