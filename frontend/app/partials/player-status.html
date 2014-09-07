@@ -2,3 +2,8 @@
   <h2>{{playing.now}}</h2>
 </div>
 <div ng-show="playing.error" class="alert alert-danger" role="alert">{{playing.error}}</div>
+<div class="progress">
+  <div class="progress-bar" role="progressbar" aria-valuenow="{{playing.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{playing.progress}}%;">
+    <span class="sr-only">{{playing.progress}}%</span>
+  </div>
+</div>

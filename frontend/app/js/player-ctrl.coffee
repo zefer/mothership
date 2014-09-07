@@ -13,6 +13,7 @@ mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
         # play, pause or stop
         state: data.state
         error: data.error
+        progress: Math.floor((parseFloat(data.elapsed)/parseFloat(data.Time))*100)
 
   startMonitoring = ->
     poller = $interval(checkPlayerStatus, 1000)
