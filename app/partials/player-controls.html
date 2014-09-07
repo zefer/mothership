@@ -1,7 +1,7 @@
 <ul class="list-unstyled">
   <li><i class="fa fa-2x fa-step-backward"></i></li>
-  <li><i class="fa fa-2x fa-play"></i></li>
-  <!-- <li><i class="fa fa-2x fa-pause"></i></li> -->
+  <li ng-hide="playing.now"><i class="fa fa-2x fa-play"></i></li>
+  <li ng-show="playing.now"><i class="fa fa-2x fa-pause"></i></li>
   <li><i class="fa fa-2x fa-step-forward"></i></li>
   <!-- <li><i class="fa fa-2x fa-random"></i></li> -->
   <!-- <li><i class="fa fa-2x fa-repeat"></i></li> -->
