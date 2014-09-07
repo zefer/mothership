@@ -95,10 +95,10 @@ module.exports = (grunt) ->
         tasks: ['copy:main']
       less:
         files: '<%= less.compile.files[0].src %>'
-        tasks: ['less']
+        tasks: ['less', 'concat:css']
       coffee:
         files: '<%= coffee.compile.src %>'
-        tasks: ['coffee']
+        tasks: ['coffee', 'concat:js']
       options:
         livereload: true
 
