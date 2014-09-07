@@ -1,5 +1,11 @@
 <div class="row" ng-controller="PlayerCtrl as playerCtrl">
 
+  <ul class="nav nav-pills">
+    <li class="active"><a href="#">Playing</a></li>
+    <li><a href="#">Browse</a></li>
+    <li><a href="#">Playlist<span class="badge pull-right">{{playing.track}}</span></a></li>
+  </ul>
+
   <player-status></player-status>
   <player-controls></player-controls>
 
