@@ -25,6 +25,9 @@ func main() {
 	r.HandleFunc("/status", StatusHandler)
 	r.HandleFunc("/next", NextHandler)
 	r.HandleFunc("/previous", PreviousHandler)
+	r.HandleFunc("/play", PlayHandler)
+	r.HandleFunc("/pause", PauseHandler)
+
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./frontend/dist/")))
 	http.Handle("/", r)
 	glog.Infof("Listening on %s.", *port)
@@ -46,9 +49,20 @@ func client() *mpd.Client {
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	conn := client()
 	defer conn.Close()
-	data, err := conn.CurrentSong()
+	data, err := conn.Status()
 	if err != nil {
 		glog.Errorln(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	song, err := conn.CurrentSong()
+	if err != nil {
+		glog.Errorln(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	for k, v := range song {
+		data[k] = v
 	}
 	spew.Dump(data)
 	b, err := json.Marshal(data)
@@ -62,6 +76,8 @@ func NextHandler(w http.ResponseWriter, r *http.Request) {
 	err := conn.Next()
 	if err != nil {
 		glog.Errorln(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	w.WriteHeader(http.StatusOK)
 }
@@ -72,6 +88,32 @@ func PreviousHandler(w http.ResponseWriter, r *http.Request) {
 	err := conn.Previous()
 	if err != nil {
 		glog.Errorln(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func PlayHandler(w http.ResponseWriter, r *http.Request) {
+	conn := client()
+	defer conn.Close()
+	err := conn.Pause(false)
+	if err != nil {
+		glog.Errorln(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func PauseHandler(w http.ResponseWriter, r *http.Request) {
+	conn := client()
+	defer conn.Close()
+	err := conn.Pause(true)
+	if err != nil {
+		glog.Errorln(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	w.WriteHeader(http.StatusOK)
 }

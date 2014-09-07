@@ -10,6 +10,8 @@ mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
       console.log(data)
       $scope.playing =
         now: "#{data.Artist} - #{data.Title}"
+        # play, pause or stop
+        state: data.state
 
   startMonitoring = ->
     poller = $interval(checkPlayerStatus, 1000)
@@ -22,7 +24,10 @@ mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
   $scope.$on '$destroy', -> $scope.stopMonitoring()
 
   $scope.play = ->
-    console.log 'play/pause'
+    $http.get('/play')
+
+  $scope.pause = ->
+    $http.get('/pause')
 
   $scope.previous = ->
     console.log 'previous'
