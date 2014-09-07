@@ -1,13 +1,15 @@
 mod = angular.module('player')
 
-mod.controller('PlayerCtrl', ($scope, $interval) ->
+mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
   'use strict'
   poller = null
 
   checkPlayerStatus = ->
     console.log('player status poll')
-    $scope.playing =
-      now: 'Joe - ' + Math.random().toString(36).replace(/[^a-z]+/g, '')
+    $http.get('/status').success (data) ->
+      console.log(data)
+      $scope.playing =
+        now: "#{data.Artist} - #{data.Title}"
 
   startMonitoring = ->
     poller = $interval(checkPlayerStatus, 1000)
