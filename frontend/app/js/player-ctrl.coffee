@@ -15,6 +15,7 @@ mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
         error: data.error
         progress: Math.floor((parseFloat(data.elapsed)/parseFloat(data.Time))*100)
         track: data.Track
+        random: data.random == "1"
 
   startMonitoring = ->
     poller = $interval(checkPlayerStatus, 1000)
