@@ -1,4 +1,4 @@
-bower_components/
-node_modules/
-build/
-dist/
+frontend/bower_components/
+frontend/node_modules/
+frontend/build/
+frontend/dist/
