@@ -3,7 +3,7 @@
 
   angular.module('player', [])
 
-    .controller('PlayerController', ($scope, $interval) ->
+    .controller('PlayerCtrl', ($scope, $interval) ->
 
       monitorPlayer = ->
         checkPlayerStatus = $interval(->
