@@ -2,20 +2,20 @@ mod = angular.module('player')
 
 mod.controller('PlayerCtrl', ($scope, $interval) ->
   'use strict'
+  poller = null
 
-  monitorPlayer = ->
-    checkPlayerStatus = $interval(->
-      console.log('player status poll')
+  checkPlayerStatus = ->
+    console.log('player status poll')
+    $scope.playing =
+      now: 'Joe - ' + Math.random().toString(36).replace(/[^a-z]+/g, '')
 
-      $scope.playing =
-        now: 'Joe - ' + Math.random().toString(36).replace(/[^a-z]+/g, '')
-
-    ,1000)
+  startMonitoring = ->
+    poller = $interval(checkPlayerStatus, 1000)
 
   stopMonitoring = ->
-    if angular.isDefined(monitor)
-      $interval.cancel(monitor)
-      monitor = undefined
+    if angular.isDefined(poller)
+      $interval.cancel(poller)
+      poller = undefined
 
   $scope.$on '$destroy', -> $scope.stopMonitoring()
 
@@ -28,5 +28,5 @@ mod.controller('PlayerCtrl', ($scope, $interval) ->
   $scope.next = ->
     console.log 'next'
 
-  monitorPlayer()
+  startMonitoring()
 )
