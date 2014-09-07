@@ -12,6 +12,7 @@ mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
         now: "#{data.Artist} - #{data.Title}"
         # play, pause or stop
         state: data.state
+        error: data.error
 
   startMonitoring = ->
     poller = $interval(checkPlayerStatus, 1000)
