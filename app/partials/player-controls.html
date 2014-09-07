@@ -1,8 +1,27 @@
 <ul class="list-unstyled">
-  <li><i class="fa fa-2x fa-step-backward"></i></li>
-  <li ng-hide="playing.now"><i class="fa fa-2x fa-play"></i></li>
-  <li ng-show="playing.now"><i class="fa fa-2x fa-pause"></i></li>
-  <li><i class="fa fa-2x fa-step-forward"></i></li>
-  <!-- <li><i class="fa fa-2x fa-random"></i></li> -->
-  <!-- <li><i class="fa fa-2x fa-repeat"></i></li> -->
+
+  <li><button type="button" class="btn btn-default">
+    <i class="fa fa-2x fa-step-backward"></i>
+  </button></li>
+
+  <li><button ng-hide="playing.now" type="button" class="btn btn-default">
+    <i class="fa fa-2x fa-play"></i>
+  </button></li>
+
+  <li><button ng-show="playing.now" type="button" class="btn btn-default">
+    <i class="fa fa-2x fa-pause"></i>
+  </button></li>
+
+  <li><button type="button" class="btn btn-default">
+    <i class="fa fa-2x fa-step-forward"></i>
+  </button></li>
+
+  <!-- <li><button type="button" class="btn btn-default"> -->
+  <!--   <i class="fa fa-2x fa-random"></i> -->
+  <!-- </button></li> -->
+
+  <!-- <li><button type="button" class="btn btn-default"> -->
+  <!--   <i class="fa fa-2x fa-repeat"></i> -->
+  <!-- </button></li> -->
+
 </ul>
