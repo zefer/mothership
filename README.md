@@ -12,3 +12,7 @@ go run main.go -logtostderr=true -mpdaddr=192.168.33.20:6600 -port :8080
 # open the app in your browser
 open localhost:8080
 ```
+
+## Work in progress
+
+![UI](https://dl.dropboxusercontent.com/u/89410/ui.png)
