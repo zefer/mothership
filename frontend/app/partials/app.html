@@ -8,7 +8,9 @@
       <a ui-sref="browse">Browse</a>
     </li>
     <li ng-class="{active:$state.includes('playlist')}">
-      <a ui-sref="playlist">Playlist<span class="badge pull-right">{{playing.track}}</span></a>
+      <a ui-sref="playlist">Playlist<span class="badge pull-right">
+        {{playing.playlistPosition}}/{{playing.playlistLength}}
+      </span></a>
     </li>
   </ul>
 
