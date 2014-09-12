@@ -2,6 +2,7 @@ mod = angular.module('player')
 
 mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
   'use strict'
+  ctrl = this
   poller = null
 
   checkPlayerStatus = ->
@@ -17,6 +18,14 @@ mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
         playlistLength: data.playlistlength
         playlistPosition: data.song
         random: data.random == "1"
+        quality: ctrl.friendlyQuality(data.audio, data.bitrate)
+
+  ctrl.friendlyQuality = (mpdAudioString, bitrate) ->
+    chan = if mpdAudioString.split(':')[2] == '2' then 'Stereo' else 'Mono'
+    freq = parseInt(mpdAudioString.split(':')[0]) / 1000 + ' kHz'
+    rate = mpdAudioString.split(':')[1] + ' bit'
+    bitr = bitrate + ' kbps'
+    [chan, rate, freq, bitr].join(', ')
 
   startMonitoring = ->
     poller = $interval(checkPlayerStatus, 1000)
