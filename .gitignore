@@ -4,3 +4,4 @@ frontend/build/
 frontend/dist/
 mpd-web
 frontend.go
+deploy.sh
