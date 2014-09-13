@@ -32,7 +32,7 @@ func main() {
 
 	// The front-end assets are served from a go-bindata file.
 	r.PathPrefix("/").Handler(
-		http.FileServer(&assetfs.AssetFS{Asset, AssetDir, "dist"}),
+		http.FileServer(&assetfs.AssetFS{Asset, AssetDir, ""}),
 	)
 	http.Handle("/", r)
 	glog.Infof("Listening on %s.", *port)

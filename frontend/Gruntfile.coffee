@@ -85,7 +85,7 @@ module.exports = (grunt) ->
 
     shell:
       toBinData:
-        command: 'go-bindata -o ../frontend.go <%= config.dist_dir %>/...'
+        command: 'go-bindata -debug -o ../frontend.go -prefix "dist/" <%= config.dist_dir %>/...'
 
     # grunt watch (or simply grunt)
     watch:
