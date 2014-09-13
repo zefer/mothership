@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/elazarl/go-bindata-assetfs"
 	"github.com/fhs/gompd/mpd"
 	"github.com/golang/glog"
@@ -70,7 +69,6 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	for k, v := range song {
 		data[k] = v
 	}
-	spew.Dump(data)
 	b, err := json.Marshal(data)
 	w.Header().Add("Content-Type", "application/json")
 	fmt.Fprint(w, string(b))
