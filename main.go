@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/davecgh/go-spew/spew"
+	"github.com/elazarl/go-bindata-assetfs"
 	"github.com/fhs/gompd/mpd"
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
@@ -30,7 +31,10 @@ func main() {
 	r.HandleFunc("/randomOn", RandomOnHandler)
 	r.HandleFunc("/randomOff", RandomOffHandler)
 
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./frontend/dist/")))
+	// The front-end assets are served from a go-bindata file.
+	r.PathPrefix("/").Handler(
+		http.FileServer(&assetfs.AssetFS{Asset, AssetDir, "dist"}),
+	)
 	http.Handle("/", r)
 	glog.Infof("Listening on %s.", *port)
 	err := http.ListenAndServe(*port, nil)

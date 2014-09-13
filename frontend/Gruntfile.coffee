@@ -7,12 +7,6 @@ module.exports = (grunt) ->
       build_dir: 'build'
       dist_dir: 'dist'
 
-    connect:
-      server:
-        options:
-          port: 4000,
-          base: './dist'
-
     copy:
       main:
         files: [
@@ -89,17 +83,21 @@ module.exports = (grunt) ->
         src: ['<%= config.build_dir %>/css/**/*.css']
         dest: '<%= config.dist_dir %>/style.css'
 
+    shell:
+      toBinData:
+        command: 'go-bindata -o ../frontend.go <%= config.dist_dir %>/...'
+
     # grunt watch (or simply grunt)
     watch:
       html:
         files: ['**/*.html']
-        tasks: ['copy:main']
+        tasks: ['copy:main', 'shell:toBinData']
       less:
         files: '<%= less.compile.files[0].src %>'
-        tasks: ['less', 'concat:css']
+        tasks: ['less', 'concat:css', 'shell:toBinData']
       coffee:
         files: '<%= coffee.compile.src %>'
-        tasks: ['coffee', 'concat:js']
+        tasks: ['coffee', 'concat:js', 'shell:toBinData']
       options:
         livereload: true
 
@@ -108,8 +106,10 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-copy'
-  grunt.loadNpmTasks 'grunt-contrib-connect'
   grunt.loadNpmTasks 'grunt-contrib-concat'
+  grunt.loadNpmTasks 'grunt-shell'
 
   # tasks
-  grunt.registerTask 'default', ['connect', 'copy', 'less', 'coffee', 'concat', 'watch']
+  grunt.registerTask 'default', [
+    'copy', 'less', 'coffee', 'concat', 'shell', 'watch'
+  ]
