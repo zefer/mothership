@@ -3,12 +3,15 @@
   <div class="list-group" ng-repeat="item in items">
     <a ng-show="item.directory" ui-sref="browse.uri({ uri: item.directory })"
       class="list-group-item">
+      <i class="fa fa-folder-o"></i>
       {{item.directory|basename}}
     </a>
     <a ng-show="item.file" class="list-group-item">
+      <i class="fa fa-music"></i>
       {{item.file|basename}}
     </a>
     <a ng-show="item.playlist" class="list-group-item">
+      <i class="fa fa-file-audio-o"></i>
       {{item.playlist|basename}}
     </a>
   </div>
