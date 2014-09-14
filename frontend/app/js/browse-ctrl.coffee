@@ -13,4 +13,8 @@ mod.controller("BrowseCtrl", ($scope, $stateParams, $state, $http) ->
   $scope.$on "$stateChangeSuccess", (event, toState, toParams, fromState, fromParams) ->
     toParams.uri ?= "/"
     $scope.ls toParams.uri
+
+  $scope.showActions = (e) ->
+    e.preventDefault()
+    e.stopPropagation()
 )
