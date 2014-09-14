@@ -1,5 +1,12 @@
 <div ng-controller="BrowseCtrl as browseCtrl" class="browse">
-  <h3>{{uri}}</h3>
+
+  <ol class="breadcrumb">
+    <li ng-repeat="crumb in breadcrumbs">
+      <a ng-hide="$last" ui-sref="browse.uri({ uri: crumb.path })">{{crumb.label}}</a>
+      <span ng-show="$last">{{crumb.label}}</span>
+    </li>
+  </ol>
+
   <div class="list-group">
 
     <div ng-repeat="item in items" ui-sref="browse.uri({ uri: path })"

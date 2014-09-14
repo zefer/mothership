@@ -9,6 +9,12 @@ mod.controller("BrowseCtrl", ($scope, $stateParams, $state, $http) ->
     $http.get("/files?uri=#{escape(uri)}").success (data) ->
       $scope.items = data
       $scope.uri = uri
+      $scope.breadcrumbs = ctrl.breadcrumbs(uri)
+
+  ctrl.breadcrumbs = (uri) ->
+    return [] if uri == "/"
+    parts = uri.split("/")
+    { label: part, path: parts[0..i].join("/") } for part, i in parts
 
   $scope.$on "$stateChangeSuccess", (event, toState, toParams, fromState, fromParams) ->
     toParams.uri ?= "/"
