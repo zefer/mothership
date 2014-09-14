@@ -5,7 +5,7 @@ mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
   ctrl = this
   poller = null
 
-  checkPlayerStatus = ->
+  ctrl.checkPlayerStatus = ->
     console.log('player status poll')
     $http.get('/status').success (data) ->
       $scope.playing =
@@ -35,6 +35,9 @@ mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
       poller = undefined
 
   $scope.$on '$destroy', -> $scope.stopMonitoring()
+
+  $scope.$on "$stateChangeSuccess", (event, toState, toParams, fromState, fromParams) ->
+    ctrl.checkPlayerStatus() if toState.name == "playing"
 
   $scope.play = ->
     $http.get('/play')
