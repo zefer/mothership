@@ -8,7 +8,6 @@ mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
   checkPlayerStatus = ->
     console.log('player status poll')
     $http.get('/status').success (data) ->
-      console.log(data)
       $scope.playing =
         now: "#{data.Artist} - #{data.Title}"
         # play, pause or stop
