@@ -15,7 +15,7 @@ mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
         error: data.error
         progress: Math.floor((parseFloat(data.elapsed)/parseFloat(data.Time))*100)
         playlistLength: data.playlistlength
-        playlistPosition: data.song
+        playlistPosition: parseInt(data.song) + 1
         random: data.random == "1"
         quality: ctrl.friendlyQuality(data.audio, data.bitrate)
 
