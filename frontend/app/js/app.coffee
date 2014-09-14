@@ -1,5 +1,6 @@
 (->
-  angular.module('player', ['ui.router']).config ($stateProvider, $urlRouterProvider) ->
+  angular.module('player', ['ui.router', 'ui.bootstrap']).config (
+    $stateProvider, $urlRouterProvider) ->
     'use strict'
 
     $urlRouterProvider.otherwise("/playing")

@@ -30,6 +30,7 @@ module.exports = (grunt) ->
             'angular-ui-router/release/angular-ui-router.min.js'
             'jquery/dist/jquery.min.js'
             'jquery/dist/jquery.min.map'
+            'angular-bootstrap/ui-bootstrap-tpls.min.js'
             'bootstrap/dist/css/bootstrap.min.css'
             'font-awesome/css/font-awesome.min.css'
           ]
