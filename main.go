@@ -7,9 +7,9 @@ import (
 	"net/http"
 
 	"github.com/elazarl/go-bindata-assetfs"
-	"github.com/fhs/gompd/mpd"
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
+	"github.com/zefer/gompd/mpd"
 )
 
 var (
@@ -29,6 +29,7 @@ func main() {
 	r.HandleFunc("/pause", PauseHandler)
 	r.HandleFunc("/randomOn", RandomOnHandler)
 	r.HandleFunc("/randomOff", RandomOffHandler)
+	r.HandleFunc("/files", FileListHandler)
 
 	// The front-end assets are served from a go-bindata file.
 	r.PathPrefix("/").Handler(
@@ -138,4 +139,18 @@ func RandomOnHandler(w http.ResponseWriter, r *http.Request) {
 }
 func RandomOffHandler(w http.ResponseWriter, r *http.Request) {
 	random(false, w)
+}
+
+func FileListHandler(w http.ResponseWriter, r *http.Request) {
+	conn := client()
+	defer conn.Close()
+	data, err := conn.LsInfo(r.FormValue("uri"))
+	if err != nil {
+		glog.Errorln(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	b, err := json.Marshal(data)
+	w.Header().Add("Content-Type", "application/json")
+	fmt.Fprint(w, string(b))
 }

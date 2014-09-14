@@ -7,9 +7,15 @@
     $stateProvider.state("playing"
       url: "/playing"
       templateUrl: "partials/playing.html"
+
     ).state("browse",
       url: "/browse"
       templateUrl: "partials/browse.html"
+
+    ).state("browse.uri",
+      url: "/{uri:.*}"
+      templateUrl: "partials/browse.html"
+
     ).state("playlist",
       url: "/playlist"
       templateUrl: "partials/playlist.html"

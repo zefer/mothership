@@ -1,1 +1,15 @@
-<h2>Browse</h2>
+<div ng-controller="BrowseCtrl as browseCtrl">
+  <h3>{{uri}}</h3>
+  <div class="list-group" ng-repeat="item in items">
+    <a ng-show="item.directory" ui-sref="browse.uri({ uri: item.directory })"
+      class="list-group-item">
+      {{item.directory|basename}}
+    </a>
+    <a ng-show="item.file" class="list-group-item">
+      {{item.file|basename}}
+    </a>
+    <a ng-show="item.playlist" class="list-group-item">
+      {{item.playlist|basename}}
+    </a>
+  </div>
+</div>
