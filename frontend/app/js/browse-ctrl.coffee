@@ -12,7 +12,6 @@ mod.controller("BrowseCtrl", ($scope, $stateParams, $state, $http) ->
       $scope.breadcrumbs = ctrl.breadcrumbs(uri)
 
   ctrl.breadcrumbs = (uri) ->
-    return [] if uri == "/"
     parts = uri.split("/")
     { label: part, path: parts[0..i].join("/") } for part, i in parts
 
