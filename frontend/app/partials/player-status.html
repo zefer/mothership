@@ -1,6 +1,4 @@
-<div class="page-header">
-  <h2>{{playing.now}}</h2>
-</div>
+<h3>{{playing.now}}</h3>
 <div ng-show="playing.error" class="alert alert-danger" role="alert">{{playing.error}}</div>
 <div ng-show="playing.state == 'pause'" class="alert alert-warning" role="alert">paused</div>
 <div ng-show="playing.state == 'stop'" class="alert alert-warning" role="alert">stopped</div>
