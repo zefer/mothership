@@ -22,4 +22,17 @@ mod.controller("BrowseCtrl", ($scope, $stateParams, $state, $http) ->
   $scope.showActions = (e) ->
     e.preventDefault()
     e.stopPropagation()
+
+  $scope.add = (uri) ->
+    console.log "add", uri
+
+  $scope.addPlay = (uri) ->
+    console.log "addPlay", uri
+
+  $scope.addReplacePlay = (uri) ->
+    console.log "addReplacePlay", uri
+
+  $scope.update = (uri) ->
+    console.log "update", uri
+
 )
