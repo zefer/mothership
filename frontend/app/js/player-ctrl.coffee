@@ -27,7 +27,7 @@ mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
     [chan, rate, freq, bitr].join(', ')
 
   startMonitoring = ->
-    poller = $interval(checkPlayerStatus, 1000)
+    poller = $interval(ctrl.checkPlayerStatus, 5000)
 
   stopMonitoring = ->
     if angular.isDefined(poller)
