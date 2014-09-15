@@ -22,6 +22,25 @@ func main() {
 	flag.Parse()
 	glog.Infof("Starting API for MPD at %s.", *mpdAddr)
 
+	w, err := mpd.NewWatcher("tcp", *mpdAddr, "")
+	if err != nil {
+		glog.Fatal(err)
+	}
+	defer w.Close()
+	// Log errors.
+	go func() {
+		for err := range w.Error {
+			glog.Error(err)
+		}
+	}()
+	// Log events.
+	go func() {
+		for subsystem := range w.Event {
+			glog.Info("Changed subsystem:", subsystem)
+			broadcastStatus()
+		}
+	}()
+
 	r := mux.NewRouter()
 	r.HandleFunc("/websocket", serveWebsocket)
 	r.HandleFunc("/next", NextHandler)
@@ -39,7 +58,7 @@ func main() {
 	)
 	http.Handle("/", r)
 	glog.Infof("Listening on %s.", *port)
-	err := http.ListenAndServe(*port, nil)
+	err = http.ListenAndServe(*port, nil)
 	if err != nil {
 		glog.Errorf("http.ListenAndServe %s failed: %s", *port, err)
 		return

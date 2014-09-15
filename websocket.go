@@ -8,7 +8,16 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-const pollPeriod = 1 * time.Second
+// Time allowed to write a message to the peer.
+const writeWait = 3 * time.Second
+
+type connection struct {
+	ws *websocket.Conn
+	// Buffered channel of outbound messages.
+	send chan []byte
+}
+
+var conns = map[*connection]bool{}
 
 var (
 	upgrader = websocket.Upgrader{
@@ -17,23 +26,46 @@ var (
 	}
 )
 
-func writer(ws *websocket.Conn) {
-	pollTicker := time.NewTicker(pollPeriod)
+func broadcastStatus() {
+	// Get mpd status.
+	b, err := mpdStatus()
+	if err != nil {
+		glog.Errorln(err)
+		return
+	}
+	// Broadcast it.
+	for c := range conns {
+		select {
+		case c.send <- b:
+		default:
+			close(c.send)
+			delete(conns, c)
+		}
+	}
+}
+
+// write writes a message with the given message type and payload.
+func (c *connection) write(mt int, payload []byte) error {
+	c.ws.SetWriteDeadline(time.Now().Add(writeWait))
+	return c.ws.WriteMessage(mt, payload)
+}
+
+func (c *connection) writePump() {
 	defer func() {
-		pollTicker.Stop()
-		ws.Close()
+		if _, ok := conns[c]; ok {
+			delete(conns, c)
+		}
+		c.ws.Close()
 	}()
 	for {
 		select {
-		case <-pollTicker.C:
-			// Get mpd status.
-			b, err := mpdStatus()
-			if err != nil {
-				glog.Errorln(err)
+		case message, ok := <-c.send:
+			if !ok {
+				c.write(websocket.CloseMessage, []byte{})
 				return
 			}
 			// Send mpd status to client.
-			if err := ws.WriteMessage(websocket.TextMessage, b); err != nil {
+			if err := c.write(websocket.TextMessage, message); err != nil {
 				glog.Errorln(err)
 				return
 			}
@@ -50,5 +82,7 @@ func serveWebsocket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	go writer(ws)
+	c := &connection{send: make(chan []byte, 256), ws: ws}
+	go c.writePump()
+	conns[c] = true
 }
