@@ -14,6 +14,7 @@ import (
 )
 
 var (
+	client  *mpd.Client
 	mpdAddr = flag.String("mpdaddr", "127.0.0.1:6600", "MPD address")
 	port    = flag.String("port", ":8080", "listen port")
 )
@@ -41,6 +42,9 @@ func main() {
 		}
 	}()
 
+	client = newClient()
+	defer client.Close()
+
 	r := mux.NewRouter()
 	r.HandleFunc("/websocket", serveWebsocket)
 	r.HandleFunc("/next", NextHandler)
@@ -65,22 +69,20 @@ func main() {
 	}
 }
 
-func client() *mpd.Client {
-	conn, err := mpd.Dial("tcp", *mpdAddr)
+func newClient() *mpd.Client {
+	c, err := mpd.Dial("tcp", *mpdAddr)
 	if err != nil {
 		glog.Errorln(err)
 	}
-	return conn
+	return c
 }
 
 func mpdStatus() ([]byte, error) {
-	conn := client()
-	defer conn.Close()
-	data, err := conn.Status()
+	data, err := client.Status()
 	if err != nil {
 		return nil, err
 	}
-	song, err := conn.CurrentSong()
+	song, err := client.CurrentSong()
 	if err != nil {
 		return nil, err
 	}
@@ -92,9 +94,7 @@ func mpdStatus() ([]byte, error) {
 }
 
 func NextHandler(w http.ResponseWriter, r *http.Request) {
-	conn := client()
-	defer conn.Close()
-	err := conn.Next()
+	err := client.Next()
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -104,9 +104,7 @@ func NextHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PreviousHandler(w http.ResponseWriter, r *http.Request) {
-	conn := client()
-	defer conn.Close()
-	err := conn.Previous()
+	err := client.Previous()
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -116,9 +114,7 @@ func PreviousHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PlayHandler(w http.ResponseWriter, r *http.Request) {
-	conn := client()
-	defer conn.Close()
-	err := conn.Play(-1)
+	err := client.Play(-1)
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -128,9 +124,7 @@ func PlayHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PauseHandler(w http.ResponseWriter, r *http.Request) {
-	conn := client()
-	defer conn.Close()
-	err := conn.Pause(true)
+	err := client.Pause(true)
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -140,9 +134,7 @@ func PauseHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func random(on bool, w http.ResponseWriter) {
-	conn := client()
-	defer conn.Close()
-	err := conn.Random(on)
+	err := client.Random(on)
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -158,9 +150,7 @@ func RandomOffHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func FileListHandler(w http.ResponseWriter, r *http.Request) {
-	conn := client()
-	defer conn.Close()
-	data, err := conn.LsInfo(r.FormValue("uri"))
+	data, err := client.LsInfo(r.FormValue("uri"))
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -172,8 +162,6 @@ func FileListHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PlayListHandler(w http.ResponseWriter, r *http.Request) {
-	conn := client()
-	defer conn.Close()
 
 	// Parse the JSON body.
 	decoder := json.NewDecoder(r.Body)
@@ -196,7 +184,7 @@ func PlayListHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Clear the playlist.
 	if replace {
-		err := conn.Clear()
+		err := client.Clear()
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -207,7 +195,7 @@ func PlayListHandler(w http.ResponseWriter, r *http.Request) {
 	// To play from the start of the new items in the playlist, we need to get the
 	// current playlist position.
 	if !replace {
-		data, err := conn.Status()
+		data, err := client.Status()
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -223,7 +211,7 @@ func PlayListHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Add to the playlist.
-	err = conn.Add(uri)
+	err = client.Add(uri)
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -232,7 +220,7 @@ func PlayListHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Play.
 	if play {
-		err := conn.Play(pos)
+		err := client.Play(pos)
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
