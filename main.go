@@ -23,7 +23,7 @@ func main() {
 	glog.Infof("Starting API for MPD at %s.", *mpdAddr)
 
 	r := mux.NewRouter()
-	r.HandleFunc("/status", StatusHandler)
+	r.HandleFunc("/websocket", serveWebsocket)
 	r.HandleFunc("/next", NextHandler)
 	r.HandleFunc("/previous", PreviousHandler)
 	r.HandleFunc("/play", PlayHandler)
@@ -54,27 +54,22 @@ func client() *mpd.Client {
 	return conn
 }
 
-func StatusHandler(w http.ResponseWriter, r *http.Request) {
+func mpdStatus() ([]byte, error) {
 	conn := client()
 	defer conn.Close()
 	data, err := conn.Status()
 	if err != nil {
-		glog.Errorln(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+		return nil, err
 	}
 	song, err := conn.CurrentSong()
 	if err != nil {
-		glog.Errorln(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+		return nil, err
 	}
 	for k, v := range song {
 		data[k] = v
 	}
 	b, err := json.Marshal(data)
-	w.Header().Add("Content-Type", "application/json")
-	fmt.Fprint(w, string(b))
+	return b, err
 }
 
 func NextHandler(w http.ResponseWriter, r *http.Request) {

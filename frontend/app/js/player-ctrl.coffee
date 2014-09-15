@@ -1,23 +1,21 @@
 mod = angular.module('player')
 
-mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
+mod.controller('PlayerCtrl', ($scope, $http, mpdService) ->
   'use strict'
   ctrl = this
-  poller = null
 
-  ctrl.checkPlayerStatus = ->
-    console.log('player status poll')
-    $http.get('/status').success (data) ->
-      $scope.playing =
-        now: "#{data.Artist} - #{data.Title}"
-        # play, pause or stop
-        state: data.state
-        error: data.error
-        progress: Math.floor((parseFloat(data.elapsed)/parseFloat(data.Time))*100)
-        playlistLength: data.playlistlength
-        playlistPosition: parseInt(data.song) + 1
-        random: data.random == "1"
-        quality: ctrl.friendlyQuality(data.audio, data.bitrate)
+  $scope.$on MPD_STATUS, (event, data) ->
+    $scope.playing =
+      now: "#{data.Artist} - #{data.Title}"
+      # play, pause or stop
+      state: data.state
+      error: data.error
+      progress: Math.floor((parseFloat(data.elapsed)/parseFloat(data.Time))*100)
+      playlistLength: data.playlistlength
+      playlistPosition: parseInt(data.song) + 1
+      random: data.random == "1"
+      quality: ctrl.friendlyQuality(data.audio, data.bitrate)
+    $scope.$apply()
 
   ctrl.friendlyQuality = (mpdAudioString, bitrate) ->
     chan = if mpdAudioString.split(':')[2] == '2' then 'Stereo' else 'Mono'
@@ -26,19 +24,6 @@ mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
     bitr = bitrate + ' kbps'
     [chan, rate, freq, bitr].join(', ')
 
-  startMonitoring = ->
-    poller = $interval(ctrl.checkPlayerStatus, 5000)
-
-  stopMonitoring = ->
-    if angular.isDefined(poller)
-      $interval.cancel(poller)
-      poller = undefined
-
-  $scope.$on '$destroy', -> $scope.stopMonitoring()
-
-  $scope.$on "$stateChangeSuccess", (event, toState, toParams, fromState, fromParams) ->
-    ctrl.checkPlayerStatus() if toState.name == "playing"
-
   $scope.play = ->
     $http.get('/play')
 
@@ -46,15 +31,11 @@ mod.controller('PlayerCtrl', ($scope, $interval, $http) ->
     $http.get('/pause')
 
   $scope.previous = ->
-    console.log 'previous'
     $http.get('/previous')
 
   $scope.next = ->
-    console.log 'next'
     $http.get('/next')
 
   $scope.random = ->
     if $scope.playing.random then $http.get('/randomOff') else $http.get('/randomOn')
-
-  startMonitoring()
 )
