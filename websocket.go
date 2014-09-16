@@ -66,7 +66,6 @@ func (c *connection) writePump() {
 			}
 			// Send mpd status to client.
 			if err := c.write(websocket.TextMessage, message); err != nil {
-				glog.Errorln(err)
 				return
 			}
 		}
