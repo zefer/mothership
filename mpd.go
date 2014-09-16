@@ -22,8 +22,6 @@ type clientConn struct {
 func newWatchConn(addr string) *watchConn {
 	c := &watchConn{addr: addr}
 	c.connect()
-	go c.errorLoop()
-	go c.eventLoop()
 	return c
 }
 
@@ -38,6 +36,8 @@ func (w *watchConn) connect() {
 		watcher, err := mpd.NewWatcher("tcp", w.addr, "")
 		if err == nil {
 			w.watcher = watcher
+			go w.errorLoop()
+			go w.eventLoop()
 			glog.Infof("MPD watcher: connected to %s", w.addr)
 			return
 		}
@@ -77,5 +77,7 @@ func (w *watchConn) eventLoop() {
 func (w *watchConn) errorLoop() {
 	for err := range w.watcher.Error {
 		glog.Errorf("Watcher: %v", err)
+		w.Close()
+		w.connect()
 	}
 }
