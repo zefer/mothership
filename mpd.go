@@ -20,11 +20,11 @@ type clientConn struct {
 }
 
 func newWatchConn(addr string) *watchConn {
-	conn := &watchConn{addr: addr}
-	conn.connect()
-	go conn.errorLoop()
-	go conn.eventLoop()
-	return conn
+	c := &watchConn{addr: addr}
+	c.connect()
+	go c.errorLoop()
+	go c.eventLoop()
+	return c
 }
 
 func newClientConn(addr string) *clientConn {
