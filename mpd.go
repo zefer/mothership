@@ -28,6 +28,7 @@ func newWatchConn(addr string) *watchConn {
 func newClientConn(addr string) *clientConn {
 	c := &clientConn{addr: addr}
 	c.connect()
+	go c.keepAlive()
 	return c
 }
 
@@ -55,6 +56,18 @@ func (c *clientConn) connect() {
 			return
 		}
 		glog.Errorf("MPD client: connect failed. Waiting then retrying. %v", err)
+		time.Sleep(retryDur)
+	}
+}
+
+func (c *clientConn) keepAlive() {
+	for {
+		err := c.c.Ping()
+		if err != nil {
+			glog.Errorf("MPD client: ping failed, reconnecting")
+			c.Close()
+			c.connect()
+		}
 		time.Sleep(retryDur)
 	}
 }
