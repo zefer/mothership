@@ -26,6 +26,21 @@ var (
 	}
 )
 
+func sendStatus(c *connection) {
+	// Get mpd status.
+	b, err := mpdStatus()
+	if err != nil {
+		return
+	}
+	// Send it.
+	select {
+	case c.send <- b:
+	default:
+		close(c.send)
+		delete(conns, c)
+	}
+}
+
 func broadcastStatus() {
 	// Get mpd status.
 	b, err := mpdStatus()
@@ -84,4 +99,5 @@ func serveWebsocket(w http.ResponseWriter, r *http.Request) {
 	c := &connection{send: make(chan []byte, 256), ws: ws}
 	go c.writePump()
 	conns[c] = true
+	sendStatus(c)
 }
