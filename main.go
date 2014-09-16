@@ -23,24 +23,11 @@ func main() {
 	flag.Parse()
 	glog.Infof("Starting API for MPD at %s.", *mpdAddr)
 
-	w, err := mpd.NewWatcher("tcp", *mpdAddr, "")
+	watch, err := newWatchConn(*mpdAddr)
 	if err != nil {
 		glog.Fatal(err)
 	}
-	defer w.Close()
-	// Log errors.
-	go func() {
-		for err := range w.Error {
-			glog.Error(err)
-		}
-	}()
-	// Log events.
-	go func() {
-		for subsystem := range w.Event {
-			glog.Info("Changed subsystem:", subsystem)
-			broadcastStatus()
-		}
-	}()
+	defer watch.Close()
 
 	client = newClient()
 	defer client.Close()
