@@ -14,12 +14,23 @@ type watchConn struct {
 	addr    string
 }
 
-func newWatchConn(addr string) (*watchConn, error) {
+type clientConn struct {
+	c    *mpd.Client
+	addr string
+}
+
+func newWatchConn(addr string) *watchConn {
 	conn := &watchConn{addr: addr}
 	conn.connect()
 	go conn.errorLoop()
 	go conn.eventLoop()
-	return conn, nil
+	return conn
+}
+
+func newClientConn(addr string) *clientConn {
+	c := &clientConn{addr: addr}
+	c.connect()
+	return c
 }
 
 func (w *watchConn) connect() {
@@ -27,16 +38,33 @@ func (w *watchConn) connect() {
 		watcher, err := mpd.NewWatcher("tcp", w.addr, "")
 		if err == nil {
 			w.watcher = watcher
-			glog.Infof("Watcher: connected to %s", w.addr)
+			glog.Infof("MPD watcher: connected to %s", w.addr)
 			return
 		}
-		glog.Errorf("Watcher: connect failed. Waiting then retrying. %v", err)
+		glog.Errorf("MPD watcher: connect failed. Waiting then retrying. %v", err)
+		time.Sleep(retryDur)
+	}
+}
+
+func (c *clientConn) connect() {
+	for {
+		client, err := mpd.Dial("tcp", c.addr)
+		if err == nil {
+			c.c = client
+			glog.Infof("MPD client: connected to %s", c.addr)
+			return
+		}
+		glog.Errorf("MPD client: connect failed. Waiting then retrying. %v", err)
 		time.Sleep(retryDur)
 	}
 }
 
 func (w *watchConn) Close() {
 	w.watcher.Close()
+}
+
+func (c *clientConn) Close() {
+	c.c.Close()
 }
 
 func (w *watchConn) eventLoop() {
