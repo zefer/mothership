@@ -16,25 +16,17 @@ type watchConn struct {
 
 func newWatchConn(addr string) (*watchConn, error) {
 	conn := &watchConn{addr: addr}
-	conn.retryConnect()
+	conn.connect()
 	go conn.errorLoop()
 	go conn.eventLoop()
 	return conn, nil
 }
 
-func (w *watchConn) connect() error {
-	watcher, err := mpd.NewWatcher("tcp", w.addr, "")
-	if err != nil {
-		return err
-	}
-	w.watcher = watcher
-	return nil
-}
-
-func (w *watchConn) retryConnect() {
+func (w *watchConn) connect() {
 	for {
-		err := w.connect()
+		watcher, err := mpd.NewWatcher("tcp", w.addr, "")
 		if err == nil {
+			w.watcher = watcher
 			glog.Infof("Watcher: connected to %s", w.addr)
 			return
 		}
