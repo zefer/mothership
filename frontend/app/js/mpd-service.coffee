@@ -1,6 +1,7 @@
 mod = angular.module("player")
 
 MPD_STATUS = "mpd:status"
+CONN_STATUS = "conn:status"
 
 mod.factory "mpdService", ["$rootScope", "$interval", ($rootScope, $interval) ->
   ctrl = this
@@ -13,6 +14,7 @@ mod.factory "mpdService", ["$rootScope", "$interval", ($rootScope, $interval) ->
       console.log "Websocket opened"
       retrying && $interval.cancel(retrying)
       retrying = null
+      $rootScope.$broadcast CONN_STATUS, true
 
     # The only type of message is mpd status JSON, for now.
     ws.onmessage = (message) ->
@@ -21,6 +23,7 @@ mod.factory "mpdService", ["$rootScope", "$interval", ($rootScope, $interval) ->
     # The only type of message is mpd status JSON, for now.
     ws.onclose = ->
       return if retrying
+      $rootScope.$broadcast CONN_STATUS, false
       console.log "Websocket closed"
       retrying = $interval ->
         console.log "Websocket reconnecting"

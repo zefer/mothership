@@ -17,6 +17,9 @@ mod.controller('PlayerCtrl', ($scope, $http, mpdService) ->
       quality: ctrl.friendlyQuality(data.audio, data.bitrate)
     $scope.$apply()
 
+  $scope.$on CONN_STATUS, (event, connected) ->
+    $scope.playing.error = if connected then "" else "Connection lost"
+
   ctrl.friendlyQuality = (mpdAudioString, bitrate) ->
     chan = if mpdAudioString.split(':')[2] == '2' then 'Stereo' else 'Mono'
     freq = parseInt(mpdAudioString.split(':')[0]) / 1000 + ' kHz'
