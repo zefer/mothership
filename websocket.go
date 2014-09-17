@@ -9,15 +9,22 @@ import (
 )
 
 // Time allowed to write a message to the peer.
-const writeWait = 3 * time.Second
+const (
+	// Time allowed to write a message to the peer.
+	writeWait = 3 * time.Second
+	// Time allowed to read the next pong message from the peer.
+	pongWait = 60 * time.Second
+	// Send pings to peer with this period. Must be less than pongWait.
+	pingPeriod = (pongWait * 9) / 10
+	// Maximum message size allowed from peer.
+	maxMessageSize = 512
+)
 
 type connection struct {
 	ws *websocket.Conn
 	// Buffered channel of outbound messages.
 	send chan []byte
 }
-
-var conns = map[*connection]bool{}
 
 var (
 	upgrader = websocket.Upgrader{
@@ -36,8 +43,8 @@ func sendStatus(c *connection) {
 	select {
 	case c.send <- b:
 	default:
-		close(c.send)
-		delete(conns, c)
+		h.unregister <- c
+		c.ws.Close()
 	}
 }
 
@@ -48,14 +55,28 @@ func broadcastStatus() {
 		glog.Errorln(err)
 		return
 	}
-	// Broadcast it.
-	for c := range conns {
-		select {
-		case c.send <- b:
-		default:
-			close(c.send)
-			delete(conns, c)
+	h.broadcast <- b
+}
+
+// readPump pumps messages from the websocket connection to the hub.
+func (c *connection) readPump() {
+	defer func() {
+		h.unregister <- c
+		c.ws.Close()
+	}()
+	c.ws.SetReadLimit(maxMessageSize)
+	c.ws.SetReadDeadline(time.Now().Add(pongWait))
+	c.ws.SetPongHandler(func(string) error {
+		c.ws.SetReadDeadline(time.Now().Add(pongWait))
+		glog.Infof("Received pong")
+		return nil
+	})
+	for {
+		_, message, err := c.ws.ReadMessage()
+		if err != nil {
+			break
 		}
+		h.broadcast <- message
 	}
 }
 
@@ -66,10 +87,9 @@ func (c *connection) write(mt int, payload []byte) error {
 }
 
 func (c *connection) writePump() {
+	ticker := time.NewTicker(pingPeriod)
 	defer func() {
-		if _, ok := conns[c]; ok {
-			delete(conns, c)
-		}
+		ticker.Stop()
 		c.ws.Close()
 	}()
 	for {
@@ -83,21 +103,30 @@ func (c *connection) writePump() {
 			if err := c.write(websocket.TextMessage, message); err != nil {
 				return
 			}
+		case <-ticker.C:
+			glog.Infof("Sending ping")
+			if err := c.write(websocket.PingMessage, []byte{}); err != nil {
+				glog.Errorf("Ping error %v: ", err)
+				return
+			}
 		}
 	}
 }
 
 func serveWebsocket(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		if _, ok := err.(websocket.HandshakeError); !ok {
-			glog.Error(err)
-		}
+		glog.Error(err)
 		return
 	}
 
 	c := &connection{send: make(chan []byte, 256), ws: ws}
+	h.register <- c
 	go c.writePump()
-	conns[c] = true
 	sendStatus(c)
+	c.readPump()
 }

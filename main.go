@@ -21,6 +21,7 @@ var (
 func main() {
 	flag.Parse()
 	glog.Infof("Starting API for MPD at %s.", *mpdAddr)
+	go h.run()
 
 	watch := newWatchConn(*mpdAddr)
 	defer watch.Close()
