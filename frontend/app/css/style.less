@@ -13,8 +13,19 @@ header .navbar {
 
 nav player-controls {
   float: left;
-  margin: 4px 10px 0 0;
+  margin: 9px 10px 0 0;
 }
 
 main { padding: 60px 0; }
 .breadcrumb { margin-top: 20px; }
+
+// COMPONENTS
+
+.btn {
+  border: 0;
+  background: none;
+  &.active {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+  }
+}
