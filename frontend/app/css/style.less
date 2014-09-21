@@ -1,14 +1,45 @@
-@bg: #f7f7f7;
-@dark: #CECECE;
+@bg: #fff;
+@white: #fff;
+@brown: #543729;
+@gold: #FFCC2F;
+@green: #2BAF2B;
 
 body {
   background: @bg;
+  color: @brown;
 }
+main { padding: 60px 0; }
+a { color: @green; }
+a:hover { color: @brown; }
+main .fa { color: @green; }
 
-header .navbar {
-  background-color: @dark;
+.btn {
+  transition: border .1s linear, color .1s linear, background-color .1s linear;
   border: 0;
-  .badge { margin-left: 4px; }
+  background: @green;
+  color: @white;
+  i { color: @white }
+
+  &:hover, &:focus {
+    background: @gold;
+  }
+  &:active, &.active {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    background: @green;
+    color: @brown;
+    i { color: @brown; }
+  }
+  &.active:hover {
+    background: @white;
+  }
+}
+.open>.btn.dropdown-toggle {
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  background: @gold;
+  color: @brown;
+  i { color: @brown; }
 }
 
 nav player-controls {
@@ -16,16 +47,33 @@ nav player-controls {
   margin: 9px 10px 0 0;
 }
 
-main { padding: 60px 0; }
-.breadcrumb { margin-top: 20px; }
-
-// COMPONENTS
-
-.btn {
+header .navbar {
+  background-color: @gold;
   border: 0;
-  background: none;
-  &.active {
-    box-shadow: none;
-    -webkit-box-shadow: none;
+  .badge {
+    margin: 1px 0 0 4px;
+    background: @green;
+  }
+
+  .btn {
+    &:hover, &:focus {
+      background: @white;
+      color: @green;
+      i { color: @green; }
+    }
+  }
+
+  .nav a, .nav .active a, .nav .active a:focus { color: @brown; }
+  .nav a:hover, .nav .active a:hover { color: @green; }
+  .nav .active>a, .nav .active>a:hover, .nav .active>a:focus {
+    background: none;
+    font-weight: bold;
   }
 }
+
+.breadcrumb {
+  background: none;
+  margin-top: 20px;
+}
+
+.progress-bar { background: @green; }
