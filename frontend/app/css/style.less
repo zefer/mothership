@@ -1,7 +1,20 @@
 @bg: #f7f7f7;
+@dark: #CECECE;
 
-body { background: @bg; }
+body {
+  background: @bg;
+}
 
-player-controls li { float:left; margin-right:4px; }
+header .navbar {
+  background-color: @dark;
+  border: 0;
+  .badge { margin-left: 4px; }
+}
 
+nav player-controls {
+  float: left;
+  margin: 4px 10px 0 0;
+}
+
+main { padding: 60px 0; }
 .breadcrumb { margin-top: 20px; }
