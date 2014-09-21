@@ -1,19 +1,24 @@
-<div class="row" ng-controller="PlayerCtrl as playerCtrl">
+<div ng-controller="PlayerCtrl as playerCtrl">
 
-  <ul class="nav nav-pills">
-    <li ng-class="{active:$state.includes('playing')}">
-      <a ui-sref="playing">Playing</a>
-    </li>
-    <li ng-class="{active:$state.includes('browse')}">
-      <a ui-sref="browse">Browse</a>
-    </li>
-    <li ng-class="{active:$state.includes('playlist')}">
-      <a ui-sref="playlist">Playlist<span class="badge pull-right">
-        {{playing.playlistPosition}}/{{playing.playlistLength}}
-      </span></a>
-    </li>
-  </ul>
+  <header><nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+      <player-controls></player-controls>
+      <ul class="nav navbar-nav">
+        <li ng-class="{active:$state.includes('playing')}">
+          <a ui-sref="playing">Playing</a>
+        </li>
+        <li ng-class="{active:$state.includes('browse')}">
+          <a ui-sref="browse">Browse</a>
+        </li>
+        <li ng-class="{active:$state.includes('playlist')}">
+          <a ui-sref="playlist">Playlist<span class="badge pull-right">
+            {{playing.playlistPosition}}/{{playing.playlistLength}}
+          </span></a>
+        </li>
+      </ul>
+    </div>
+  </nav></header>
 
-  <div ui-view></div>
+  <main ui-view></main>
 
 </div>
