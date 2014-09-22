@@ -34,4 +34,4 @@ To cross-compile for a Raspberry Pi use `GOOS=linux GOARM=6 GOARCH=arm go build`
 
 ## Work in progress
 
-![UI](https://dl.dropboxusercontent.com/u/89410/ui.png)
+![UI](https://api.monosnap.com/image/download?id=CKwVg4u26A8UaaQbsnKVu9tGoJmSD8)
