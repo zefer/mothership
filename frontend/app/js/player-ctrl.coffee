@@ -24,6 +24,10 @@ mod.controller('PlayerCtrl', ($scope, $http, mpdService) ->
   ctrl.nowPlaying = (data) ->
     if data.Artist && data.Title
       "#{data.Artist} - #{data.Title}"
+    else if data.Name
+      data.Name
+    else
+      data.file
 
   ctrl.friendlyQuality = (mpdAudioString, bitrate) ->
     return unless mpdAudioString
