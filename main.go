@@ -126,7 +126,7 @@ func RandomOffHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func FileListHandler(w http.ResponseWriter, r *http.Request) {
-	data, err := client.c.LsInfo(r.FormValue("uri"))
+	data, err := client.c.ListInfo(r.FormValue("uri"))
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
