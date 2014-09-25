@@ -2,20 +2,18 @@
 
   <header><nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
+
       <player-controls></player-controls>
-      <ul class="nav navbar-nav">
-        <li ng-class="{active:$state.includes('playing')}">
-          <a ui-sref="playing">Playing</a>
-        </li>
-        <li ng-class="{active:$state.includes('browse')}">
-          <a ui-sref="browse">Browse</a>
-        </li>
-        <li ng-class="{active:$state.includes('playlist')}">
-          <a ui-sref="playlist">Playlist<span class="badge pull-right">
-            {{playing.playlistPosition}}/{{playing.playlistLength}}
-          </span></a>
-        </li>
-      </ul>
+
+      <ul class="nav navbar-nav hidden-xs" ng-include src="'/partials/nav-links.html'"></ul>
+
+      <div class="burger btn-group visible-xs-block" dropdown>
+        <button type="button" class="btn btn-default dropdown-toggle">
+          <i class="fa fa-2x fa-navicon"></i>
+        </button>
+        <ul class="dropdown-menu" role="menu" ng-include src="'/partials/nav-links.html'"></ul>
+      </div>
+
     </div>
   </nav></header>
 
