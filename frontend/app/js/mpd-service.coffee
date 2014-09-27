@@ -39,10 +39,15 @@ mod.factory "mpd", ["$rootScope", "$http", "$interval", "$q", ($rootScope, $http
     randomOff:  -> $http.get('/randomOff')
 
     currentPlaylist: ->
-      console.log "mpd.currentPlaylist()"
       deferred = $q.defer()
       $http.get("/playlist").success (data) -> deferred.resolve(data)
       deferred.promise
+
+    addToPlaylist: (uri, replace, play) ->
+      $http.post '/playlist',
+        uri: uri
+        replace: replace
+        play: play
 
   @connect()
 
