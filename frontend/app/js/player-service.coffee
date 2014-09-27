@@ -2,7 +2,7 @@ mod = angular.module("player")
 
 PLAYER_STATE_CHANGE = "player:state_change"
 
-mod.factory "player", ["$rootScope", "mpdService", ($rootScope, mpdService) ->
+mod.factory "player", ["$rootScope", "$http", "mpd", ($rootScope, $http, mpd) ->
   'use strict'
   that = this
   # The public methods/data we expose
@@ -48,6 +48,12 @@ mod.factory "player", ["$rootScope", "mpdService", ($rootScope, mpdService) ->
     rate = mpdAudioString.split(':')[1] + ' bit'
     bitr = bitrate + ' kbps'
     [chan, rate, freq, bitr].join(', ')
+
+  api.play     = -> mpd.play()
+  api.pause    = -> mpd.pause()
+  api.previous = -> mpd.previous()
+  api.next     = -> mpd.next()
+  api.random   = -> if api.playing.random then mpd.randomOff() else mpd.randomOn()
 
   return api
 ]

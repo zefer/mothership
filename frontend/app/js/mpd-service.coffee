@@ -3,7 +3,7 @@ mod = angular.module("player")
 MPD_STATUS = "mpd:status"
 CONN_STATUS = "conn:status"
 
-mod.factory "mpdService", ["$rootScope", "$interval", ($rootScope, $interval) ->
+mod.factory "mpd", ["$rootScope", "$http", "$interval", ($rootScope, $http, $interval) ->
   ctrl = this
   retrying = null
 
@@ -30,5 +30,15 @@ mod.factory "mpdService", ["$rootScope", "$interval", ($rootScope, $interval) ->
         ctrl.connect()
       , 1000
 
+  api =
+    play:       -> $http.get('/play')
+    pause:      -> $http.get('/pause')
+    previous:   -> $http.get('/previous')
+    next:       -> $http.get('/next')
+    randomOn:   -> $http.get('/randomOn')
+    randomOff:  -> $http.get('/randomOff')
+
   @connect()
+
+  api
 ]

@@ -1,6 +1,6 @@
 mod = angular.module('player')
 
-mod.controller('PlayerCtrl', ($scope, $http, player) ->
+mod.controller('PlayerCtrl', ($scope, player) ->
   'use strict'
   ctrl = this
   $scope.playing = player.playing
@@ -9,18 +9,9 @@ mod.controller('PlayerCtrl', ($scope, $http, player) ->
     $scope.playing = player.playing
     $scope.$apply()
 
-  $scope.play = ->
-    $http.get('/play')
-
-  $scope.pause = ->
-    $http.get('/pause')
-
-  $scope.previous = ->
-    $http.get('/previous')
-
-  $scope.next = ->
-    $http.get('/next')
-
-  $scope.random = ->
-    if $scope.playing.random then $http.get('/randomOff') else $http.get('/randomOn')
+  $scope.play     = -> player.play()
+  $scope.pause    = -> player.pause()
+  $scope.previous = -> player.pause()
+  $scope.next     = -> player.next()
+  $scope.random   = -> player.random()
 )
