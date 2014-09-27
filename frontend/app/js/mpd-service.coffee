@@ -49,6 +49,12 @@ mod.factory "mpd", ["$rootScope", "$http", "$interval", "$q", ($rootScope, $http
         replace: replace
         play: play
 
+    ls: (uri) ->
+      deferred = $q.defer()
+      $http.get("/files?uri=#{escape(uri)}").success (data) ->
+        deferred.resolve(data)
+      deferred.promise
+
   @connect()
 
   api
