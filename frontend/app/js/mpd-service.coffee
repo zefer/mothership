@@ -3,7 +3,7 @@ mod = angular.module("player")
 MPD_STATUS = "mpd:status"
 CONN_STATUS = "conn:status"
 
-mod.factory "mpd", ["$rootScope", "$http", "$interval", ($rootScope, $http, $interval) ->
+mod.factory "mpd", ["$rootScope", "$http", "$interval", "$q", ($rootScope, $http, $interval, $q) ->
   ctrl = this
   retrying = null
 
@@ -37,6 +37,12 @@ mod.factory "mpd", ["$rootScope", "$http", "$interval", ($rootScope, $http, $int
     next:       -> $http.get('/next')
     randomOn:   -> $http.get('/randomOn')
     randomOff:  -> $http.get('/randomOff')
+
+    currentPlaylist: ->
+      console.log "mpd.currentPlaylist()"
+      deferred = $q.defer()
+      $http.get("/playlist").success (data) -> deferred.resolve(data)
+      deferred.promise
 
   @connect()
 

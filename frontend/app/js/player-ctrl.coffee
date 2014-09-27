@@ -1,9 +1,11 @@
 mod = angular.module('player')
 
-mod.controller('PlayerCtrl', ($scope, player) ->
+mod.controller('PlayerCtrl', ($scope, player, playlist) ->
   'use strict'
   ctrl = this
-  $scope.playing = player.playing
+
+  $scope.playing  = player.playing
+  $scope.playlist = playlist
 
   $scope.$on PLAYER_STATE_CHANGE, (event) ->
     $scope.playing = player.playing

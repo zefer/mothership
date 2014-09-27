@@ -3,9 +3,8 @@
 
   <div class="list-group">
 
-    <div ng-repeat="item in items" class="list-group-item"
-      ng-init="curPos=playing.playlistPosition"
-      ng-class="{ 'active':playing.playlistPosition-1==item.Pos }">
+    <div ng-repeat="item in playlist.items" class="list-group-item"
+      ng-class="{ 'active':playlist.position==item.Pos }">
       <strong>{{item.Pos}}.</strong> {{item.Artist}} - {{item.Title}}
     </div>
 
