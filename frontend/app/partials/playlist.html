@@ -1,1 +1,13 @@
-<h3>Playlist</h3>
+<div ng-controller="PlaylistCtrl as playlistCtrl" class="playlist">
+  <h3>Playlist</h3>
+
+  <div class="list-group">
+
+    <div ng-repeat="item in items" class="list-group-item"
+      ng-init="curPos=playing.playlistPosition"
+      ng-class="{ 'active':playing.playlistPosition-1==item.Pos }">
+      <strong>{{item.Pos}}.</strong> {{item.Artist}} - {{item.Title}}
+    </div>
+
+  </div>
+</div>

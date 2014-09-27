@@ -138,7 +138,31 @@ func FileListHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PlayListHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		playListList(w, r)
+		return
+	} else if r.Method == "POST" {
+		playListUpdate(w, r)
+		return
+	} else {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+}
 
+func playListList(w http.ResponseWriter, r *http.Request) {
+	data, err := client.c.PlaylistInfo(-1, -1)
+	if err != nil {
+		glog.Errorln(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	b, err := json.Marshal(data)
+	w.Header().Add("Content-Type", "application/json")
+	fmt.Fprint(w, string(b))
+}
+
+func playListUpdate(w http.ResponseWriter, r *http.Request) {
 	// Parse the JSON body.
 	decoder := json.NewDecoder(r.Body)
 	var params map[string]interface{}
