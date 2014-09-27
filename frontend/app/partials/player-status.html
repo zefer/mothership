@@ -1,4 +1,5 @@
 <h3>{{playing.now}}</h3>
+<p ng-show="playing.sub">{{playing.sub}}</p>
 <div ng-show="playing.error" class="alert alert-danger" role="alert">{{playing.error}}</div>
 <div ng-show="playing.state == 'pause'" class="alert alert-warning" role="alert">paused</div>
 <div ng-show="playing.state == 'stop'" class="alert alert-warning" role="alert">stopped</div>

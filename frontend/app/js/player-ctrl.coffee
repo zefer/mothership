@@ -6,8 +6,10 @@ mod.controller('PlayerCtrl', ($scope, $http, mpdService) ->
   $scope.playing = {}
 
   $scope.$on MPD_STATUS, (event, data) ->
+    [now, sub] = ctrl.nowPlaying(data)
     $scope.playing =
-      now: ctrl.nowPlaying(data)
+      now: now
+      sub: sub
       # play, pause or stop
       state: data.state
       error: data.error
@@ -23,11 +25,16 @@ mod.controller('PlayerCtrl', ($scope, $http, mpdService) ->
 
   ctrl.nowPlaying = (data) ->
     if data.Artist && data.Title
-      "#{data.Artist} - #{data.Title}"
+      now = "#{data.Artist} - #{data.Title}"
+      sub = data.Album
     else if data.Name
-      data.Name
+      now = data.Name
+      sub = ""
     else
-      data.file
+      parts = data.file.split("/")
+      now = parts[parts.length-1]
+      sub = parts[0..parts.length-2].join("/")
+    [now, sub]
 
   ctrl.friendlyQuality = (mpdAudioString, bitrate) ->
     return unless mpdAudioString
