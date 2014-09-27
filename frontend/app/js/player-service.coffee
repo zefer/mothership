@@ -3,6 +3,7 @@ mod = angular.module("player")
 PLAYER_STATE_CHANGE = "player:state_change"
 
 mod.factory "player", ["$rootScope", "mpdService", ($rootScope, mpdService) ->
+  'use strict'
   that = this
   # The public methods/data we expose
   api =
