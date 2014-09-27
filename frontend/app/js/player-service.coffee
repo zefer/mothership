@@ -5,27 +5,30 @@ PLAYER_STATE_CHANGE = "player:state_change"
 mod.factory "player", ["$rootScope", "$http", "mpd", ($rootScope, $http, mpd) ->
   'use strict'
   that = this
-  # The public methods/data we expose
+
   api =
-    playing: {}
+    play:    -> mpd.play()
+    pause:   -> mpd.pause()
+    previous:-> mpd.previous()
+    next:    -> mpd.next()
+    random:  -> if api.randomOn then mpd.randomOff() else mpd.randomOn()
 
   $rootScope.$on MPD_STATUS, (event, data) ->
     [now, sub] = that.nowPlaying(data)
-    api.playing =
+    # TODO: tidy up this exposed data, reuse a Song class to represent playing?
+    angular.extend api,
       now: now
       sub: sub
       # play, pause or stop
       state: data.state
       error: data.error
       progress: Math.floor((parseFloat(data.elapsed)/parseFloat(data.Time))*100)
-      playlistLength: data.playlistlength
-      playlistPosition: parseInt(data.song||-1) + 1
-      random: data.random == "1"
+      randomOn: data.random == "1"
       quality: that.friendlyQuality(data.audio, data.bitrate)
     $rootScope.$broadcast PLAYER_STATE_CHANGE
 
   $rootScope.$on CONN_STATUS, (event, connected) ->
-    api.playing.error = if connected then "" else "Connection lost"
+    api.error = if connected then "" else "Connection lost"
     $rootScope.$broadcast PLAYER_STATE_CHANGE
 
   that.nowPlaying = (data) ->
@@ -48,12 +51,6 @@ mod.factory "player", ["$rootScope", "$http", "mpd", ($rootScope, $http, mpd) ->
     rate = mpdAudioString.split(':')[1] + ' bit'
     bitr = bitrate + ' kbps'
     [chan, rate, freq, bitr].join(', ')
-
-  api.play     = -> mpd.play()
-  api.pause    = -> mpd.pause()
-  api.previous = -> mpd.previous()
-  api.next     = -> mpd.next()
-  api.random   = -> if api.playing.random then mpd.randomOff() else mpd.randomOn()
 
   return api
 ]
