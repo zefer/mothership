@@ -1,12 +1,20 @@
-.browse .list-group-item {
-  i.type { margin-right: 6px; }
-  cursor: pointer;
+.browse {
+  .list-group {
+    overflow-x: hidden;
+  }
 
-  // Right context menu
-  .actions {
-    float: right;
-    top: -5px;
-    .dropdown-menu { right: 100%; left: auto; top: 0; }
-    .dropdown-menu i { margin-right: 6px; }
+  .list-group-item {
+    i.type { margin-right: 6px; }
+    cursor: pointer;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    // Right context menu
+    .actions {
+      right: 15px;
+      z-index: 10;
+      position: absolute;
+      top: 6px;
+    }
   }
 }

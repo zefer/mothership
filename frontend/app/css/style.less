@@ -1,5 +1,6 @@
 @import "../../bower_components/bootstrap/less/bootstrap.less";
-@grid-float-breakpoint: 300px;
+@screen-xs-max: 520px;
+@grid-float-breakpoint: 1px;
 
 @bg: #fff;
 @white: #fff;
@@ -47,15 +48,20 @@ main .fa { color: @green; }
 
 nav player-controls {
   float: left;
-  margin: 9px 10px 0 0;
+  margin-right: 10px;
 }
 
 header .navbar {
-  background-color: @gold;
+  padding-top: 10px;
+  background-color: @white;
   border: 0;
   .badge {
     margin: 1px 0 0 4px;
     background: @green;
+  }
+
+  .burger {
+    float: right;
   }
 
   .btn {
@@ -72,6 +78,13 @@ header .navbar {
     background: none;
     font-weight: bold;
   }
+}
+
+.dropdown-menu {
+  right: 100%;
+  left: auto;
+  top: 0;
+  i { margin-right: 6px; }
 }
 
 .breadcrumb {
