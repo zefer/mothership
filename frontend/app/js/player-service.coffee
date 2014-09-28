@@ -40,7 +40,7 @@ mod.factory "player", ["$rootScope", "$http", "mpd", "progress", (
     else if data.Name
       now = data.Name
       sub = ""
-    else
+    else if data.file
       parts = data.file.split("/")
       now = parts[parts.length-1]
       sub = parts[0..parts.length-2].join("/")
