@@ -4,8 +4,8 @@
 <div ng-show="player.state == 'pause'" class="alert alert-warning" role="alert">paused</div>
 <div ng-show="player.state == 'stop'" class="alert alert-warning" role="alert">stopped</div>
 <div class="progress">
-  <div class="progress-bar" role="progressbar" aria-valuenow="{{player.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{player.progress}}%;">
-    <span class="sr-only">{{player.progress}}%</span>
+  <div class="progress-bar" role="progressbar" aria-valuenow="{{player.percentage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{player.percentage}}%;">
+    <span><strong>{{player.elapsed}}</strong> · {{player.total}}</span>
   </div>
 </div>
 <p ng-show="player.quality">{{player.quality}}</p>
