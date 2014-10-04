@@ -217,6 +217,7 @@ func playListUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	uri := params["uri"].(string)
+	typ := params["type"].(string)
 	replace := params["replace"].(bool)
 	play := params["play"].(bool)
 	pos := 0
@@ -254,7 +255,11 @@ func playListUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Add to the playlist.
-	err = client.c.Add(uri)
+	if typ == "playlist" {
+		err = client.c.PlaylistLoad(uri, -1, -1)
+	} else {
+		err = client.c.Add(uri)
+	}
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)

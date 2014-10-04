@@ -43,9 +43,10 @@ mod.factory "mpd", ["$rootScope", "$http", "$interval", "$q", ($rootScope, $http
       $http.get("/playlist").success (data) -> deferred.resolve(data)
       deferred.promise
 
-    addToPlaylist: (uri, replace, play) ->
+    addToPlaylist: (uri, type, replace, play) ->
       $http.post '/playlist',
         uri: uri
+        type: type
         replace: replace
         play: play
 

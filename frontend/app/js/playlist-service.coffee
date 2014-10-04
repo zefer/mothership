@@ -11,9 +11,9 @@ mod.factory "playlist", ["$rootScope", "mpd", ($rootScope, mpd) ->
     length: 0
     position: 0
 
-    add:            (uri) -> mpd.addToPlaylist(uri, false, false)
-    addPlay:        (uri) -> mpd.addToPlaylist(uri, false, true)
-    addReplacePlay: (uri) -> mpd.addToPlaylist(uri, true,  true)
+    add:            (uri, type) -> mpd.addToPlaylist(uri, type, false, false)
+    addPlay:        (uri, type) -> mpd.addToPlaylist(uri, type, false, true)
+    addReplacePlay: (uri, type) -> mpd.addToPlaylist(uri, type, true,  true)
 
   $rootScope.$on MPD_STATUS, (event, data) ->
     api.position = parseInt(data.Pos)+1

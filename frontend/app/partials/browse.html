@@ -24,11 +24,15 @@
           <i class="fa fa-navicon"></i>
         </button>
         <ul class="dropdown-menu" role="menu">
-          <li><a ng-click="playlist.add(item.path)"><i class="fa fa-plus"></i>Add</a></li>
-          <li><a ng-click="playlist.addPlay(item.path)"><i class="fa fa-play"></i>Add &amp; play</a></li>
-          <li><a ng-click="playlist.addReplacePlay(item.path)"><i class="fa fa-share"></i>Add, replace &amp; play</a></li>
+          <li><a ng-click="playlist.add(item.path, item.type)">
+            <i class="fa fa-plus"></i>Add</a></li>
+          <li><a ng-click="playlist.addPlay(item.path, item.type)">
+            <i class="fa fa-play"></i>Add &amp; play</a></li>
+          <li><a ng-click="playlist.addReplacePlay(item.path, item.type)">
+            <i class="fa fa-share"></i>Add, replace &amp; play</a></li>
           <li class="divider"></li>
-          <li><a ng-click="library.update(item.path)"><i class="fa fa-refresh"></i>Update this folder</a></li>
+          <li><a ng-click="library.update(item.path)">
+            <i class="fa fa-refresh"></i>Update this folder</a></li>
         </ul>
       </div>
     </div>
