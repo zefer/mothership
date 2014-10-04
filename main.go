@@ -170,6 +170,11 @@ func PlayListHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+type PlayListEntry struct {
+	Pos  int    `json:"pos"`
+	Name string `json:"name"`
+}
+
 func playListList(w http.ResponseWriter, r *http.Request) {
 	data, err := client.c.PlaylistInfo(-1, -1)
 	if err != nil {
@@ -177,7 +182,25 @@ func playListList(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	b, err := json.Marshal(data)
+	out := make([]*PlayListEntry, len(data))
+	for i, item := range data {
+		var name string
+		if artist, ok := item["Artist"]; ok {
+			// Artist - Title
+			name = fmt.Sprintf("%s - %s", artist, item["Title"])
+		} else if n, ok := item["Name"]; ok {
+			// Playlist name.
+			name = n
+		} else {
+			// Default to file name.
+			name = path.Base(item["file"])
+		}
+		out[i] = &PlayListEntry{
+			Pos:  i + 1,
+			Name: name,
+		}
+	}
+	b, err := json.Marshal(out)
 	w.Header().Add("Content-Type", "application/json")
 	fmt.Fprint(w, string(b))
 }
