@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"path"
 	"strconv"
 
 	"github.com/elazarl/go-bindata-assetfs"
@@ -125,6 +126,12 @@ func RandomOffHandler(w http.ResponseWriter, r *http.Request) {
 	random(false, w)
 }
 
+type FileListEntry struct {
+	Path string `json:"path"`
+	Type string `json:"type"`
+	Base string `json:"base"`
+}
+
 func FileListHandler(w http.ResponseWriter, r *http.Request) {
 	data, err := client.c.ListInfo(r.FormValue("uri"))
 	if err != nil {
@@ -132,7 +139,20 @@ func FileListHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	b, err := json.Marshal(data)
+	out := make([]*FileListEntry, len(data))
+	for i, item := range data {
+		for _, t := range []string{"file", "directory", "playlist"} {
+			if p, ok := item[t]; ok {
+				out[i] = &FileListEntry{
+					Path: p,
+					Type: t,
+					Base: path.Base(p),
+				}
+				break
+			}
+		}
+	}
+	b, err := json.Marshal(out)
 	w.Header().Add("Content-Type", "application/json")
 	fmt.Fprint(w, string(b))
 }

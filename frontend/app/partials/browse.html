@@ -9,15 +9,14 @@
 
   <div class="list-group">
 
-    <div ng-repeat="item in items" ui-sref="browse.uri({ uri: path })"
-      class="list-group-item"
-      ng-init="path=item.directory||item.file||item.playlist">
+    <div ng-repeat="item in items" ui-sref="browse.uri({ uri: item.path })"
+      class="list-group-item">
 
-      <i ng-show="item.directory" class="type fa fa-folder-o"></i>
-      <i ng-show="item.file"      class="type fa fa-music"></i>
-      <i ng-show="item.playlist"  class="type fa fa-file-audio-o"></i>
+      <i ng-show="item.type == 'directory'" class="type fa fa-folder-o"></i>
+      <i ng-show="item.type == 'file'"      class="type fa fa-music"></i>
+      <i ng-show="item.type == 'playlist'"  class="type fa fa-file-audio-o"></i>
 
-      {{path|basename}}
+      {{item.base}}
 
       <div class="actions btn-group" dropdown
         ng-click="showActions($event)">
@@ -25,11 +24,11 @@
           <i class="fa fa-navicon"></i>
         </button>
         <ul class="dropdown-menu" role="menu">
-          <li><a ng-click="playlist.add(path)"><i class="fa fa-plus"></i>Add</a></li>
-          <li><a ng-click="playlist.addPlay(path)"><i class="fa fa-play"></i>Add &amp; play</a></li>
-          <li><a ng-click="playlist.addReplacePlay(path)"><i class="fa fa-share"></i>Add, replace &amp; play</a></li>
+          <li><a ng-click="playlist.add(item.path)"><i class="fa fa-plus"></i>Add</a></li>
+          <li><a ng-click="playlist.addPlay(item.path)"><i class="fa fa-play"></i>Add &amp; play</a></li>
+          <li><a ng-click="playlist.addReplacePlay(item.path)"><i class="fa fa-share"></i>Add, replace &amp; play</a></li>
           <li class="divider"></li>
-          <li><a ng-click="library.update(path)"><i class="fa fa-refresh"></i>Update this folder</a></li>
+          <li><a ng-click="library.update(item.path)"><i class="fa fa-refresh"></i>Update this folder</a></li>
         </ul>
       </div>
     </div>
