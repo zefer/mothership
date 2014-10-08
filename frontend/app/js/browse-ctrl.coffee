@@ -8,7 +8,12 @@ mod.controller("BrowseCtrl", ($scope, $stateParams, $state, library, playlist) -
 
   that.breadcrumbs = (uri) ->
     parts = uri.split("/")
-    { label: part, path: parts[0..i].join("/") } for part, i in parts
+    crumbs = ({
+      label: part,
+      path: parts[0..i].join("/")
+    } for part, i in parts when part != "")
+    crumbs.unshift { label: "home", path: "" }
+    crumbs
 
   $scope.$on "$stateChangeSuccess", (event, toState, toParams, fromState, fromParams) ->
     toParams.uri ?= "/"
