@@ -5,5 +5,5 @@ mod.factory "library", ["mpd", (mpd) ->
 
   api =
     ls:     (uri)  -> mpd.ls(uri)
-    update: (path) -> console.log "update() TODO"
+    update: (uri)  -> mpd.update(uri)
 ]

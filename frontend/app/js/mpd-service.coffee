@@ -56,6 +56,10 @@ mod.factory "mpd", ["$rootScope", "$http", "$interval", "$q", ($rootScope, $http
         deferred.resolve(data)
       deferred.promise
 
+    update: (uri) ->
+      $http.put '/library/updated',
+        uri: uri
+
   @connect()
 
   api

@@ -40,6 +40,7 @@ func main() {
 	r.HandleFunc("/randomOff", RandomOffHandler)
 	r.HandleFunc("/files", FileListHandler)
 	r.HandleFunc("/playlist", PlayListHandler)
+	r.HandleFunc("/library/updated", LibraryUpdateHandler)
 
 	// The front-end assets are served from a go-bindata file.
 	r.PathPrefix("/").Handler(
@@ -277,4 +278,37 @@ func playListUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+}
+
+func LibraryUpdateHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	} else if r.Method == "POST" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	} else {
+		// Parse the JSON body.
+		decoder := json.NewDecoder(r.Body)
+		var params map[string]interface{}
+		err := decoder.Decode(&params)
+		if err != nil {
+			glog.Errorln(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		uri := params["uri"].(string)
+		if uri == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		_, err = client.c.Update(uri)
+		if err != nil {
+			glog.Errorln(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 }
