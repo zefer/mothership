@@ -16,7 +16,7 @@ mod.factory "playlist", ["$rootScope", "mpd", ($rootScope, mpd) ->
     addReplacePlay: (uri, type) -> mpd.addToPlaylist(uri, type, true,  true)
 
   $rootScope.$on MPD_STATUS, (event, data) ->
-    api.position = parseInt(data.Pos)+1
+    api.position = parseInt(data.Pos||-1)+1
     api.length = data.playlistlength
     # TODO: only load the playlist when the playlist changed (mpd subsystems)
     mpd.currentPlaylist().then (data) ->
