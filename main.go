@@ -35,15 +35,14 @@ func broadcastStatus() {
 		glog.Errorln(err)
 		return
 	}
-	websocket.Hub.Broadcast <- b
+	websocket.Broadcast(b)
 }
 
 func main() {
 	flag.Parse()
 	glog.Infof("Starting API for MPD at %s.", *mpdAddr)
 
-	websocket.Hub.OnConnect(sendStatus)
-	go websocket.Hub.Run()
+	websocket.OnConnect(sendStatus)
 
 	watch := newWatchConn(*mpdAddr)
 	defer watch.Close()

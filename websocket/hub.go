@@ -6,7 +6,7 @@ type hub struct {
 	connections map[*Conn]bool
 
 	// Inbound messages from the connections.
-	Broadcast chan []byte
+	broadcast chan []byte
 
 	// Register requests from the connections.
 	register chan *Conn
@@ -17,8 +17,8 @@ type hub struct {
 	listeners []func(*Conn)
 }
 
-var Hub = hub{
-	Broadcast:   make(chan []byte),
+var h = hub{
+	broadcast:   make(chan []byte),
 	register:    make(chan *Conn),
 	unregister:  make(chan *Conn),
 	connections: make(map[*Conn]bool),
@@ -29,7 +29,7 @@ func (h *hub) OnConnect(l func(*Conn)) {
 	h.listeners = append(h.listeners, l)
 }
 
-func (h *hub) Run() {
+func (h *hub) run() {
 	for {
 		select {
 		case c := <-h.register:
@@ -42,7 +42,7 @@ func (h *hub) Run() {
 				delete(h.connections, c)
 				close(c.send)
 			}
-		case m := <-h.Broadcast:
+		case m := <-h.broadcast:
 			for c := range h.connections {
 				select {
 				case c.send <- m:

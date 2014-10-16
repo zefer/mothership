@@ -1,7 +1,6 @@
 package websocket
 
 import (
-	"net/http"
 	"time"
 
 	"github.com/golang/glog"
@@ -37,7 +36,7 @@ func (c *Conn) Send(b []byte) {
 	select {
 	case c.send <- b:
 	default:
-		Hub.unregister <- c
+		h.unregister <- c
 		c.ws.Close()
 	}
 }
@@ -45,7 +44,7 @@ func (c *Conn) Send(b []byte) {
 // readPump pumps messages from the websocket connection to the hub.
 func (c *Conn) readPump() {
 	defer func() {
-		Hub.unregister <- c
+		h.unregister <- c
 		c.ws.Close()
 	}()
 	c.ws.SetReadLimit(maxMessageSize)
@@ -60,7 +59,7 @@ func (c *Conn) readPump() {
 		if err != nil {
 			break
 		}
-		Hub.Broadcast <- message
+		h.broadcast <- message
 	}
 }
 
@@ -95,21 +94,4 @@ func (c *Conn) writePump() {
 			}
 		}
 	}
-}
-
-func Serve(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-	ws, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		glog.Error(err)
-		return
-	}
-
-	c := &Conn{send: make(chan []byte, 256), ws: ws}
-	Hub.register <- c
-	go c.writePump()
-	c.readPump()
 }
