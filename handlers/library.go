@@ -18,6 +18,9 @@ type FileListEntry struct {
 
 func FileListHandler(client *mpd.Client) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "GET" {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
 		data, err := client.C.ListInfo(r.FormValue("uri"))
 		if err != nil {
 			glog.Errorln(err)
