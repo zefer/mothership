@@ -1,40 +1,48 @@
-package main
+package mpd
 
 import (
 	"time"
 
 	"github.com/golang/glog"
-	"github.com/zefer/gompd/mpd"
+	gompd "github.com/zefer/gompd/mpd"
 )
 
 const retryDur time.Duration = time.Second * 3
 
-type watchConn struct {
-	watcher *mpd.Watcher
-	addr    string
+type watcher struct {
+	watcher   *gompd.Watcher
+	addr      string
+	listeners []func(string)
 }
 
-type clientConn struct {
-	c    *mpd.Client
+type Client struct {
+	C    *gompd.Client
 	addr string
 }
 
-func newWatchConn(addr string) *watchConn {
-	c := &watchConn{addr: addr}
+func NewWatcher(addr string) *watcher {
+	c := &watcher{
+		addr:      addr,
+		listeners: []func(string){},
+	}
 	c.connect()
 	return c
 }
 
-func newClientConn(addr string) *clientConn {
-	c := &clientConn{addr: addr}
+func (w *watcher) OnStateChange(l func(string)) {
+	w.listeners = append(w.listeners, l)
+}
+
+func NewClient(addr string) *Client {
+	c := &Client{addr: addr}
 	c.connect()
 	go c.keepAlive()
 	return c
 }
 
-func (w *watchConn) connect() {
+func (w *watcher) connect() {
 	for {
-		watcher, err := mpd.NewWatcher("tcp", w.addr, "")
+		watcher, err := gompd.NewWatcher("tcp", w.addr, "")
 		if err == nil {
 			w.watcher = watcher
 			go w.errorLoop()
@@ -47,11 +55,11 @@ func (w *watchConn) connect() {
 	}
 }
 
-func (c *clientConn) connect() {
+func (c *Client) connect() {
 	for {
-		client, err := mpd.Dial("tcp", c.addr)
+		client, err := gompd.Dial("tcp", c.addr)
 		if err == nil {
-			c.c = client
+			c.C = client
 			glog.Infof("MPD client: connected to %s", c.addr)
 			return
 		}
@@ -60,9 +68,9 @@ func (c *clientConn) connect() {
 	}
 }
 
-func (c *clientConn) keepAlive() {
+func (c *Client) keepAlive() {
 	for {
-		err := c.c.Ping()
+		err := c.C.Ping()
 		if err != nil {
 			glog.Errorf("MPD client: ping failed, reconnecting")
 			c.Close()
@@ -72,22 +80,23 @@ func (c *clientConn) keepAlive() {
 	}
 }
 
-func (w *watchConn) Close() {
+func (w *watcher) Close() {
 	w.watcher.Close()
 }
 
-func (c *clientConn) Close() {
-	c.c.Close()
+func (c *Client) Close() {
+	c.C.Close()
 }
 
-func (w *watchConn) eventLoop() {
+func (w *watcher) eventLoop() {
 	for subsystem := range w.watcher.Event {
-		glog.Info("Changed subsystem:", subsystem)
-		broadcastStatus()
+		for _, l := range w.listeners {
+			l(subsystem)
+		}
 	}
 }
 
-func (w *watchConn) errorLoop() {
+func (w *watcher) errorLoop() {
 	for err := range w.watcher.Error {
 		glog.Errorf("Watcher: %v", err)
 		w.Close()

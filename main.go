@@ -12,11 +12,12 @@ import (
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
 
+	"github.com/zefer/mpd-web/mpd"
 	"github.com/zefer/mpd-web/websocket"
 )
 
 var (
-	client  *clientConn
+	client  *mpd.Client
 	mpdAddr = flag.String("mpdaddr", "127.0.0.1:6600", "MPD address")
 	port    = flag.String("port", ":8080", "listen port")
 )
@@ -29,7 +30,8 @@ func sendStatus(c *websocket.Conn) {
 	c.Send(b)
 }
 
-func broadcastStatus() {
+func mpdStateChanged(subsystem string) {
+	glog.Info("Changed subsystem:", subsystem)
 	b, err := mpdStatus()
 	if err != nil {
 		glog.Errorln(err)
@@ -42,12 +44,16 @@ func main() {
 	flag.Parse()
 	glog.Infof("Starting API for MPD at %s.", *mpdAddr)
 
+	// Send the browser the MPD state when they first connect.
 	websocket.OnConnect(sendStatus)
 
-	watch := newWatchConn(*mpdAddr)
+	// This watcher notifies us when MPD's state changes, without polling.
+	watch := mpd.NewWatcher(*mpdAddr)
 	defer watch.Close()
+	watch.OnStateChange(mpdStateChanged)
 
-	client = newClientConn(*mpdAddr)
+	// This client connection provides an API to MPD's commands.
+	client = mpd.NewClient(*mpdAddr)
 	defer client.Close()
 
 	r := mux.NewRouter()
@@ -76,11 +82,11 @@ func main() {
 }
 
 func mpdStatus() ([]byte, error) {
-	data, err := client.c.Status()
+	data, err := client.C.Status()
 	if err != nil {
 		return nil, err
 	}
-	song, err := client.c.CurrentSong()
+	song, err := client.C.CurrentSong()
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +98,7 @@ func mpdStatus() ([]byte, error) {
 }
 
 func NextHandler(w http.ResponseWriter, r *http.Request) {
-	err := client.c.Next()
+	err := client.C.Next()
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -102,7 +108,7 @@ func NextHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PreviousHandler(w http.ResponseWriter, r *http.Request) {
-	err := client.c.Previous()
+	err := client.C.Previous()
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -112,7 +118,7 @@ func PreviousHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PlayHandler(w http.ResponseWriter, r *http.Request) {
-	err := client.c.Play(-1)
+	err := client.C.Play(-1)
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -122,7 +128,7 @@ func PlayHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PauseHandler(w http.ResponseWriter, r *http.Request) {
-	err := client.c.Pause(true)
+	err := client.C.Pause(true)
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -132,7 +138,7 @@ func PauseHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func random(on bool, w http.ResponseWriter) {
-	err := client.c.Random(on)
+	err := client.C.Random(on)
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -154,7 +160,7 @@ type FileListEntry struct {
 }
 
 func FileListHandler(w http.ResponseWriter, r *http.Request) {
-	data, err := client.c.ListInfo(r.FormValue("uri"))
+	data, err := client.C.ListInfo(r.FormValue("uri"))
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -197,7 +203,7 @@ type PlayListEntry struct {
 }
 
 func playListList(w http.ResponseWriter, r *http.Request) {
-	data, err := client.c.PlaylistInfo(-1, -1)
+	data, err := client.C.PlaylistInfo(-1, -1)
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -249,7 +255,7 @@ func playListUpdate(w http.ResponseWriter, r *http.Request) {
 
 	// Clear the playlist.
 	if replace {
-		err := client.c.Clear()
+		err := client.C.Clear()
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -260,7 +266,7 @@ func playListUpdate(w http.ResponseWriter, r *http.Request) {
 	// To play from the start of the new items in the playlist, we need to get the
 	// current playlist position.
 	if !replace {
-		data, err := client.c.Status()
+		data, err := client.C.Status()
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -277,9 +283,9 @@ func playListUpdate(w http.ResponseWriter, r *http.Request) {
 
 	// Add to the playlist.
 	if typ == "playlist" {
-		err = client.c.PlaylistLoad(uri, -1, -1)
+		err = client.C.PlaylistLoad(uri, -1, -1)
 	} else {
-		err = client.c.Add(uri)
+		err = client.C.Add(uri)
 	}
 	if err != nil {
 		glog.Errorln(err)
@@ -289,7 +295,7 @@ func playListUpdate(w http.ResponseWriter, r *http.Request) {
 
 	// Play.
 	if play {
-		err := client.c.Play(pos)
+		err := client.C.Play(pos)
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -322,7 +328,7 @@ func LibraryUpdateHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		_, err = client.c.Update(uri)
+		_, err = client.C.Update(uri)
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
