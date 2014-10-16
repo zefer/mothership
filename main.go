@@ -7,7 +7,6 @@ import (
 
 	"github.com/elazarl/go-bindata-assetfs"
 	"github.com/golang/glog"
-	"github.com/gorilla/mux"
 
 	"github.com/zefer/mpd-web/handlers"
 	"github.com/zefer/mpd-web/mpd"
@@ -50,23 +49,20 @@ func main() {
 	client = mpd.NewClient(*mpdAddr)
 	defer client.Close()
 
-	r := mux.NewRouter()
-	r.HandleFunc("/websocket", websocket.Serve)
-	r.Handle("/next", handlers.NextHandler(client))
-	r.Handle("/previous", handlers.PreviousHandler(client))
-	r.Handle("/play", handlers.PlayHandler(client))
-	r.Handle("/pause", handlers.PauseHandler(client))
-	r.Handle("/randomOn", handlers.RandomOnHandler(client))
-	r.Handle("/randomOff", handlers.RandomOffHandler(client))
-	r.Handle("/files", handlers.FileListHandler(client))
-	r.Handle("/playlist", handlers.PlayListHandler(client))
-	r.Handle("/library/updated", handlers.LibraryUpdateHandler(client))
+	http.HandleFunc("/websocket", websocket.Serve)
+	http.Handle("/next", handlers.NextHandler(client))
+	http.Handle("/previous", handlers.PreviousHandler(client))
+	http.Handle("/play", handlers.PlayHandler(client))
+	http.Handle("/pause", handlers.PauseHandler(client))
+	http.Handle("/randomOn", handlers.RandomOnHandler(client))
+	http.Handle("/randomOff", handlers.RandomOffHandler(client))
+	http.Handle("/files", handlers.FileListHandler(client))
+	http.Handle("/playlist", handlers.PlayListHandler(client))
+	http.Handle("/library/updated", handlers.LibraryUpdateHandler(client))
 
 	// The front-end assets are served from a go-bindata file.
-	r.PathPrefix("/").Handler(
-		http.FileServer(&assetfs.AssetFS{Asset, AssetDir, ""}),
-	)
-	http.Handle("/", r)
+	http.Handle("/", http.FileServer(&assetfs.AssetFS{Asset, AssetDir, ""}))
+
 	glog.Infof("Listening on %s.", *port)
 	err := http.ListenAndServe(*port, nil)
 	if err != nil {
