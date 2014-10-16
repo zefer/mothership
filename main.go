@@ -11,6 +11,8 @@ import (
 	"github.com/elazarl/go-bindata-assetfs"
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
+
+	"github.com/zefer/mpd-web/websocket"
 )
 
 var (
@@ -19,10 +21,29 @@ var (
 	port    = flag.String("port", ":8080", "listen port")
 )
 
+func sendStatus(c *websocket.Connection) {
+	b, err := mpdStatus()
+	if err != nil {
+		return
+	}
+	c.Send(b)
+}
+
+func broadcastStatus() {
+	b, err := mpdStatus()
+	if err != nil {
+		glog.Errorln(err)
+		return
+	}
+	websocket.Hub.Broadcast <- b
+}
+
 func main() {
 	flag.Parse()
 	glog.Infof("Starting API for MPD at %s.", *mpdAddr)
-	go h.run()
+
+	websocket.Hub.OnConnect(sendStatus)
+	go websocket.Hub.Run()
 
 	watch := newWatchConn(*mpdAddr)
 	defer watch.Close()
@@ -31,7 +52,7 @@ func main() {
 	defer client.Close()
 
 	r := mux.NewRouter()
-	r.HandleFunc("/websocket", serveWebsocket)
+	r.HandleFunc("/websocket", websocket.Serve)
 	r.HandleFunc("/next", NextHandler)
 	r.HandleFunc("/previous", PreviousHandler)
 	r.HandleFunc("/play", PlayHandler)

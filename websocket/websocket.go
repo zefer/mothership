@@ -1,11 +1,11 @@
-package main
+package websocket
 
 import (
 	"net/http"
 	"time"
 
 	"github.com/golang/glog"
-	"github.com/gorilla/websocket"
+	websock "github.com/gorilla/websocket"
 )
 
 // Time allowed to write a message to the peer.
@@ -20,48 +20,32 @@ const (
 	maxMessageSize = 512
 )
 
-type connection struct {
-	ws *websocket.Conn
+type Connection struct {
+	ws *websock.Conn
 	// Buffered channel of outbound messages.
 	send chan []byte
 }
 
 var (
-	upgrader = websocket.Upgrader{
+	upgrader = websock.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
 	}
 )
 
-func sendStatus(c *connection) {
-	// Get mpd status.
-	b, err := mpdStatus()
-	if err != nil {
-		return
-	}
-	// Send it.
+func (c *Connection) Send(b []byte) {
 	select {
 	case c.send <- b:
 	default:
-		h.unregister <- c
+		Hub.unregister <- c
 		c.ws.Close()
 	}
 }
 
-func broadcastStatus() {
-	// Get mpd status.
-	b, err := mpdStatus()
-	if err != nil {
-		glog.Errorln(err)
-		return
-	}
-	h.broadcast <- b
-}
-
 // readPump pumps messages from the websocket connection to the hub.
-func (c *connection) readPump() {
+func (c *Connection) readPump() {
 	defer func() {
-		h.unregister <- c
+		Hub.unregister <- c
 		c.ws.Close()
 	}()
 	c.ws.SetReadLimit(maxMessageSize)
@@ -76,17 +60,17 @@ func (c *connection) readPump() {
 		if err != nil {
 			break
 		}
-		h.broadcast <- message
+		Hub.Broadcast <- message
 	}
 }
 
 // write writes a message with the given message type and payload.
-func (c *connection) write(mt int, payload []byte) error {
+func (c *Connection) write(mt int, payload []byte) error {
 	c.ws.SetWriteDeadline(time.Now().Add(writeWait))
 	return c.ws.WriteMessage(mt, payload)
 }
 
-func (c *connection) writePump() {
+func (c *Connection) writePump() {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
@@ -96,16 +80,16 @@ func (c *connection) writePump() {
 		select {
 		case message, ok := <-c.send:
 			if !ok {
-				c.write(websocket.CloseMessage, []byte{})
+				c.write(websock.CloseMessage, []byte{})
 				return
 			}
-			// Send mpd status to client.
-			if err := c.write(websocket.TextMessage, message); err != nil {
+			// Send string to client.
+			if err := c.write(websock.TextMessage, message); err != nil {
 				return
 			}
 		case <-ticker.C:
 			glog.Infof("Sending ping")
-			if err := c.write(websocket.PingMessage, []byte{}); err != nil {
+			if err := c.write(websock.PingMessage, []byte{}); err != nil {
 				glog.Errorf("Ping error %v: ", err)
 				return
 			}
@@ -113,7 +97,7 @@ func (c *connection) writePump() {
 	}
 }
 
-func serveWebsocket(w http.ResponseWriter, r *http.Request) {
+func Serve(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -124,9 +108,8 @@ func serveWebsocket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c := &connection{send: make(chan []byte, 256), ws: ws}
-	h.register <- c
+	c := &Connection{send: make(chan []byte, 256), ws: ws}
+	Hub.register <- c
 	go c.writePump()
-	sendStatus(c)
 	c.readPump()
 }

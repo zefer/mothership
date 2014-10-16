@@ -1,38 +1,48 @@
-package main
+package websocket
 
 // Maintains active WebSocket connections and broadcasts messages
 type hub struct {
 	// Registered connections.
-	connections map[*connection]bool
+	connections map[*Connection]bool
 
 	// Inbound messages from the connections.
-	broadcast chan []byte
+	Broadcast chan []byte
 
 	// Register requests from the connections.
-	register chan *connection
+	register chan *Connection
 
 	// Unregister requests from connections.
-	unregister chan *connection
+	unregister chan *Connection
+
+	listeners []func(*Connection)
 }
 
-var h = hub{
-	broadcast:   make(chan []byte),
-	register:    make(chan *connection),
-	unregister:  make(chan *connection),
-	connections: make(map[*connection]bool),
+var Hub = hub{
+	Broadcast:   make(chan []byte),
+	register:    make(chan *Connection),
+	unregister:  make(chan *Connection),
+	connections: make(map[*Connection]bool),
+	listeners:   []func(*Connection){},
 }
 
-func (h *hub) run() {
+func (h *hub) OnConnect(l func(*Connection)) {
+	h.listeners = append(h.listeners, l)
+}
+
+func (h *hub) Run() {
 	for {
 		select {
 		case c := <-h.register:
 			h.connections[c] = true
+			for _, l := range h.listeners {
+				l(c)
+			}
 		case c := <-h.unregister:
 			if _, ok := h.connections[c]; ok {
 				delete(h.connections, c)
 				close(c.send)
 			}
-		case m := <-h.broadcast:
+		case m := <-h.Broadcast:
 			for c := range h.connections {
 				select {
 				case c.send <- m:
