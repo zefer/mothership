@@ -21,7 +21,7 @@ var (
 	port    = flag.String("port", ":8080", "listen port")
 )
 
-func sendStatus(c *websocket.Connection) {
+func sendStatus(c *websocket.Conn) {
 	b, err := mpdStatus()
 	if err != nil {
 		return

@@ -20,7 +20,7 @@ const (
 	maxMessageSize = 512
 )
 
-type Connection struct {
+type Conn struct {
 	ws *websock.Conn
 	// Buffered channel of outbound messages.
 	send chan []byte
@@ -33,7 +33,7 @@ var (
 	}
 )
 
-func (c *Connection) Send(b []byte) {
+func (c *Conn) Send(b []byte) {
 	select {
 	case c.send <- b:
 	default:
@@ -43,7 +43,7 @@ func (c *Connection) Send(b []byte) {
 }
 
 // readPump pumps messages from the websocket connection to the hub.
-func (c *Connection) readPump() {
+func (c *Conn) readPump() {
 	defer func() {
 		Hub.unregister <- c
 		c.ws.Close()
@@ -65,12 +65,12 @@ func (c *Connection) readPump() {
 }
 
 // write writes a message with the given message type and payload.
-func (c *Connection) write(mt int, payload []byte) error {
+func (c *Conn) write(mt int, payload []byte) error {
 	c.ws.SetWriteDeadline(time.Now().Add(writeWait))
 	return c.ws.WriteMessage(mt, payload)
 }
 
-func (c *Connection) writePump() {
+func (c *Conn) writePump() {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
@@ -108,7 +108,7 @@ func Serve(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c := &Connection{send: make(chan []byte, 256), ws: ws}
+	c := &Conn{send: make(chan []byte, 256), ws: ws}
 	Hub.register <- c
 	go c.writePump()
 	c.readPump()
