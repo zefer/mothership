@@ -48,35 +48,31 @@ func FileListHandler(client *mpd.Client) http.Handler {
 
 func LibraryUpdateHandler(client *mpd.Client) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "GET" {
+		if r.Method != "PUT" && r.Method != "POST" {
 			w.WriteHeader(http.StatusMethodNotAllowed)
-			return
-		} else if r.Method == "POST" {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			return
-		} else {
-			// Parse the JSON body.
-			decoder := json.NewDecoder(r.Body)
-			var params map[string]interface{}
-			err := decoder.Decode(&params)
-			if err != nil {
-				glog.Errorln(err)
-				w.WriteHeader(http.StatusInternalServerError)
-				return
-			}
-			uri := params["uri"].(string)
-			if uri == "" {
-				w.WriteHeader(http.StatusBadRequest)
-				return
-			}
-			_, err = client.C.Update(uri)
-			if err != nil {
-				glog.Errorln(err)
-				w.WriteHeader(http.StatusInternalServerError)
-				return
-			}
-			w.WriteHeader(http.StatusOK)
 			return
 		}
+		// Parse the JSON body.
+		decoder := json.NewDecoder(r.Body)
+		var params map[string]interface{}
+		err := decoder.Decode(&params)
+		if err != nil {
+			glog.Errorln(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		uri := params["uri"].(string)
+		if uri == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		_, err = client.C.Update(uri)
+		if err != nil {
+			glog.Errorln(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		return
 	})
 }
