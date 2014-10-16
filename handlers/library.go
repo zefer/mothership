@@ -16,12 +16,12 @@ type FileListEntry struct {
 	Base string `json:"base"`
 }
 
-func FileListHandler(client *mpd.Client) http.Handler {
+func FileListHandler(c *mpd.Client) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 		}
-		data, err := client.C.ListInfo(r.FormValue("uri"))
+		data, err := c.C.ListInfo(r.FormValue("uri"))
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -46,7 +46,7 @@ func FileListHandler(client *mpd.Client) http.Handler {
 	})
 }
 
-func LibraryUpdateHandler(client *mpd.Client) http.Handler {
+func LibraryUpdateHandler(c *mpd.Client) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "PUT" && r.Method != "POST" {
 			w.WriteHeader(http.StatusMethodNotAllowed)
@@ -66,7 +66,7 @@ func LibraryUpdateHandler(client *mpd.Client) http.Handler {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		_, err = client.C.Update(uri)
+		_, err = c.C.Update(uri)
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)

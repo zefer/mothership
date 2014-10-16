@@ -16,13 +16,13 @@ type PlayListEntry struct {
 	Name string `json:"name"`
 }
 
-func PlayListHandler(client *mpd.Client) http.Handler {
+func PlayListHandler(c *mpd.Client) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
-			playListList(client, w, r)
+			playListList(c, w, r)
 			return
 		} else if r.Method == "POST" {
-			playListUpdate(client, w, r)
+			playListUpdate(c, w, r)
 			return
 		} else {
 			w.WriteHeader(http.StatusMethodNotAllowed)
@@ -31,8 +31,8 @@ func PlayListHandler(client *mpd.Client) http.Handler {
 	})
 }
 
-func playListList(client *mpd.Client, w http.ResponseWriter, r *http.Request) {
-	data, err := client.C.PlaylistInfo(-1, -1)
+func playListList(c *mpd.Client, w http.ResponseWriter, r *http.Request) {
+	data, err := c.C.PlaylistInfo(-1, -1)
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -61,7 +61,7 @@ func playListList(client *mpd.Client, w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(b))
 }
 
-func playListUpdate(client *mpd.Client, w http.ResponseWriter, r *http.Request) {
+func playListUpdate(c *mpd.Client, w http.ResponseWriter, r *http.Request) {
 	// Parse the JSON body.
 	decoder := json.NewDecoder(r.Body)
 	var params map[string]interface{}
@@ -84,7 +84,7 @@ func playListUpdate(client *mpd.Client, w http.ResponseWriter, r *http.Request) 
 
 	// Clear the playlist.
 	if replace {
-		err := client.C.Clear()
+		err := c.C.Clear()
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -95,7 +95,7 @@ func playListUpdate(client *mpd.Client, w http.ResponseWriter, r *http.Request) 
 	// To play from the start of the new items in the playlist, we need to get the
 	// current playlist position.
 	if !replace {
-		data, err := client.C.Status()
+		data, err := c.C.Status()
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -112,9 +112,9 @@ func playListUpdate(client *mpd.Client, w http.ResponseWriter, r *http.Request) 
 
 	// Add to the playlist.
 	if typ == "playlist" {
-		err = client.C.PlaylistLoad(uri, -1, -1)
+		err = c.C.PlaylistLoad(uri, -1, -1)
 	} else {
-		err = client.C.Add(uri)
+		err = c.C.Add(uri)
 	}
 	if err != nil {
 		glog.Errorln(err)
@@ -124,7 +124,7 @@ func playListUpdate(client *mpd.Client, w http.ResponseWriter, r *http.Request) 
 
 	// Play.
 	if play {
-		err := client.C.Play(pos)
+		err := c.C.Play(pos)
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)

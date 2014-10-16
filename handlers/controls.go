@@ -7,9 +7,9 @@ import (
 	"github.com/zefer/mpd-web/mpd"
 )
 
-func NextHandler(client *mpd.Client) http.Handler {
+func NextHandler(c *mpd.Client) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := client.C.Next()
+		err := c.C.Next()
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -19,9 +19,9 @@ func NextHandler(client *mpd.Client) http.Handler {
 	})
 }
 
-func PreviousHandler(client *mpd.Client) http.Handler {
+func PreviousHandler(c *mpd.Client) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := client.C.Previous()
+		err := c.C.Previous()
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -31,9 +31,9 @@ func PreviousHandler(client *mpd.Client) http.Handler {
 	})
 }
 
-func PlayHandler(client *mpd.Client) http.Handler {
+func PlayHandler(c *mpd.Client) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := client.C.Play(-1)
+		err := c.C.Play(-1)
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -43,9 +43,9 @@ func PlayHandler(client *mpd.Client) http.Handler {
 	})
 }
 
-func PauseHandler(client *mpd.Client) http.Handler {
+func PauseHandler(c *mpd.Client) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := client.C.Pause(true)
+		err := c.C.Pause(true)
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -55,8 +55,8 @@ func PauseHandler(client *mpd.Client) http.Handler {
 	})
 }
 
-func random(client *mpd.Client, on bool, w http.ResponseWriter) {
-	err := client.C.Random(on)
+func random(c *mpd.Client, on bool, w http.ResponseWriter) {
+	err := c.C.Random(on)
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -64,13 +64,13 @@ func random(client *mpd.Client, on bool, w http.ResponseWriter) {
 	}
 	w.WriteHeader(http.StatusOK)
 }
-func RandomOnHandler(client *mpd.Client) http.Handler {
+func RandomOnHandler(c *mpd.Client) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		random(client, true, w)
+		random(c, true, w)
 	})
 }
-func RandomOffHandler(client *mpd.Client) http.Handler {
+func RandomOffHandler(c *mpd.Client) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		random(client, false, w)
+		random(c, false, w)
 	})
 }
