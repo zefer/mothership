@@ -20,16 +20,6 @@ var (
 	port    = flag.String("port", ":8080", "listen port")
 )
 
-func mpdStateChanged(subsystem string) {
-	glog.Info("Changed subsystem:", subsystem)
-	b, err := mpdStatus()
-	if err != nil {
-		glog.Errorln(err)
-		return
-	}
-	websocket.Broadcast(b)
-}
-
 func main() {
 	flag.Parse()
 	glog.Infof("Starting API for MPD at %s.", *mpdAddr)
@@ -45,7 +35,16 @@ func main() {
 	// This watcher notifies us when MPD's state changes, without polling.
 	watch := mpd.NewWatcher(*mpdAddr)
 	defer watch.Close()
-	watch.OnStateChange(mpdStateChanged)
+	// When mpd state changes, broadcast it to all websockets.
+	watch.OnStateChange(func(s string) {
+		glog.Info("MPD state change in subsystem: ", s)
+		b, err := mpdStatus()
+		if err != nil {
+			glog.Errorln(err)
+			return
+		}
+		websocket.Broadcast(b)
+	})
 
 	// This client connection provides an API to MPD's commands.
 	client = mpd.NewClient(*mpdAddr)
