@@ -3,15 +3,13 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"fmt"
 	"net/http"
-	"path"
-	"strconv"
 
 	"github.com/elazarl/go-bindata-assetfs"
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
 
+	"github.com/zefer/mpd-web/handlers"
 	"github.com/zefer/mpd-web/mpd"
 	"github.com/zefer/mpd-web/websocket"
 )
@@ -58,15 +56,15 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/websocket", websocket.Serve)
-	r.HandleFunc("/next", NextHandler)
-	r.HandleFunc("/previous", PreviousHandler)
-	r.HandleFunc("/play", PlayHandler)
-	r.HandleFunc("/pause", PauseHandler)
-	r.HandleFunc("/randomOn", RandomOnHandler)
-	r.HandleFunc("/randomOff", RandomOffHandler)
-	r.HandleFunc("/files", FileListHandler)
-	r.HandleFunc("/playlist", PlayListHandler)
-	r.HandleFunc("/library/updated", LibraryUpdateHandler)
+	r.Handle("/next", handlers.NextHandler(client))
+	r.Handle("/previous", handlers.PreviousHandler(client))
+	r.Handle("/play", handlers.PlayHandler(client))
+	r.Handle("/pause", handlers.PauseHandler(client))
+	r.Handle("/randomOn", handlers.RandomOnHandler(client))
+	r.Handle("/randomOff", handlers.RandomOffHandler(client))
+	r.Handle("/files", handlers.FileListHandler(client))
+	r.Handle("/playlist", handlers.PlayListHandler(client))
+	r.Handle("/library/updated", handlers.LibraryUpdateHandler(client))
 
 	// The front-end assets are served from a go-bindata file.
 	r.PathPrefix("/").Handler(
@@ -95,246 +93,4 @@ func mpdStatus() ([]byte, error) {
 	}
 	b, err := json.Marshal(data)
 	return b, err
-}
-
-func NextHandler(w http.ResponseWriter, r *http.Request) {
-	err := client.C.Next()
-	if err != nil {
-		glog.Errorln(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-}
-
-func PreviousHandler(w http.ResponseWriter, r *http.Request) {
-	err := client.C.Previous()
-	if err != nil {
-		glog.Errorln(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-}
-
-func PlayHandler(w http.ResponseWriter, r *http.Request) {
-	err := client.C.Play(-1)
-	if err != nil {
-		glog.Errorln(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-}
-
-func PauseHandler(w http.ResponseWriter, r *http.Request) {
-	err := client.C.Pause(true)
-	if err != nil {
-		glog.Errorln(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-}
-
-func random(on bool, w http.ResponseWriter) {
-	err := client.C.Random(on)
-	if err != nil {
-		glog.Errorln(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-}
-func RandomOnHandler(w http.ResponseWriter, r *http.Request) {
-	random(true, w)
-}
-func RandomOffHandler(w http.ResponseWriter, r *http.Request) {
-	random(false, w)
-}
-
-type FileListEntry struct {
-	Path string `json:"path"`
-	Type string `json:"type"`
-	Base string `json:"base"`
-}
-
-func FileListHandler(w http.ResponseWriter, r *http.Request) {
-	data, err := client.C.ListInfo(r.FormValue("uri"))
-	if err != nil {
-		glog.Errorln(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	out := make([]*FileListEntry, len(data))
-	for i, item := range data {
-		for _, t := range []string{"file", "directory", "playlist"} {
-			if p, ok := item[t]; ok {
-				out[i] = &FileListEntry{
-					Path: p,
-					Type: t,
-					Base: path.Base(p),
-				}
-				break
-			}
-		}
-	}
-	b, err := json.Marshal(out)
-	w.Header().Add("Content-Type", "application/json")
-	fmt.Fprint(w, string(b))
-}
-
-func PlayListHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
-		playListList(w, r)
-		return
-	} else if r.Method == "POST" {
-		playListUpdate(w, r)
-		return
-	} else {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-}
-
-type PlayListEntry struct {
-	Pos  int    `json:"pos"`
-	Name string `json:"name"`
-}
-
-func playListList(w http.ResponseWriter, r *http.Request) {
-	data, err := client.C.PlaylistInfo(-1, -1)
-	if err != nil {
-		glog.Errorln(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	out := make([]*PlayListEntry, len(data))
-	for i, item := range data {
-		var name string
-		if artist, ok := item["Artist"]; ok {
-			// Artist - Title
-			name = fmt.Sprintf("%s - %s", artist, item["Title"])
-		} else if n, ok := item["Name"]; ok {
-			// Playlist name.
-			name = n
-		} else {
-			// Default to file name.
-			name = path.Base(item["file"])
-		}
-		out[i] = &PlayListEntry{
-			Pos:  i + 1,
-			Name: name,
-		}
-	}
-	b, err := json.Marshal(out)
-	w.Header().Add("Content-Type", "application/json")
-	fmt.Fprint(w, string(b))
-}
-
-func playListUpdate(w http.ResponseWriter, r *http.Request) {
-	// Parse the JSON body.
-	decoder := json.NewDecoder(r.Body)
-	var params map[string]interface{}
-	err := decoder.Decode(&params)
-	if err != nil {
-		glog.Errorln(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	uri := params["uri"].(string)
-	typ := params["type"].(string)
-	replace := params["replace"].(bool)
-	play := params["play"].(bool)
-	pos := 0
-	if uri == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	// Clear the playlist.
-	if replace {
-		err := client.C.Clear()
-		if err != nil {
-			glog.Errorln(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-	}
-
-	// To play from the start of the new items in the playlist, we need to get the
-	// current playlist position.
-	if !replace {
-		data, err := client.C.Status()
-		if err != nil {
-			glog.Errorln(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		pos, err = strconv.Atoi(data["playlistlength"])
-		if err != nil {
-			glog.Errorln(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		glog.Infof("pos: %d", pos)
-	}
-
-	// Add to the playlist.
-	if typ == "playlist" {
-		err = client.C.PlaylistLoad(uri, -1, -1)
-	} else {
-		err = client.C.Add(uri)
-	}
-	if err != nil {
-		glog.Errorln(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	// Play.
-	if play {
-		err := client.C.Play(pos)
-		if err != nil {
-			glog.Errorln(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-	}
-
-	w.WriteHeader(http.StatusOK)
-}
-
-func LibraryUpdateHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	} else if r.Method == "POST" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	} else {
-		// Parse the JSON body.
-		decoder := json.NewDecoder(r.Body)
-		var params map[string]interface{}
-		err := decoder.Decode(&params)
-		if err != nil {
-			glog.Errorln(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		uri := params["uri"].(string)
-		if uri == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		_, err = client.C.Update(uri)
-		if err != nil {
-			glog.Errorln(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 }
