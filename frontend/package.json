@@ -1,9 +1,9 @@
 {
-  "name": "mpd-web",
+  "name": "mothership",
   "private": true,
   "version": "0.0.0",
   "description": "A simple web UI for mpd",
-  "repository": "https://github.com/zefer/mpd-web",
+  "repository": "https://github.com/zefer/mothership",
   "license": "MIT",
   "devDependencies": {
     "grunt": "~0.4.x",

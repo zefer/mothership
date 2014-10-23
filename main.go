@@ -8,9 +8,9 @@ import (
 	"github.com/elazarl/go-bindata-assetfs"
 	"github.com/golang/glog"
 
-	"github.com/zefer/mpd-web/handlers"
-	"github.com/zefer/mpd-web/mpd"
-	"github.com/zefer/mpd-web/websocket"
+	"github.com/zefer/mothership/handlers"
+	"github.com/zefer/mothership/mpd"
+	"github.com/zefer/mothership/websocket"
 )
 
 var (

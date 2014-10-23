@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	"github.com/golang/glog"
-	"github.com/zefer/mpd-web/mpd"
+	"github.com/zefer/mothership/mpd"
 )
 
 type PlayListEntry struct {

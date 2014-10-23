@@ -7,7 +7,7 @@ import (
 	"path"
 
 	"github.com/golang/glog"
-	"github.com/zefer/mpd-web/mpd"
+	"github.com/zefer/mothership/mpd"
 )
 
 type FileListEntry struct {

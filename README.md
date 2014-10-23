@@ -1,6 +1,8 @@
-# mpd-web
+# Mothership
 
-Simple web UI for mpd built with AngularJS & Go.
+A web UI for [MPD](http://www.musicpd.org/) built with Go, AngularJS & WebSockets.
+
+Builds to a single, self-contained binary making it easy to run on any platform.
 
 ## Dev usage (does not package assets in binary)
 
@@ -10,7 +12,7 @@ Simple web UI for mpd built with AngularJS & Go.
 # Run the API & serve the static front-end
 go run *.go -logtostderr=true -mpdaddr=192.168.33.20:6600 -port :8080
 # Or build the binary & run that
-go build && mpd-web -logtostderr=true -mpdaddr=192.168.33.20:6600 -port :8080
+go build && mothership -logtostderr=true -mpdaddr=192.168.33.20:6600 -port :8080
 # open the app in your browser
 open localhost:8080
 ```
@@ -25,7 +27,7 @@ go-bindata frontend.go -prefix "frontend/dist/" frontend/dist/...
 # Build the binary
 go build
 # Run it
-mpd-web -logtostderr=true -mpdaddr=192.168.33.20:6600 -port :8080
+mothership -logtostderr=true -mpdaddr=192.168.33.20:6600 -port :8080
 # open the app in your browser
 open localhost:8080
 ```
