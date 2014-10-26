@@ -16,6 +16,7 @@ module.exports = (grunt) ->
           src: [
             'index.html',
             'partials/*'
+            'assets/*'
           ]
         ]
       vendor:
