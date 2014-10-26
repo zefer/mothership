@@ -29,6 +29,10 @@ func (c *Client) connect() {
 	for {
 		client, err := gompd.Dial("tcp", c.addr)
 		if err == nil {
+			// There will be an old client to close if this was a reconnect.
+			if c.C != nil {
+				c.C.Close()
+			}
 			c.C = client
 			glog.Infof("MPD client: connected to %s", c.addr)
 			return
@@ -43,7 +47,8 @@ func (c *Client) keepAlive() {
 		err := c.C.Ping()
 		if err != nil {
 			glog.Errorf("MPD client: ping failed, reconnecting")
-			c.Close()
+			// Leave the old connection open until we have a new one because trying to
+			// call commands on a closed client will panic.
 			c.connect()
 		}
 		time.Sleep(retryDur)
