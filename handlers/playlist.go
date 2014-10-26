@@ -31,8 +31,53 @@ func PlayListHandler(c *mpd.Client) http.Handler {
 	})
 }
 
+// Helper that returns a start/end range to query from the current playlist.
+// We want the full playlist unless it is huge, in which case we want a small
+// chunk of it.
+func playlistRange(c *mpd.Client) ([2]int, error) {
+	// Don't fetch or display more than this many playlist entries.
+	max := 500
+	var rng [2]int
+
+	s, err := c.C.Status()
+	if err != nil {
+		return rng, err
+	}
+	if _, ok := s["song"]; !ok {
+		// No current song playing, so use the whole (empty) playlist.
+		return [2]int{-1, -1}, nil
+	}
+
+	pos, err := strconv.Atoi(s["song"])
+	if err != nil {
+		return rng, err
+	}
+	length, err := strconv.Atoi(s["playlistlength"])
+	if err != nil {
+		return rng, err
+	}
+
+	if length > max {
+		// Fetch this chunk of the current playlist. Adjust the starting position to
+		// return n items before the current song, for context.
+		rng = [2]int{pos - 1, pos + max}
+	} else {
+		// Fetch all of the current playlist.
+		rng = [2]int{-1, -1}
+	}
+
+	return rng, nil
+}
+
 func playListList(c *mpd.Client, w http.ResponseWriter, r *http.Request) {
-	data, err := c.C.PlaylistInfo(-1, -1)
+	rng, err := playlistRange(c)
+	if err != nil {
+		glog.Errorln(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	// Fetch all, or a slice of the current playlist.
+	data, err := c.C.PlaylistInfo(rng[0], rng[1])
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -51,8 +96,12 @@ func playListList(c *mpd.Client, w http.ResponseWriter, r *http.Request) {
 			// Default to file name.
 			name = path.Base(item["file"])
 		}
+		p, err := strconv.Atoi(item["Pos"])
+		if err != nil {
+			p = 1
+		}
 		out[i] = &PlayListEntry{
-			Pos:  i + 1,
+			Pos:  p + 1,
 			Name: name,
 		}
 	}
