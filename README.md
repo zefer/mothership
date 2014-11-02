@@ -8,7 +8,7 @@ Builds to a single, self-contained binary making it easy to run on any platform.
 
 ```
 # Build the Angular static html front-end app
-(cd frontend && grunt)
+(cd frontend && grunt build)
 # Run the API & serve the static front-end
 go run *.go -logtostderr=true -mpdaddr=192.168.33.20:6600 -port :8080
 # Or build the binary & run that
@@ -21,7 +21,7 @@ open localhost:8080
 
 ```
 # Build the Angular static html front-end app
-(cd frontend && grunt)
+(cd frontend && grunt build)
 # Compile the assets (dev mode used the go-bindata -debug flag)
 go-bindata frontend.go -prefix "frontend/dist/" frontend/dist/...
 # Build the binary

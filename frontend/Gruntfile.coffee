@@ -111,6 +111,5 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-shell'
 
   # tasks
-  grunt.registerTask 'default', [
-    'copy', 'less', 'coffee', 'concat', 'shell', 'watch'
-  ]
+  grunt.registerTask 'build',   ['copy', 'less', 'coffee', 'concat', 'shell']
+  grunt.registerTask 'default', ['build', 'watch']
