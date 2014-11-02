@@ -1,6 +1,4 @@
 @import "../../bower_components/bootstrap/less/bootstrap.less";
-@screen-xs-max: 520px;
-@grid-float-breakpoint: 1px;
 
 @bg: #fff;
 @white: #fff;
@@ -8,20 +6,24 @@
 @gold: #FFCC2F;
 @green: #2BAF2B;
 
+// override bootstrap colours and other variables.
+// https://github.com/twbs/bootstrap/blob/master/less/variables.less
+@screen-xs-max: 520px;
+@grid-float-breakpoint: 1px;
+@brand-primary: @green;
+@btn-primary-border: @green;
+@link-hover-color: @brown;
+
 body {
   background: @bg;
   color: @brown;
 }
 main { padding: 60px 0; }
-a { color: @green; }
-a:hover { color: @brown; }
 main .fa { color: @green; }
 
 .btn {
   transition: border .1s linear, color .1s linear, background-color .1s linear;
   border: 0;
-  background: @green;
-  color: @white;
   i { color: @white }
 
   &:hover, &:focus {
@@ -34,9 +36,6 @@ main .fa { color: @green; }
     color: @brown;
     i { color: @brown; }
   }
-  &.active:hover {
-    background: @white;
-  }
 }
 .open>.btn.dropdown-toggle {
   box-shadow: none;
@@ -44,11 +43,6 @@ main .fa { color: @green; }
   background: @gold;
   color: @brown;
   i { color: @brown; }
-}
-
-.list-group-item.active {
-  background-color: @green;
-  border-color: @green;
 }
 
 nav player-controls {
@@ -96,5 +90,3 @@ header .navbar {
   background: none;
   margin-top: 20px;
 }
-
-.progress-bar { background: @green; }
