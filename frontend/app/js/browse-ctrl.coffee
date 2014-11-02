@@ -19,6 +19,8 @@ mod.controller("BrowseCtrl", ($scope, $stateParams, $state, library, playlist) -
 
   that.paginate = (items, page) ->
     pages = Math.ceil(items.length / MAX_PER_PAGE)
+    page = pages if page > pages
+    page = 1 if page < 1
     pos = (page - 1) * MAX_PER_PAGE
     $scope.items = items[pos..pos+MAX_PER_PAGE]
     $scope.pages = (i for i in [1..pages])
