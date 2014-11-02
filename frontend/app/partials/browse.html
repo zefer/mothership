@@ -40,9 +40,12 @@
             <i class="fa fa-play"></i>Add &amp; play</a></li>
           <li><a ng-click="playlist.addReplacePlay(item.path, item.type)">
             <i class="fa fa-share"></i>Add, replace &amp; play</a></li>
-          <li class="divider"></li>
-          <li><a ng-click="library.update(item.path)">
-            <i class="fa fa-refresh"></i>Update this folder</a></li>
+          <li ng-show="item.type == 'directory'" class="divider"></li>
+          <li ng-show="item.type == 'directory'">
+            <a ng-click="library.update(item.path)">
+              <i class="fa fa-refresh"></i>Update this folder
+            </a>
+          </li>
         </ul>
       </div>
     </div>
