@@ -31,7 +31,7 @@
 
     # last state, because of the wildcard url match
     ).state("browse.uri",
-      url: "/{uri:.*}"
+      url: "/{uri:.*}?page"
       parent: "main"
       controller: "BrowseCtrl as browseCtrl"
       templateUrl: "partials/browse.html"

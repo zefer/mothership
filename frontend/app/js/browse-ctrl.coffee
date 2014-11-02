@@ -4,6 +4,8 @@ mod.controller("BrowseCtrl", ($scope, $stateParams, $state, library, playlist) -
   "use strict"
   that = this
 
+  MAX_PER_PAGE = 200
+
   $scope.library = library
 
   that.breadcrumbs = (uri) ->
@@ -15,10 +17,18 @@ mod.controller("BrowseCtrl", ($scope, $stateParams, $state, library, playlist) -
     crumbs.unshift { label: "home", path: "" }
     crumbs
 
+  that.paginate = (items, page) ->
+    pages = Math.ceil(items.length / MAX_PER_PAGE)
+    pos = page * MAX_PER_PAGE
+    $scope.items = items[pos..pos+MAX_PER_PAGE]
+    $scope.pages = (i for i in [0..pages-1])
+    $scope.page = page
+
   $scope.$on "$stateChangeSuccess", (event, toState, toParams, fromState, fromParams) ->
     toParams.uri ?= "/"
-    library.ls(toParams.uri).then (data) ->
-      $scope.items = data
+    toParams.page ?= 0
+    library.ls(toParams.uri).then (items) ->
+      that.paginate(items, parseInt(toParams.page))
       $scope.breadcrumbs = that.breadcrumbs(toParams.uri)
 
   $scope.showActions = (e) ->

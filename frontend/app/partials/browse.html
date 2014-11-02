@@ -7,6 +7,16 @@
     </li>
   </ol>
 
+  <nav ng-show="pages.length > 1">
+    <ul class="pagination">
+      <li><a ui-sref="{ page: page - 1 }">&laquo;</a></li>
+      <li ng-repeat="p in ::pages" ng-class="{ 'active':p==page }">
+        <a ui-sref="{ page: p }">{{::p}}</a>
+      </li>
+      <li><a ui-sref="{ page: page + 1 }">&raquo;</a></li>
+    </ul>
+  </nav>
+
   <div class="list-group">
 
     <div ng-repeat="item in ::items" ui-sref="browse.uri({ uri: item.path })"
