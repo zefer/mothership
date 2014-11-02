@@ -19,14 +19,14 @@ mod.controller("BrowseCtrl", ($scope, $stateParams, $state, library, playlist) -
 
   that.paginate = (items, page) ->
     pages = Math.ceil(items.length / MAX_PER_PAGE)
-    pos = page * MAX_PER_PAGE
+    pos = (page - 1) * MAX_PER_PAGE
     $scope.items = items[pos..pos+MAX_PER_PAGE]
-    $scope.pages = (i for i in [0..pages-1])
+    $scope.pages = (i for i in [1..pages])
     $scope.page = page
 
   $scope.$on "$stateChangeSuccess", (event, toState, toParams, fromState, fromParams) ->
     toParams.uri ?= "/"
-    toParams.page ?= 0
+    toParams.page ?= 1
     library.ls(toParams.uri).then (items) ->
       that.paginate(items, parseInt(toParams.page))
       $scope.breadcrumbs = that.breadcrumbs(toParams.uri)
