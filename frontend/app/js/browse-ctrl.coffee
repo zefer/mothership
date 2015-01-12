@@ -29,7 +29,9 @@ mod.controller("BrowseCtrl", ($scope, $stateParams, $state, library, playlist) -
   $scope.$on "$stateChangeSuccess", (event, toState, toParams, fromState, fromParams) ->
     toParams.uri ?= "/"
     toParams.page ?= 1
-    library.ls(toParams.uri).then (items) ->
+    toParams.sort ?= "date"
+    toParams.direction ?= "desc"
+    library.ls(toParams.uri, toParams.sort, toParams.direction).then (items) ->
       that.paginate(items, parseInt(toParams.page))
       $scope.breadcrumbs = that.breadcrumbs(toParams.uri)
 

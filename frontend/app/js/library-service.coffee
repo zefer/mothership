@@ -6,21 +6,25 @@ mod.factory "library", ["$q", "mpd", ($q, mpd) ->
   # Cache a single library path, so the controller can paginate without fetching
   # the data again.
   cache =
-    uri: null
+    key: null
     items: null
+
+  cacheKey = (uri, sort, direction) ->
+    "#{uri}-#{sort}-#{direction}"
 
   api =
     update: (uri) -> mpd.update(uri)
 
-    ls: (uri) ->
+    ls: (uri, sort, direction) ->
       deferred = $q.defer()
-      if uri == cache.uri
+      key = cacheKey(uri, sort, direction)
+      if key == cache.key
         # Requesting the same path, return the data from the cache.
         deferred.resolve(cache.items)
       else
-        mpd.ls(uri).then (items) ->
+        mpd.ls(uri, sort, direction).then (items) ->
           deferred.resolve(items)
-          cache.uri = uri
+          cache.key = key
           cache.items = items
       deferred.promise
 ]

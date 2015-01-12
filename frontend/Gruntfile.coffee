@@ -14,9 +14,10 @@ module.exports = (grunt) ->
           cwd: 'app/',
           dest: '<%= config.dist_dir %>/'
           src: [
-            'index.html',
+            'index.html'
             'partials/*'
             'assets/*'
+            'js/**/*.html'
           ]
         ]
       vendor:
