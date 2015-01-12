@@ -58,18 +58,18 @@ func FileListHandler(c *mpd.Client) http.Handler {
 		// Sort the list by the specified field and direction.
 		s := r.FormValue("sort")
 		d := r.FormValue("direction")
+		var t sort.Interface
+		// Sort by date or name?
 		if s == "date" {
-			if d == "desc" {
-				sort.Sort(sort.Reverse(ByDate(out)))
-			} else {
-				sort.Sort(ByDate(out))
-			}
+			t = ByDate(out)
 		} else {
-			if d == "desc" {
-				sort.Sort(sort.Reverse(ByName(out)))
-			} else {
-				sort.Sort(ByName(out))
-			}
+			t = ByName(out)
+		}
+		// Sort ascending or descending?
+		if d == "desc" {
+			sort.Sort(sort.Reverse(t))
+		} else {
+			sort.Sort(t)
 		}
 
 		b, err := json.Marshal(out)
