@@ -1,9 +1,9 @@
 # Calculates the elapsed time for the current track & updates the scope directly
 # to allow the UI to update.
 
-mod = angular.module("player")
+mod = angular.module('player')
 
-mod.factory "progress", ($interval) ->
+mod.factory 'progress', ($interval) ->
   'use strict'
   that     = this
   timer    = null
@@ -43,7 +43,7 @@ mod.factory "progress", ($interval) ->
       scope = scp
       total = parseInt(data.Time)
       end = (new Date()).getTime() + total*1000 - parseInt(data.elapsed)*1000
-      if isNaN(total) || isNaN(end) || data.state != "play"
+      if isNaN(total) || isNaN(end) || data.state != 'play'
         that.stopTimer()
       else
         that.startTimer()

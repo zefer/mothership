@@ -1,6 +1,6 @@
-mod = angular.module("player")
+mod = angular.module('player')
 
-mod.factory "library", ($q, mpd) ->
+mod.factory 'library', ($q, mpd) ->
   'use strict'
 
   # Cache a single library path, so the controller can paginate without fetching

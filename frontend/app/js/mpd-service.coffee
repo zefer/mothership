@@ -1,9 +1,9 @@
-mod = angular.module("player")
+mod = angular.module('player')
 
-MPD_STATUS = "mpd:status"
-CONN_STATUS = "conn:status"
+MPD_STATUS = 'mpd:status'
+CONN_STATUS = 'conn:status'
 
-mod.factory "mpd", ($rootScope, $http, $interval, $q) ->
+mod.factory 'mpd', ($rootScope, $http, $interval, $q) ->
   ctrl = this
   retrying = null
 
@@ -11,7 +11,7 @@ mod.factory "mpd", ($rootScope, $http, $interval, $q) ->
     # Open a websicket and wait for incoming messages.
     ws = new WebSocket("ws://#{location.host}/websocket")
     ws.onopen = ->
-      console.log "Websocket opened"
+      console.log 'Websocket opened'
       retrying && $interval.cancel(retrying)
       retrying = null
       $rootScope.$broadcast CONN_STATUS, true
@@ -24,9 +24,9 @@ mod.factory "mpd", ($rootScope, $http, $interval, $q) ->
     ws.onclose = ->
       return if retrying
       $rootScope.$broadcast CONN_STATUS, false
-      console.log "Websocket closed"
+      console.log 'Websocket closed'
       retrying = $interval ->
-        console.log "Websocket reconnecting"
+        console.log 'Websocket reconnecting'
         ctrl.connect()
       , 1000
 
@@ -40,7 +40,7 @@ mod.factory "mpd", ($rootScope, $http, $interval, $q) ->
 
     currentPlaylist: ->
       deferred = $q.defer()
-      $http.get("/playlist").success (data) -> deferred.resolve(data)
+      $http.get('/playlist').success (data) -> deferred.resolve(data)
       deferred.promise
 
     addToPlaylist: (uri, type, replace, play) ->

@@ -1,8 +1,8 @@
-mod = angular.module("player")
+mod = angular.module('player')
 
-PLAYLIST_STATE_CHANGE = "playlist:state_change"
+PLAYLIST_STATE_CHANGE = 'playlist:state_change'
 
-mod.factory "playlist", ($rootScope, mpd) ->
+mod.factory 'playlist', ($rootScope, mpd) ->
   'use strict'
   that = this
 

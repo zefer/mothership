@@ -1,8 +1,8 @@
-mod = angular.module("player")
+mod = angular.module('player')
 
-PLAYER_STATE_CHANGE = "player:state_change"
+PLAYER_STATE_CHANGE = 'player:state_change'
 
-mod.factory "player", ($rootScope, $http, mpd, progress) ->
+mod.factory 'player', ($rootScope, $http, mpd, progress) ->
   'use strict'
   that = this
 
@@ -23,12 +23,12 @@ mod.factory "player", ($rootScope, $http, mpd, progress) ->
       # play, pause or stop
       state: data.state
       error: data.error
-      randomOn: data.random == "1"
+      randomOn: data.random == '1'
       quality: that.friendlyQuality(data.audio, data.bitrate)
     $rootScope.$broadcast PLAYER_STATE_CHANGE
 
   $rootScope.$on CONN_STATUS, (event, connected) ->
-    api.error = if connected then "" else "Connection lost"
+    api.error = if connected then '' else 'Connection lost'
     $rootScope.$broadcast PLAYER_STATE_CHANGE
 
   that.nowPlaying = (data) ->
@@ -37,11 +37,11 @@ mod.factory "player", ($rootScope, $http, mpd, progress) ->
       sub = data.Album
     else if data.Name
       now = data.Name
-      sub = ""
+      sub = ''
     else if data.file
-      parts = data.file.split("/")
+      parts = data.file.split('/')
       now = parts[parts.length-1]
-      sub = parts[0..parts.length-2].join("/")
+      sub = parts[0..parts.length-2].join('/')
     [now, sub]
 
   that.friendlyQuality = (mpdAudioString, bitrate) ->
