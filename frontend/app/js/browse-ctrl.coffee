@@ -1,7 +1,7 @@
 mod = angular.module('player')
 
 mod.controller 'BrowseCtrl', (
-  $scope, $stateParams, $state, library, playlist
+  $scope, $stateParams, $state, library, playlist, remember
 ) ->
   'use strict'
   that = this
@@ -33,8 +33,10 @@ mod.controller 'BrowseCtrl', (
   ) ->
     toParams.uri ?= '/'
     toParams.page ?= 1
-    toParams.sort ?= 'date'
-    toParams.direction ?= 'desc'
+    toParams.sort ?= remember.get('sort', 'date')
+    toParams.direction ?= remember.get('direction', 'desc')
+    remember.set('sort', toParams.sort)
+    remember.set('direction', toParams.direction)
     library.ls(toParams.uri, toParams.sort, toParams.direction).then (items) ->
       that.paginate(items, parseInt(toParams.page))
       $scope.breadcrumbs = that.breadcrumbs(toParams.uri)
