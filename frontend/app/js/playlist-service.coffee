@@ -2,7 +2,7 @@ mod = angular.module("player")
 
 PLAYLIST_STATE_CHANGE = "playlist:state_change"
 
-mod.factory "playlist", ["$rootScope", "mpd", ($rootScope, mpd) ->
+mod.factory "playlist", ($rootScope, mpd) ->
   'use strict'
   that = this
 
@@ -25,4 +25,3 @@ mod.factory "playlist", ["$rootScope", "mpd", ($rootScope, mpd) ->
       $rootScope.$broadcast PLAYLIST_STATE_CHANGE
 
   return api
-]

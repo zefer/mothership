@@ -1,6 +1,8 @@
 mod = angular.module("player")
 
-mod.controller("BrowseCtrl", ($scope, $stateParams, $state, library, playlist) ->
+mod.controller "BrowseCtrl", (
+  $scope, $stateParams, $state, library, playlist
+) ->
   "use strict"
   that = this
 
@@ -26,7 +28,9 @@ mod.controller("BrowseCtrl", ($scope, $stateParams, $state, library, playlist) -
     $scope.pages = (i for i in [1..pages])
     $scope.page = page
 
-  $scope.$on "$stateChangeSuccess", (event, toState, toParams, fromState, fromParams) ->
+  $scope.$on "$stateChangeSuccess", (
+    event, toState, toParams, fromState, fromParams
+  ) ->
     toParams.uri ?= "/"
     toParams.page ?= 1
     toParams.sort ?= "date"
@@ -38,4 +42,3 @@ mod.controller("BrowseCtrl", ($scope, $stateParams, $state, library, playlist) -
   $scope.showActions = (e) ->
     e.preventDefault()
     e.stopPropagation()
-)

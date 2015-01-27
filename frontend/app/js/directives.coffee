@@ -1,11 +1,9 @@
 mod = angular.module('player')
 
-mod.directive('playerControls', ->
+mod.directive 'playerControls', ->
   restrict: 'E'
-  templateUrl: 'partials/player-controls.html',
-)
+  templateUrl: 'partials/player-controls.html'
 
-mod.directive('playerStatus', ->
+mod.directive 'playerStatus', ->
   restrict: 'E'
-  templateUrl: 'partials/player-status.html',
-)
+  templateUrl: 'partials/player-status.html'

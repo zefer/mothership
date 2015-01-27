@@ -2,9 +2,7 @@ mod = angular.module("player")
 
 PLAYER_STATE_CHANGE = "player:state_change"
 
-mod.factory "player", ["$rootScope", "$http", "mpd", "progress", (
-  $rootScope, $http, mpd, progress
-) ->
+mod.factory "player", ($rootScope, $http, mpd, progress) ->
   'use strict'
   that = this
 
@@ -55,4 +53,3 @@ mod.factory "player", ["$rootScope", "$http", "mpd", "progress", (
     [chan, rate, freq, bitr].join(', ')
 
   return api
-]

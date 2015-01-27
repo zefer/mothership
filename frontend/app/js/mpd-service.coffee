@@ -3,7 +3,7 @@ mod = angular.module("player")
 MPD_STATUS = "mpd:status"
 CONN_STATUS = "conn:status"
 
-mod.factory "mpd", ["$rootScope", "$http", "$interval", "$q", ($rootScope, $http, $interval, $q) ->
+mod.factory "mpd", ($rootScope, $http, $interval, $q) ->
   ctrl = this
   retrying = null
 
@@ -65,4 +65,3 @@ mod.factory "mpd", ["$rootScope", "$http", "$interval", "$q", ($rootScope, $http
   @connect()
 
   api
-]

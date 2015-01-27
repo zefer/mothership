@@ -3,7 +3,7 @@
 
 mod = angular.module("player")
 
-mod.factory "progress", ["$interval", ($interval) ->
+mod.factory "progress", ($interval) ->
   'use strict'
   that     = this
   timer    = null
@@ -49,4 +49,3 @@ mod.factory "progress", ["$interval", ($interval) ->
         that.startTimer()
 
   api
-]
