@@ -38,7 +38,3 @@ mod.controller 'BrowseCtrl', (
     library.ls(toParams.uri, toParams.sort, toParams.direction).then (items) ->
       that.paginate(items, parseInt(toParams.page))
       $scope.breadcrumbs = that.breadcrumbs(toParams.uri)
-
-  $scope.showActions = (e) ->
-    e.preventDefault()
-    e.stopPropagation()

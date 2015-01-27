@@ -32,26 +32,7 @@
 
       {{::item.base}}
 
-      <div class="actions btn-group" dropdown
-        ng-click="showActions($event)">
-        <button type="button" class="btn btn-primary btn-sm dropdown-toggle">
-          <i class="fa fa-navicon"></i>
-        </button>
-        <ul class="dropdown-menu" role="menu">
-          <li><a ng-click="playlist.add(item.path, item.type)">
-            <i class="fa fa-plus"></i>Add</a></li>
-          <li><a ng-click="playlist.addPlay(item.path, item.type)">
-            <i class="fa fa-play"></i>Add &amp; play</a></li>
-          <li><a ng-click="playlist.addReplacePlay(item.path, item.type)">
-            <i class="fa fa-share"></i>Add, replace &amp; play</a></li>
-          <li ng-show="item.type == 'directory'" class="divider"></li>
-          <li ng-show="item.type == 'directory'">
-            <a ng-click="library.update(item.path)">
-              <i class="fa fa-refresh"></i>Update this folder
-            </a>
-          </li>
-        </ul>
-      </div>
+      <m-browse-actions path="item.path" type="item.type"></m-browse-actions>
     </div>
 
   </div>
