@@ -50,8 +50,8 @@ func main() {
 	defer client.Close()
 
 	http.HandleFunc("/websocket", websocket.Serve)
-	http.Handle("/next", handlers.NextHandler(client))
-	http.Handle("/previous", handlers.PreviousHandler(client))
+	http.Handle("/next", handlers.NextHandler(client.C))
+	http.Handle("/previous", handlers.PreviousHandler(client.C))
 	http.Handle("/play", handlers.PlayHandler(client))
 	http.Handle("/pause", handlers.PauseHandler(client))
 	http.Handle("/randomOn", handlers.RandomOnHandler(client))

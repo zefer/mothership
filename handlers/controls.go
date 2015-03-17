@@ -7,9 +7,13 @@ import (
 	"github.com/zefer/mothership/mpd"
 )
 
-func NextHandler(c *mpd.Client) http.Handler {
+type Nexter interface {
+	Next() error
+}
+
+func NextHandler(c Nexter) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := c.C.Next()
+		err := c.Next()
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -19,9 +23,13 @@ func NextHandler(c *mpd.Client) http.Handler {
 	})
 }
 
-func PreviousHandler(c *mpd.Client) http.Handler {
+type Previouser interface {
+	Previous() error
+}
+
+func PreviousHandler(c Previouser) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := c.C.Previous()
+		err := c.Previous()
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
