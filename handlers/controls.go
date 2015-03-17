@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/golang/glog"
-	"github.com/zefer/mothership/mpd"
 )
 
 type Nexter interface {
@@ -71,8 +70,12 @@ func PauseHandler(c Pauser) http.Handler {
 	})
 }
 
-func random(c *mpd.Client, on bool, w http.ResponseWriter) {
-	err := c.C.Random(on)
+type Randomer interface {
+	Random(random bool) error
+}
+
+func random(c Randomer, on bool, w http.ResponseWriter) {
+	err := c.Random(on)
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -80,12 +83,12 @@ func random(c *mpd.Client, on bool, w http.ResponseWriter) {
 	}
 	w.WriteHeader(http.StatusOK)
 }
-func RandomOnHandler(c *mpd.Client) http.Handler {
+func RandomOnHandler(c Randomer) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		random(c, true, w)
 	})
 }
-func RandomOffHandler(c *mpd.Client) http.Handler {
+func RandomOffHandler(c Randomer) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		random(c, false, w)
 	})
