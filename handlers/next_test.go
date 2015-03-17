@@ -4,17 +4,11 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
-	"testing"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/zefer/mothership/handlers"
 )
-
-func TestNextHandler(t *testing.T) {
-	RegisterFailHandler(Fail)
-	RunSpecs(t, "Next handler")
-}
 
 func (c mockClient) Next() error {
 	called = true
