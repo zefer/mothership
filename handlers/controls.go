@@ -39,9 +39,13 @@ func PreviousHandler(c Previouser) http.Handler {
 	})
 }
 
-func PlayHandler(c *mpd.Client) http.Handler {
+type Player interface {
+	Play(pos int) error
+}
+
+func PlayHandler(c Player) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := c.C.Play(-1)
+		err := c.Play(-1)
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
