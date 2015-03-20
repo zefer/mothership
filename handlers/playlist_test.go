@@ -278,13 +278,33 @@ var _ = Describe("PlayListHandler", func() {
 		})
 
 		Context("when play=true", func() {
-			It("it tells MPD to play", func() {
-				playCalled = false
+			BeforeEach(func() {
 				validParams["play"] = true
-				json, _ := json.Marshal(validParams)
-				req, _ := http.NewRequest("POST", "/playlist", bytes.NewBuffer(json))
-				handler.ServeHTTP(w, req)
-				Expect(playCalled).To(BeTrue())
+				mockStatus = map[string]string{"playlistlength": "66"}
+				playedPos = 123
+				playCalled = false
+			})
+
+			Context("and replace=true", func() {
+				It("it tells MPD to play from position 0", func() {
+					validParams["replace"] = true
+					json, _ := json.Marshal(validParams)
+					req, _ := http.NewRequest("POST", "/playlist", bytes.NewBuffer(json))
+					handler.ServeHTTP(w, req)
+					Expect(playCalled).To(BeTrue())
+					Expect(playedPos).To(Equal(0))
+				})
+			})
+
+			Context("and replace=false", func() {
+				It("it tells MPD to play from the start of the new added items", func() {
+					validParams["replace"] = false
+					json, _ := json.Marshal(validParams)
+					req, _ := http.NewRequest("POST", "/playlist", bytes.NewBuffer(json))
+					handler.ServeHTTP(w, req)
+					Expect(playCalled).To(BeTrue())
+					Expect(playedPos).To(Equal(66))
+				})
 			})
 		})
 
