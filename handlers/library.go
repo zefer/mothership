@@ -23,7 +23,12 @@ func LibraryUpdateHandler(c LibraryUpdater) http.Handler {
 		err := decoder.Decode(&params)
 		if err != nil {
 			glog.Errorln(err)
-			w.WriteHeader(http.StatusInternalServerError)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		if _, ok := params["uri"]; !ok {
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		uri := params["uri"].(string)
@@ -31,13 +36,14 @@ func LibraryUpdateHandler(c LibraryUpdater) http.Handler {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
+
 		_, err = c.Update(uri)
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusAccepted)
 		return
 	})
 }
