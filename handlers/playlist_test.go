@@ -232,7 +232,7 @@ var _ = Describe("PlayListHandler", func() {
 				json, _ := json.Marshal(validParams)
 				req, _ := http.NewRequest("POST", "/playlist", bytes.NewBuffer(json))
 				handler.ServeHTTP(w, req)
-				Expect(clearCalled).To(Equal(true))
+				Expect(clearCalled).To(BeTrue())
 			})
 		})
 
@@ -243,7 +243,7 @@ var _ = Describe("PlayListHandler", func() {
 				json, _ := json.Marshal(validParams)
 				req, _ := http.NewRequest("POST", "/playlist", bytes.NewBuffer(json))
 				handler.ServeHTTP(w, req)
-				Expect(clearCalled).To(Equal(false))
+				Expect(clearCalled).To(BeFalse())
 			})
 		})
 
