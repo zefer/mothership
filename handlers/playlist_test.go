@@ -1,6 +1,7 @@
 package handlers_test
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -158,6 +159,53 @@ var _ = Describe("PlayListHandler", func() {
 				Expect(len(pls[2])).To(Equal(2))
 				Expect(pls[2]["pos"]).To(BeEquivalentTo(3))
 				Expect(pls[2]["name"]).To(Equal("HTTP stream from pls"))
+			})
+		})
+	})
+
+	Context("with a POST request (update the current playlist)", func() {
+		var validParams map[string]interface{}
+
+		BeforeEach(func() {
+			validParams = map[string]interface{}{
+				"uri": "gorilla.mp3", "type": "file", "replace": true, "play": true,
+			}
+		})
+
+		Context("with un-parseable JSON", func() {
+			It("responds 400 bad request", func() {
+				var json = []byte(`{not-json`)
+				req, _ := http.NewRequest("POST", "/playlist", bytes.NewBuffer(json))
+				handler.ServeHTTP(w, req)
+				Expect(w.Code).To(Equal(http.StatusBadRequest))
+			})
+		})
+
+		Context("with missing required fields", func() {
+			It("responds 400 bad request", func() {
+				for _, f := range []string{"uri", "type", "replace", "play"} {
+					// d = map[string]string{"uri": "", "type": "", "replace": "", "play": ""}
+					params := make(map[string]interface{})
+					for k, v := range validParams {
+						params[k] = v
+					}
+					delete(params, f)
+					json, _ := json.Marshal(params)
+					req, _ := http.NewRequest("POST", "/playlist", bytes.NewBuffer(json))
+					handler.ServeHTTP(w, req)
+					Expect(w.Code).To(Equal(http.StatusBadRequest))
+				}
+			})
+		})
+
+		// Without URI, we don't know what to add to the playlist.
+		Context("with an empty 'uri' field", func() {
+			It("responds 400 bad request", func() {
+				validParams["uri"] = ""
+				json, _ := json.Marshal(validParams)
+				req, _ := http.NewRequest("POST", "/playlist", bytes.NewBuffer(json))
+				handler.ServeHTTP(w, req)
+				Expect(w.Code).To(Equal(http.StatusBadRequest))
 			})
 		})
 	})

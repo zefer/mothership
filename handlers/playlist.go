@@ -126,8 +126,16 @@ func playListUpdate(c Playlister, w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&params)
 	if err != nil {
 		glog.Errorln(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 		return
+	}
+
+	// Check for required fields.
+	for _, f := range []string{"uri", "type", "replace", "play"} {
+		if _, ok := params[f]; !ok {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 	}
 
 	uri := params["uri"].(string)
