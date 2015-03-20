@@ -37,7 +37,15 @@ func FileListHandler(c FileLister) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
 			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
 		}
+
+		uri := r.FormValue("uri")
+		if uri == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
 		data, err := c.ListInfo(r.FormValue("uri"))
 		if err != nil {
 			glog.Errorln(err)
