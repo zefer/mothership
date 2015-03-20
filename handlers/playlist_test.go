@@ -70,7 +70,12 @@ func (c mockPlClient) Add(uri string) error {
 	return nil
 }
 
+var playCalled bool = false
+var playedPos int = 0
+
 func (c mockPlClient) Play(pos int) error {
+	playCalled = true
+	playedPos = pos
 	return nil
 }
 
@@ -269,6 +274,28 @@ var _ = Describe("PlayListHandler", func() {
 					Expect(addedURI).To(Equal("http://gorillas"))
 					Expect(loadedURI).To(Equal(""))
 				}
+			})
+		})
+
+		Context("when play=true", func() {
+			It("it tells MPD to play", func() {
+				playCalled = false
+				validParams["play"] = true
+				json, _ := json.Marshal(validParams)
+				req, _ := http.NewRequest("POST", "/playlist", bytes.NewBuffer(json))
+				handler.ServeHTTP(w, req)
+				Expect(playCalled).To(BeTrue())
+			})
+		})
+
+		Context("when play=false", func() {
+			It("it does not tell MPD to play", func() {
+				playCalled = false
+				validParams["play"] = false
+				json, _ := json.Marshal(validParams)
+				req, _ := http.NewRequest("POST", "/playlist", bytes.NewBuffer(json))
+				handler.ServeHTTP(w, req)
+				Expect(playCalled).To(BeFalse())
 			})
 		})
 	})
