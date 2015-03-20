@@ -38,6 +38,12 @@ func (c mockPlClient) PlaylistInfo(start, end int) ([]mpd.Attrs, error) {
 			"Last-Modified": "2011-10-09T11:45:11Z",
 			"Pos":           "1",
 		},
+		{
+			"file":          "http://somestream",
+			"Name":          "HTTP stream from pls",
+			"Last-Modified": "2011-10-09T11:45:11Z",
+			"Pos":           "2",
+		},
 	}
 	return pls, nil
 }
@@ -139,6 +145,7 @@ var _ = Describe("PlayListHandler", func() {
 				if err := json.NewDecoder(w.Body).Decode(&pls); err != nil {
 					Fail(fmt.Sprintf("Could not parse JSON %v", err))
 				}
+				Expect(len(pls)).To(Equal(3))
 				// Item 1 has artist & track parts, so we expect "artist - track".
 				Expect(len(pls[0])).To(Equal(2))
 				Expect(pls[0]["pos"]).To(BeEquivalentTo(1))
@@ -147,6 +154,10 @@ var _ = Describe("PlayListHandler", func() {
 				Expect(len(pls[1])).To(Equal(2))
 				Expect(pls[1]["pos"]).To(BeEquivalentTo(2))
 				Expect(pls[1]["name"]).To(Equal("Johnny Cash – Sea Of Heartbreak.mp3"))
+				// Item 3 has a 'name' field, such as from a loaded pls playlist.
+				Expect(len(pls[2])).To(Equal(2))
+				Expect(pls[2]["pos"]).To(BeEquivalentTo(3))
+				Expect(pls[2]["name"]).To(Equal("HTTP stream from pls"))
 			})
 		})
 	})
