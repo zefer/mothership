@@ -8,15 +8,24 @@ import (
 	"strconv"
 
 	"github.com/golang/glog"
-	"github.com/zefer/mothership/mpd"
+	"github.com/zefer/gompd/mpd"
 )
+
+type Playlister interface {
+	Status() (mpd.Attrs, error)
+	PlaylistInfo(int, int) ([]mpd.Attrs, error)
+	Clear() error
+	PlaylistLoad(string, int, int) error
+	Add(string) error
+	Play(int) error
+}
 
 type PlayListEntry struct {
 	Pos  int    `json:"pos"`
 	Name string `json:"name"`
 }
 
-func PlayListHandler(c *mpd.Client) http.Handler {
+func PlayListHandler(c Playlister) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
 			playListList(c, w, r)
@@ -34,12 +43,12 @@ func PlayListHandler(c *mpd.Client) http.Handler {
 // Helper that returns a start/end range to query from the current playlist.
 // We want the full playlist unless it is huge, in which case we want a small
 // chunk of it.
-func playlistRange(c *mpd.Client) ([2]int, error) {
+func playlistRange(c Playlister) ([2]int, error) {
 	// Don't fetch or display more than this many playlist entries.
 	max := 500
 	var rng [2]int
 
-	s, err := c.C.Status()
+	s, err := c.Status()
 	if err != nil {
 		return rng, err
 	}
@@ -69,7 +78,7 @@ func playlistRange(c *mpd.Client) ([2]int, error) {
 	return rng, nil
 }
 
-func playListList(c *mpd.Client, w http.ResponseWriter, r *http.Request) {
+func playListList(c Playlister, w http.ResponseWriter, r *http.Request) {
 	rng, err := playlistRange(c)
 	if err != nil {
 		glog.Errorln(err)
@@ -77,7 +86,7 @@ func playListList(c *mpd.Client, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Fetch all, or a slice of the current playlist.
-	data, err := c.C.PlaylistInfo(rng[0], rng[1])
+	data, err := c.PlaylistInfo(rng[0], rng[1])
 	if err != nil {
 		glog.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -110,15 +119,23 @@ func playListList(c *mpd.Client, w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(b))
 }
 
-func playListUpdate(c *mpd.Client, w http.ResponseWriter, r *http.Request) {
+func playListUpdate(c Playlister, w http.ResponseWriter, r *http.Request) {
 	// Parse the JSON body.
 	decoder := json.NewDecoder(r.Body)
 	var params map[string]interface{}
 	err := decoder.Decode(&params)
 	if err != nil {
 		glog.Errorln(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 		return
+	}
+
+	// Check for required fields.
+	for _, f := range []string{"uri", "type", "replace", "play"} {
+		if _, ok := params[f]; !ok {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 	}
 
 	uri := params["uri"].(string)
@@ -133,7 +150,7 @@ func playListUpdate(c *mpd.Client, w http.ResponseWriter, r *http.Request) {
 
 	// Clear the playlist.
 	if replace {
-		err := c.C.Clear()
+		err := c.Clear()
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -144,7 +161,7 @@ func playListUpdate(c *mpd.Client, w http.ResponseWriter, r *http.Request) {
 	// To play from the start of the new items in the playlist, we need to get the
 	// current playlist position.
 	if !replace {
-		data, err := c.C.Status()
+		data, err := c.Status()
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -161,9 +178,9 @@ func playListUpdate(c *mpd.Client, w http.ResponseWriter, r *http.Request) {
 
 	// Add to the playlist.
 	if typ == "playlist" {
-		err = c.C.PlaylistLoad(uri, -1, -1)
+		err = c.PlaylistLoad(uri, -1, -1)
 	} else {
-		err = c.C.Add(uri)
+		err = c.Add(uri)
 	}
 	if err != nil {
 		glog.Errorln(err)
@@ -173,7 +190,7 @@ func playListUpdate(c *mpd.Client, w http.ResponseWriter, r *http.Request) {
 
 	// Play.
 	if play {
-		err := c.C.Play(pos)
+		err := c.Play(pos)
 		if err != nil {
 			glog.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -181,5 +198,5 @@ func playListUpdate(c *mpd.Client, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusNoContent)
 }
