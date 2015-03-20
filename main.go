@@ -56,9 +56,9 @@ func main() {
 	http.Handle("/pause", handlers.PauseHandler(client.C))
 	http.Handle("/randomOn", handlers.RandomOnHandler(client.C))
 	http.Handle("/randomOff", handlers.RandomOffHandler(client.C))
-	http.Handle("/files", handlers.FileListHandler(client))
+	http.Handle("/files", handlers.FileListHandler(client.C))
 	http.Handle("/playlist", handlers.PlayListHandler(client.C))
-	http.Handle("/library/updated", handlers.LibraryUpdateHandler(client))
+	http.Handle("/library/updated", handlers.LibraryUpdateHandler(client.C))
 
 	// The front-end assets are served from a go-bindata file.
 	http.Handle("/", http.FileServer(&assetfs.AssetFS{Asset, AssetDir, ""}))
