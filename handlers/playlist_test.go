@@ -56,11 +56,17 @@ func (c mockPlClient) Clear() error {
 	return nil
 }
 
-func (c mockPlClient) PlaylistLoad(name string, start, end int) error {
+var loadedURI string = ""
+
+func (c mockPlClient) PlaylistLoad(uri string, start, end int) error {
+	loadedURI = uri
 	return nil
 }
 
+var addedURI string = ""
+
 func (c mockPlClient) Add(uri string) error {
+	addedURI = uri
 	return nil
 }
 
@@ -233,6 +239,36 @@ var _ = Describe("PlayListHandler", func() {
 				req, _ := http.NewRequest("POST", "/playlist", bytes.NewBuffer(json))
 				handler.ServeHTTP(w, req)
 				Expect(clearCalled).To(Equal(false))
+			})
+		})
+
+		Context("when type='playlist'", func() {
+			It("loads the given URI", func() {
+				loadedURI = ""
+				addedURI = ""
+				validParams["type"] = "playlist"
+				validParams["uri"] = "http://gorillas"
+				json, _ := json.Marshal(validParams)
+				req, _ := http.NewRequest("POST", "/playlist", bytes.NewBuffer(json))
+				handler.ServeHTTP(w, req)
+				Expect(loadedURI).To(Equal("http://gorillas"))
+				Expect(addedURI).To(Equal(""))
+			})
+		})
+
+		Context("when type='directory' or type='file'", func() {
+			It("adds the given URI", func() {
+				for _, t := range []string{"directory", "file"} {
+					loadedURI = ""
+					addedURI = ""
+					validParams["type"] = t
+					validParams["uri"] = "http://gorillas"
+					json, _ := json.Marshal(validParams)
+					req, _ := http.NewRequest("POST", "/playlist", bytes.NewBuffer(json))
+					handler.ServeHTTP(w, req)
+					Expect(addedURI).To(Equal("http://gorillas"))
+					Expect(loadedURI).To(Equal(""))
+				}
 			})
 		})
 	})
