@@ -14,11 +14,16 @@ import (
 
 type mockPlClient struct{}
 
+var mockStatus map[string]string = map[string]string{}
+
 func (c mockPlClient) Status() (mpd.Attrs, error) {
-	return map[string]string{}, nil
+	return mockStatus, nil
 }
 
+var requestedRange [2]int
+
 func (c mockPlClient) PlaylistInfo(start, end int) ([]mpd.Attrs, error) {
+	requestedRange = [2]int{start, end}
 	pls := []mpd.Attrs{
 		{
 			"file":          "Led Zeppelin - Houses Of The Holy/08 - Led Zeppelin - The Ocean.mp3",
@@ -80,7 +85,7 @@ var _ = Describe("PlayListHandler", func() {
 		})
 	})
 
-	Context("with a GET request", func() {
+	Context("with a GET request (list the current playlist)", func() {
 		var client *mockPlClient
 
 		BeforeEach(func() {
@@ -88,33 +93,61 @@ var _ = Describe("PlayListHandler", func() {
 			handler = handlers.PlayListHandler(client)
 		})
 
-		It("responds with 200 OK", func() {
-			req, _ := http.NewRequest("GET", "/playlist", nil)
-			handler.ServeHTTP(w, req)
-			Expect(w.Code).To(Equal(http.StatusOK))
+		Describe("the MPD query", func() {
+			Context("when there are less than 500 items on the playlist", func() {
+				BeforeEach(func() {
+					mockStatus = map[string]string{"playlistlength": "12"}
+					req, _ := http.NewRequest("GET", "/playlist", nil)
+					handler.ServeHTTP(w, req)
+				})
+				It("requests the full playlist from MPD", func() {
+					Expect(requestedRange[0]).To(Equal(-1))
+					Expect(requestedRange[1]).To(Equal(-1))
+				})
+			})
+
+			Context("when there are more than 500 items on the playlist", func() {
+				BeforeEach(func() {
+					mockStatus = map[string]string{"playlistlength": "501", "song": "123"}
+					req, _ := http.NewRequest("GET", "/playlist", nil)
+					handler.ServeHTTP(w, req)
+				})
+				It("requests a slice of the playlist from MPD. Current pos -1 to +500", func() {
+					Expect(requestedRange[0]).To(Equal(122))
+					Expect(requestedRange[1]).To(Equal(623))
+				})
+			})
 		})
 
-		It("responds with the JSON content-type", func() {
-			req, _ := http.NewRequest("GET", "/playlist", nil)
-			handler.ServeHTTP(w, req)
-			Expect(w.HeaderMap["Content-Type"][0]).To(Equal("application/json"))
-		})
+		Describe("the response", func() {
+			It("responds with 200 OK", func() {
+				req, _ := http.NewRequest("GET", "/playlist", nil)
+				handler.ServeHTTP(w, req)
+				Expect(w.Code).To(Equal(http.StatusOK))
+			})
 
-		It("responds with a JSON array of playlist items", func() {
-			req, _ := http.NewRequest("GET", "/playlist", nil)
-			handler.ServeHTTP(w, req)
-			var pls []map[string]interface{}
-			if err := json.NewDecoder(w.Body).Decode(&pls); err != nil {
-				Fail(fmt.Sprintf("Could not parse JSON %v", err))
-			}
-			// Item 1 has artist & track parts, so we expect "artist - track".
-			Expect(len(pls[0])).To(Equal(2))
-			Expect(pls[0]["pos"]).To(BeEquivalentTo(1))
-			Expect(pls[0]["name"]).To(Equal("Led Zeppelin - The Ocean"))
-			// Item 2 doesn't have artist & track parts, so we expect "file.mp3".
-			Expect(len(pls[1])).To(Equal(2))
-			Expect(pls[1]["pos"]).To(BeEquivalentTo(2))
-			Expect(pls[1]["name"]).To(Equal("Johnny Cash – Sea Of Heartbreak.mp3"))
+			It("responds with the JSON content-type", func() {
+				req, _ := http.NewRequest("GET", "/playlist", nil)
+				handler.ServeHTTP(w, req)
+				Expect(w.HeaderMap["Content-Type"][0]).To(Equal("application/json"))
+			})
+
+			It("responds with a JSON array of playlist items", func() {
+				req, _ := http.NewRequest("GET", "/playlist", nil)
+				handler.ServeHTTP(w, req)
+				var pls []map[string]interface{}
+				if err := json.NewDecoder(w.Body).Decode(&pls); err != nil {
+					Fail(fmt.Sprintf("Could not parse JSON %v", err))
+				}
+				// Item 1 has artist & track parts, so we expect "artist - track".
+				Expect(len(pls[0])).To(Equal(2))
+				Expect(pls[0]["pos"]).To(BeEquivalentTo(1))
+				Expect(pls[0]["name"]).To(Equal("Led Zeppelin - The Ocean"))
+				// Item 2 doesn't have artist & track parts, so we expect "file.mp3".
+				Expect(len(pls[1])).To(Equal(2))
+				Expect(pls[1]["pos"]).To(BeEquivalentTo(2))
+				Expect(pls[1]["name"]).To(Equal("Johnny Cash – Sea Of Heartbreak.mp3"))
+			})
 		})
 	})
 })
