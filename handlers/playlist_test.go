@@ -49,7 +49,10 @@ func (c mockPlClient) PlaylistInfo(start, end int) ([]mpd.Attrs, error) {
 	return pls, nil
 }
 
+var clearCalled bool = false
+
 func (c mockPlClient) Clear() error {
+	clearCalled = true
 	return nil
 }
 
@@ -207,6 +210,30 @@ var _ = Describe("PlayListHandler", func() {
 					req, _ := http.NewRequest("POST", "/playlist", bytes.NewBuffer(json))
 					handler.ServeHTTP(w, req)
 					Expect(w.Code).To(Equal(http.StatusBadRequest))
+				})
+			})
+		})
+
+		Describe("clearing the playlist", func() {
+			Context("with replace=true", func() {
+				It("clears the playlist", func() {
+					clearCalled = false
+					validParams["replace"] = true
+					json, _ := json.Marshal(validParams)
+					req, _ := http.NewRequest("POST", "/playlist", bytes.NewBuffer(json))
+					handler.ServeHTTP(w, req)
+					Expect(clearCalled).To(Equal(true))
+				})
+			})
+
+			Context("with replace=false", func() {
+				It("does not clear the playlist", func() {
+					clearCalled = false
+					validParams["replace"] = false
+					json, _ := json.Marshal(validParams)
+					req, _ := http.NewRequest("POST", "/playlist", bytes.NewBuffer(json))
+					handler.ServeHTTP(w, req)
+					Expect(clearCalled).To(Equal(false))
 				})
 			})
 		})
