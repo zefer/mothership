@@ -18,6 +18,6 @@ func PreviousHandler(c Previouser) http.Handler {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusNoContent)
 	})
 }

@@ -17,7 +17,7 @@ func random(c Randomer, on bool, w http.ResponseWriter) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusNoContent)
 }
 func RandomOnHandler(c Randomer) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

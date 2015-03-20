@@ -41,7 +41,7 @@ var _ = Describe("PreviousHandler", func() {
 
 		It("calls Previous() and responds OK", func() {
 			Expect(called).To(BeTrue())
-			Expect(w.Code).To(Equal(http.StatusOK))
+			Expect(w.Code).To(Equal(http.StatusNoContent))
 			Expect(w.Body.String()).To(Equal(""))
 		})
 	})

@@ -18,6 +18,6 @@ func NextHandler(c Nexter) http.Handler {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusNoContent)
 	})
 }

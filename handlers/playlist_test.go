@@ -187,6 +187,15 @@ var _ = Describe("PlayListHandler", func() {
 		})
 
 		Describe("POST data validation", func() {
+			Context("with valid params", func() {
+				It("responds 204 no content", func() {
+					json, _ := json.Marshal(validParams)
+					req, _ := http.NewRequest("POST", "/playlist", bytes.NewBuffer(json))
+					handler.ServeHTTP(w, req)
+					Expect(w.Code).To(Equal(http.StatusNoContent))
+				})
+			})
+
 			Context("with un-parseable JSON", func() {
 				It("responds 400 bad request", func() {
 					var json = []byte(`{not-json`)

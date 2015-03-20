@@ -46,7 +46,7 @@ var _ = Describe("PauseHandler", func() {
 		It("calls Pause(true) and responds OK", func() {
 			Expect(called).To(BeTrue())
 			Expect(paused).To(BeTrue())
-			Expect(w.Code).To(Equal(http.StatusOK))
+			Expect(w.Code).To(Equal(http.StatusNoContent))
 			Expect(w.Body.String()).To(Equal(""))
 		})
 	})

@@ -47,7 +47,7 @@ var _ = Describe("RandomOnHandler", func() {
 			It("calls Random(true) and responds OK", func() {
 				Expect(called).To(BeTrue())
 				Expect(randomed).To(BeTrue())
-				Expect(w.Code).To(Equal(http.StatusOK))
+				Expect(w.Code).To(Equal(http.StatusNoContent))
 				Expect(w.Body.String()).To(Equal(""))
 			})
 		})
@@ -85,7 +85,7 @@ var _ = Describe("RandomOnHandler", func() {
 			It("calls Random(false) and responds OK", func() {
 				Expect(called).To(BeTrue())
 				Expect(randomed).To(BeFalse())
-				Expect(w.Code).To(Equal(http.StatusOK))
+				Expect(w.Code).To(Equal(http.StatusNoContent))
 				Expect(w.Body.String()).To(Equal(""))
 			})
 		})

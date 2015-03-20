@@ -46,7 +46,7 @@ var _ = Describe("PlayHandler", func() {
 		It("calls Play(-1) and responds OK", func() {
 			Expect(called).To(BeTrue())
 			Expect(playPos).To(Equal(-1))
-			Expect(w.Code).To(Equal(http.StatusOK))
+			Expect(w.Code).To(Equal(http.StatusNoContent))
 			Expect(w.Body.String()).To(Equal(""))
 		})
 	})
