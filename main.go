@@ -5,7 +5,7 @@ import (
 	"flag"
 	"net/http"
 
-	"github.com/elazarl/go-bindata-assetfs"
+	assetfs "github.com/elazarl/go-bindata-assetfs"
 	"github.com/golang/glog"
 
 	"github.com/zefer/mothership/handlers"
@@ -61,7 +61,9 @@ func main() {
 	http.Handle("/library/updated", handlers.LibraryUpdateHandler(client.C))
 
 	// The front-end assets are served from a go-bindata file.
-	http.Handle("/", http.FileServer(&assetfs.AssetFS{Asset, AssetDir, ""}))
+	http.Handle("/", http.FileServer(&assetfs.AssetFS{
+		Asset: Asset, AssetDir: AssetDir, Prefix: "",
+	}))
 
 	glog.Infof("Listening on %s.", *port)
 	err := http.ListenAndServe(*port, nil)
