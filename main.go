@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"net/http"
 
@@ -25,7 +24,7 @@ func main() {
 
 	// Send the browser the MPD state when they first connect.
 	websocket.OnConnect(func(c *websocket.Conn) {
-		b, err := mpdStatus()
+		b, err := mpdStatusJSON(client.C)
 		if err == nil {
 			c.Send(b)
 		}
@@ -37,7 +36,7 @@ func main() {
 	// When mpd state changes, broadcast it to all websockets.
 	watch.OnStateChange(func(s string) {
 		glog.Info("MPD state change in subsystem: ", s)
-		b, err := mpdStatus()
+		b, err := mpdStatusJSON(client.C)
 		if err != nil {
 			glog.Errorln(err)
 			return
@@ -71,20 +70,4 @@ func main() {
 		glog.Errorf("http.ListenAndServe %s failed: %s", *port, err)
 		return
 	}
-}
-
-func mpdStatus() ([]byte, error) {
-	data, err := client.C.Status()
-	if err != nil {
-		return nil, err
-	}
-	song, err := client.C.CurrentSong()
-	if err != nil {
-		return nil, err
-	}
-	for k, v := range song {
-		data[k] = v
-	}
-	b, err := json.Marshal(data)
-	return b, err
 }
