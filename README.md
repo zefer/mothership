@@ -1,6 +1,10 @@
 # Mothership
 
-A web UI for [MPD](http://www.musicpd.org/) built with Go, AngularJS & WebSockets.
+A web UI for [MPD](http://www.musicpd.org/) built with Go, AngularJS &
+WebSockets.
+
+MPD state changes are broadcasted to all connected clients via WebSockets, which
+keeps all users in sync with what is currently playing.
 
 Builds to a single, self-contained binary making it easy to run on any platform.
 
@@ -10,8 +14,6 @@ Builds to a single, self-contained binary making it easy to run on any platform.
 # Build the Angular static html front-end app
 (cd frontend && grunt build)
 # Run the API & serve the static front-end
-go run *.go -logtostderr=true -mpdaddr=192.168.33.20:6600 -port :8080
-# Or build the binary & run that
 go build && mothership -logtostderr=true -mpdaddr=192.168.33.20:6600 -port :8080
 # open the app in your browser
 open localhost:8080
@@ -32,8 +34,11 @@ mothership -logtostderr=true -mpdaddr=192.168.33.20:6600 -port :8080
 open localhost:8080
 ```
 
-To cross-compile for a Raspberry Pi use `GOOS=linux GOARM=6 GOARCH=arm go build`
+To cross-compile for a Raspberry Pi use `GOOS=linux GOARM=7 GOARCH=arm go build`
+
+Note that `GOARM=6` should be used for the Raspberry Pi 1 range, `GOARM=7` for
+the Raspberry Pi 2 range (released early 2015).
 
 ## Work in progress
 
-![UI](https://dl.dropboxusercontent.com/u/89410/player.gif)
+![UI](https://dl.dropboxusercontent.com/u/89410/mothership.gif)
