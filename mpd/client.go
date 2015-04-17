@@ -54,3 +54,51 @@ func (c *Client) keepAlive() {
 		time.Sleep(retryDur)
 	}
 }
+
+func (c *Client) Pause(pause bool) error {
+	return c.C.Pause(pause)
+}
+
+func (c *Client) ListInfo(uri string) ([]gompd.Attrs, error) {
+	return c.C.ListInfo(uri)
+}
+
+func (c *Client) Update(uri string) (jobID int, err error) {
+	return c.C.Update(uri)
+}
+
+func (c *Client) Next() error {
+	return c.C.Next()
+}
+
+func (c *Client) Previous() error {
+	return c.C.Previous()
+}
+
+func (c *Client) Play(pos int) error {
+	return c.C.Play(pos)
+}
+
+func (c *Client) Status() (gompd.Attrs, error) {
+	return c.C.Status()
+}
+
+func (c *Client) PlaylistInfo(start, end int) ([]gompd.Attrs, error) {
+	return c.C.PlaylistInfo(start, end)
+}
+
+func (c *Client) Clear() error {
+	return c.C.Clear()
+}
+
+func (c *Client) PlaylistLoad(name string, start, end int) error {
+	return c.C.PlaylistLoad(name, start, end)
+}
+
+func (c *Client) Add(uri string) error {
+	return c.C.Add(uri)
+}
+
+func (c *Client) Random(random bool) error {
+	return c.C.Random(random)
+}
