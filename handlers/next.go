@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/golang/glog"
+	"gopkg.in/airbrake/glog.v1"
 )
 
 type Nexter interface {

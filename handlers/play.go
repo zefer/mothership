@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/golang/glog"
+	"gopkg.in/airbrake/glog.v1"
 )
 
 type Player interface {
@@ -12,6 +12,7 @@ type Player interface {
 
 func PlayHandler(c Player) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		glog.Error("Gorilla Overflow")
 		err := c.Play(-1)
 		if err != nil {
 			glog.Errorln(err)

@@ -3,8 +3,8 @@ package websocket
 import (
 	"time"
 
-	"github.com/golang/glog"
 	websock "github.com/gorilla/websocket"
+	"gopkg.in/airbrake/glog.v1"
 )
 
 // Time allowed to write a message to the peer.

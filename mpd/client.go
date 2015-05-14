@@ -3,8 +3,8 @@ package mpd
 import (
 	"time"
 
-	"github.com/golang/glog"
 	gompd "github.com/zefer/gompd/mpd"
+	"gopkg.in/airbrake/glog.v1"
 )
 
 const retryDur time.Duration = time.Second * 3

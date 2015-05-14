@@ -5,7 +5,8 @@ import (
 	"net/http"
 
 	assetfs "github.com/elazarl/go-bindata-assetfs"
-	"github.com/golang/glog"
+	"gopkg.in/airbrake/glog.v1"
+	"gopkg.in/airbrake/gobrake.v1"
 
 	"github.com/zefer/mothership/handlers"
 	"github.com/zefer/mothership/mpd"
@@ -16,11 +17,21 @@ var (
 	client  *mpd.Client
 	mpdAddr = flag.String("mpdaddr", "127.0.0.1:6600", "MPD address")
 	port    = flag.String("port", ":8080", "listen port")
+
+	abProjectID = flag.Int64("abprojectid", 0, "Airbrake project ID")
+	abApiKey    = flag.String("abapikey", "", "Airbrake API key")
+	abEnv       = flag.String("abenv", "development", "Airbrake environment name")
 )
 
 func main() {
 	flag.Parse()
 	glog.Infof("Starting API for MPD at %s.", *mpdAddr)
+
+	if *abProjectID > int64(0) && *abApiKey != "" {
+		airbrake := gobrake.NewNotifier(*abProjectID, *abApiKey)
+		airbrake.SetContext("environment", *abEnv)
+		glog.Gobrake = airbrake
+	}
 
 	// Send the browser the MPD state when they first connect.
 	websocket.OnConnect(func(c *websocket.Conn) {

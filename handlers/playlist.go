@@ -7,8 +7,8 @@ import (
 	"path"
 	"strconv"
 
-	"github.com/golang/glog"
 	"github.com/zefer/gompd/mpd"
+	"gopkg.in/airbrake/glog.v1"
 )
 
 type Playlister interface {

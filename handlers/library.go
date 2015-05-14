@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/golang/glog"
+	"gopkg.in/airbrake/glog.v1"
 )
 
 type LibraryUpdater interface {
