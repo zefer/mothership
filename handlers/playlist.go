@@ -46,36 +46,37 @@ func PlayListHandler(c Playlister) http.Handler {
 func playlistRange(c Playlister) ([2]int, error) {
 	// Don't fetch or display more than this many playlist entries.
 	max := 500
-	var rng [2]int
+	// Give MPD a start/end of -1/-1 to fetch the full playlist.
+	var rngAll = [2]int{-1, -1}
+	// A sensible default for when we can't determine the current playlist size.
+	var rngFirst = [2]int{0, max}
 
 	s, err := c.Status()
 	if err != nil {
-		return rng, err
+		return rngFirst, err
 	}
 	if _, ok := s["song"]; !ok {
 		// No current song playing, so use the whole (empty) playlist.
-		return [2]int{-1, -1}, nil
+		return rngAll, nil
 	}
 
 	pos, err := strconv.Atoi(s["song"])
 	if err != nil {
-		return rng, err
+		return rngFirst, err
 	}
 	length, err := strconv.Atoi(s["playlistlength"])
 	if err != nil {
-		return rng, err
+		return rngFirst, err
 	}
 
 	if length > max {
 		// Fetch this chunk of the current playlist. Adjust the starting position to
 		// return n items before the current song, for context.
-		rng = [2]int{pos - 1, pos + max}
+		return [2]int{pos - 1, pos + max}, nil
 	} else {
 		// Fetch all of the current playlist.
-		rng = [2]int{-1, -1}
+		return rngAll, nil
 	}
-
-	return rng, nil
 }
 
 func playListList(c Playlister, w http.ResponseWriter, r *http.Request) {
