@@ -128,14 +128,29 @@ var _ = Describe("PlayListHandler", func() {
 			})
 
 			Context("when there are more than 500 items on the playlist", func() {
-				BeforeEach(func() {
-					mockStatus = map[string]string{"playlistlength": "501", "song": "123"}
-					req, _ := http.NewRequest("GET", "/playlist", nil)
-					handler.ServeHTTP(w, req)
+				Context("when the current playlist position isn't the first song", func() {
+					BeforeEach(func() {
+						mockStatus = map[string]string{"playlistlength": "501", "song": "123"}
+						req, _ := http.NewRequest("GET", "/playlist", nil)
+						handler.ServeHTTP(w, req)
+					})
+					It("requests a slice of the playlist from MPD. Current pos -1 to +500", func() {
+						Expect(requestedRange[0]).To(Equal(122))
+						Expect(requestedRange[1]).To(Equal(623))
+					})
 				})
-				It("requests a slice of the playlist from MPD. Current pos -1 to +500", func() {
-					Expect(requestedRange[0]).To(Equal(122))
-					Expect(requestedRange[1]).To(Equal(623))
+
+				Context("when the current playlist position is the first song", func() {
+					BeforeEach(func() {
+						mockStatus = map[string]string{"playlistlength": "501", "song": "0"}
+						req, _ := http.NewRequest("GET", "/playlist", nil)
+						handler.ServeHTTP(w, req)
+					})
+					// Checking we don't query with a negative start index.
+					It("requests a slice of the playlist from MPD. 0 to 500", func() {
+						Expect(requestedRange[0]).To(Equal(0))
+						Expect(requestedRange[1]).To(Equal(500))
+					})
 				})
 			})
 		})

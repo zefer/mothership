@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"net/http"
 	"path"
 	"strconv"
@@ -72,7 +73,8 @@ func playlistRange(c Playlister) ([2]int, error) {
 	if length > max {
 		// Fetch this chunk of the current playlist. Adjust the starting position to
 		// return n items before the current song, for context.
-		return [2]int{pos - 1, pos + max}, nil
+		start := math.Max(float64(0), float64(pos-1))
+		return [2]int{int(start), pos + max}, nil
 	} else {
 		// Fetch all of the current playlist.
 		return rngAll, nil
