@@ -1,41 +1,47 @@
-(->
-  angular.module('player', ['ui.router', 'ui.bootstrap']).config (
-    $stateProvider, $urlRouterProvider) ->
-    'use strict'
+mod = angular.module 'player', [
+  'ui.router'
+  'ui.bootstrap'
+]
 
-    $urlRouterProvider.otherwise('/playing')
+mod.config ($stateProvider, $urlRouterProvider) ->
 
-    $stateProvider.state('main'
-      abstract: true
-      views:
-        'main':
-          controller: 'PlayerCtrl as playerCtrl'
-          templateUrl: 'partials/app.html'
+  $urlRouterProvider.otherwise('/playing')
 
-    ).state('playing'
-      url: '/playing'
-      parent: 'main'
-      templateUrl: 'partials/playing.html'
+  $stateProvider.state
+    name: 'main'
+    abstract: true
+    views:
+      'main':
+        controller: 'PlayerCtrl as playerCtrl'
+        templateUrl: 'partials/app.html'
 
-    ).state('playlist',
-      url: '/playlist'
-      parent: 'main'
-      controller: 'PlaylistCtrl as playlistCtrl'
-      templateUrl: 'partials/playlist.html'
+  $stateProvider.state
+    name: 'playing'
+    url: '/playing'
+    parent: 'main'
+    templateUrl: 'partials/playing.html'
 
-    ).state('browse',
-      url: '/browse'
-      parent: 'main'
-      controller: 'BrowseCtrl as browseCtrl'
-      templateUrl: 'partials/browse.html'
+  $stateProvider.state
+    name: 'playlist',
+    url: '/playlist'
+    parent: 'main'
+    controller: 'PlaylistCtrl as playlistCtrl'
+    templateUrl: 'partials/playlist.html'
 
-    # last state, because of the wildcard url match
-    ).state('browse.uri',
-      url: '/{uri:.*}?page&sort&direction'
-      parent: 'main'
-      controller: 'BrowseCtrl as browseCtrl'
-      templateUrl: 'partials/browse.html'
-    )
+  $stateProvider.state
+    name: 'browse',
+    url: '/browse'
+    parent: 'main'
+    controller: 'BrowseCtrl as browseCtrl'
+    templateUrl: 'partials/browse.html'
 
-)().run ($rootScope, $state) ->
+  # last state, because of the wildcard url match
+  $stateProvider.state
+    name: 'browse.uri',
+    url: '/{uri:.*}?page&sort&direction'
+    parent: 'main'
+    controller: 'BrowseCtrl as browseCtrl'
+    templateUrl: 'partials/browse.html'
+
+mod.run ($rootScope, $state) ->
   $rootScope.$state = $state
