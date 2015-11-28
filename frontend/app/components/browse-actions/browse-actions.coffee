@@ -1,8 +1,8 @@
 mod = angular.module('mothership')
 
-mod.directive 'mBrowseActions', ->
+mod.directive 'browseActions', ->
   restrict: 'E'
-  templateUrl: 'js/m-browse-actions/m-browse-actions.html'
+  templateUrl: 'components/browse-actions/browse-actions.html'
 
   scope:
     path: '='
