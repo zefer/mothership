@@ -9,7 +9,7 @@
 
   <nav>
 
-    <sort-by></sort-by>
+    <m-sort-by></m-sort-by>
 
     <ul class="pagination" ng-show="pages.length > 1">
       <li><a ui-sref="{ page: page - 1 }">&laquo;</a></li>
@@ -32,7 +32,7 @@
 
       {{::item.base}}
 
-      <browse-actions path="item.path" type="item.type"></browse-actions>
+      <m-browse-actions path="item.path" type="item.type"></m-browse-actions>
     </div>
 
   </div>

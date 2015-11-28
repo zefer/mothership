@@ -1,9 +1,9 @@
 mod = angular.module 'mothership'
 
-mod.directive 'playerControls', ->
+mod.directive 'mPlayerStatus', ->
   restrict: 'E'
   scope: {}
-  templateUrl: 'components/player-controls/player-controls.html'
+  templateUrl: 'components/m-player-status/m-player-status.html'
 
   controller: ($scope, player) ->
     vm = this

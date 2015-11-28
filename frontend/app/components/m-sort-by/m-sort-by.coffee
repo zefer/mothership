@@ -1,8 +1,8 @@
 mod = angular.module('mothership')
 
-mod.directive 'sortBy', ->
+mod.directive 'mSortBy', ->
   restrict: 'E'
-  templateUrl: 'components/sort-by/sort-by.html'
+  templateUrl: 'components/m-sort-by/m-sort-by.html'
   scope: {}
 
   controller: ->
