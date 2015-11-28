@@ -1,4 +1,4 @@
-mod = angular.module('player')
+mod = angular.module('mothership')
 
 MPD_STATUS = 'mpd:status'
 CONN_STATUS = 'conn:status'

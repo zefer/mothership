@@ -1,4 +1,4 @@
-mod = angular.module('player')
+mod = angular.module('mothership')
 
 mod.controller 'PlaylistCtrl', ($scope, playlist) ->
   'use strict'

@@ -1,4 +1,4 @@
-mod = angular.module('player')
+mod = angular.module('mothership')
 
 PLAYLIST_STATE_CHANGE = 'playlist:state_change'
 

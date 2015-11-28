@@ -1,4 +1,4 @@
-mod = angular.module('player')
+mod = angular.module('mothership')
 
 PLAYER_STATE_CHANGE = 'player:state_change'
 

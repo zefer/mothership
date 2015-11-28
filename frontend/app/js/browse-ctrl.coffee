@@ -1,4 +1,4 @@
-mod = angular.module('player')
+mod = angular.module('mothership')
 
 mod.controller 'BrowseCtrl', (
   $scope, $stateParams, $state, library, playlist, remember
