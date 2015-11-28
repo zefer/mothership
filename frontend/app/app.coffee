@@ -30,15 +30,7 @@ mod.config ($stateProvider, $urlRouterProvider) ->
 
   $stateProvider.state
     name: 'browse',
-    url: '/browse'
-    parent: 'main'
-    controller: 'BrowseCtrl as browseCtrl'
-    templateUrl: 'partials/browse.html'
-
-  # last state, because of the wildcard url match
-  $stateProvider.state
-    name: 'browse.uri',
-    url: '/{uri:.*}?page&sort&direction'
+    url: '/browse?page&sort&direction'
     parent: 'main'
     controller: 'BrowseCtrl as browseCtrl'
     templateUrl: 'partials/browse.html'
