@@ -15,6 +15,7 @@ module.exports = (grunt) ->
           dest: '<%= config.dist_dir %>/'
           src: [
             'index.html'
+            'components/**/*.html'
             'partials/*'
             'assets/*'
             'js/**/*.html'
@@ -63,8 +64,11 @@ module.exports = (grunt) ->
     coffee:
       compile:
         expand: true
-        cwd: 'app/js'
-        src: ['**/*.coffee']
+        cwd: 'app'
+        src: [
+          'app.coffee'
+          '**/*.coffee'
+        ]
         dest: '<%= config.build_dir %>/js'
         ext: '.js'
         options:
