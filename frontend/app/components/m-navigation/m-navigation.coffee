@@ -9,4 +9,12 @@ mod.directive 'mNavigation', ->
     vm = this
 
     $scope.playlist = playlist
-    $scope.state = $state
+
+    $scope.active = (tabName) ->
+      active = if $state.includes('playing')
+        'playing'
+      else if $state.includes('playlist')
+        'playlist'
+      else
+        'browse'
+      tabName == active

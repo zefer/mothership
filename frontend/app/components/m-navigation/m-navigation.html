@@ -1,10 +1,10 @@
-<li ng-class="{active:state.includes('playing')}">
+<li ng-class="{ active:active('playing') }">
   <a ui-sref="playing">Playing</a>
 </li>
-<li ng-class="{active:state.includes('browse')}">
+<li ng-class="{ active:active('browse') }">
   <a ui-sref="browse">Browse</a>
 </li>
-<li ng-class="{active:state.includes('playlist')}">
+<li ng-class="{ active:active('playlist') }">
   <a ui-sref="playlist">Playlist<span class="badge pull-right">
     {{playlist.position}}/{{playlist.length}}
   </span></a>
