@@ -3,9 +3,17 @@ mod = angular.module 'mothership', [
   'ui.bootstrap'
 ]
 
-mod.config ($stateProvider, $urlRouterProvider) ->
+mod.config (
+  $stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider
+) ->
 
   $urlRouterProvider.otherwise('/playing')
+
+  valToString = (val) -> if val? then val.toString() else val
+  $urlMatcherFactoryProvider.type 'nonURIEncoded',
+    encode: valToString
+    decode: valToString
+    is: -> true
 
   $stateProvider.state
     name: 'layout'
@@ -35,7 +43,7 @@ mod.config ($stateProvider, $urlRouterProvider) ->
   # This needs to be the last state, because of the wildcard url match.
   $stateProvider.state
     name: 'browse.uri'
-    url: '/{uri:.*}?page&sort&direction'
+    url: '/{uri:nonURIEncoded}?page&sort&direction'
     parent: 'layout'
     template: '<m-browse></m-browse>'
 
