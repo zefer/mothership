@@ -12,7 +12,6 @@ mod.config ($stateProvider, $urlRouterProvider) ->
     abstract: true
     views:
       'main':
-        controller: 'PlayerCtrl as playerCtrl'
         templateUrl: 'partials/app.html'
 
   $stateProvider.state
