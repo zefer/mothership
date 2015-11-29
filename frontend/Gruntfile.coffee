@@ -52,7 +52,7 @@ module.exports = (grunt) ->
           style: 'expanded'
         files: [
           expand: true
-          cwd: 'app/css'
+          cwd: 'app'
           src: ['**/*.less']
           dest: '<%= config.build_dir %>/css'
           ext: '.css'
