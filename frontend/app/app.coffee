@@ -22,7 +22,7 @@ mod.config ($stateProvider, $urlRouterProvider) ->
     template: '<m-player-status></m-player-status>'
 
   $stateProvider.state
-    name: 'playlist',
+    name: 'playlist'
     url: '/playlist'
     parent: 'main'
     controller: 'PlaylistCtrl as playlistCtrl'
@@ -32,8 +32,14 @@ mod.config ($stateProvider, $urlRouterProvider) ->
     name: 'browse',
     url: '/browse?page&sort&direction'
     parent: 'main'
-    controller: 'BrowseCtrl as browseCtrl'
-    templateUrl: 'partials/browse.html'
+    template: '<m-browse></m-browse>'
+
+  # last state, because of the wildcard url match
+  $stateProvider.state
+    name: 'browse.uri'
+    url: '/{uri:.*}?page&sort&direction'
+    parent: 'main'
+    template: '<m-browse></m-browse>'
 
 mod.run ($rootScope, $state) ->
   $rootScope.$state = $state
