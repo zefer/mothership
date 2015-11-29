@@ -11,7 +11,6 @@
 </nav>
 
 <div class="list-group">
-
   <div ng-repeat="item in ::items" ui-sref="browse.uri({ uri: item.path })"
     class="list-group-item">
 
@@ -23,5 +22,9 @@
 
     <m-browse-actions path="item.path" type="item.type"></m-browse-actions>
   </div>
-
 </div>
+
+<nav>
+  <m-sort-by></m-sort-by>
+  <m-pagination pages="pages" page="page"></m-pagination>
+</nav>
