@@ -25,8 +25,7 @@ mod.config ($stateProvider, $urlRouterProvider) ->
     name: 'playlist'
     url: '/playlist'
     parent: 'main'
-    controller: 'PlaylistCtrl as playlistCtrl'
-    templateUrl: 'partials/playlist.html'
+    template: '<m-playlist></m-playlist>'
 
   $stateProvider.state
     name: 'browse',
