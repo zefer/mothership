@@ -8,35 +8,35 @@ mod.config ($stateProvider, $urlRouterProvider) ->
   $urlRouterProvider.otherwise('/playing')
 
   $stateProvider.state
-    name: 'main'
+    name: 'layout'
     abstract: true
     views:
-      'main':
-        template: '<div><m-header></m-header><main ui-view></main></div>'
+      'layout':
+        template: '<m-header></m-header><main ui-view></main>'
 
   $stateProvider.state
     name: 'playing'
     url: '/playing'
-    parent: 'main'
+    parent: 'layout'
     template: '<m-player-status></m-player-status>'
 
   $stateProvider.state
     name: 'playlist'
     url: '/playlist'
-    parent: 'main'
+    parent: 'layout'
     template: '<m-playlist></m-playlist>'
 
   $stateProvider.state
     name: 'browse',
     url: '/browse?page&sort&direction'
-    parent: 'main'
+    parent: 'layout'
     template: '<m-browse></m-browse>'
 
-  # last state, because of the wildcard url match
+  # This needs to be the last state, because of the wildcard url match.
   $stateProvider.state
     name: 'browse.uri'
     url: '/{uri:.*}?page&sort&direction'
-    parent: 'main'
+    parent: 'layout'
     template: '<m-browse></m-browse>'
 
 mod.run ($rootScope, $state) ->
