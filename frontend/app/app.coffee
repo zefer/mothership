@@ -18,7 +18,7 @@ mod.config ($stateProvider, $urlRouterProvider) ->
     name: 'playing'
     url: '/playing'
     parent: 'layout'
-    template: '<m-player-status></m-player-status>'
+    template: '<m-playing></m-playing>'
 
   $stateProvider.state
     name: 'playlist'
