@@ -12,7 +12,7 @@ mod.config ($stateProvider, $urlRouterProvider) ->
     abstract: true
     views:
       'main':
-        templateUrl: 'partials/app.html'
+        template: '<div><m-header></m-header><main ui-view></main></div>'
 
   $stateProvider.state
     name: 'playing'
