@@ -1,4 +1,6 @@
-mod = angular.module('mothership')
+mod = angular.module('mothership.playlist', [
+  'mothership.mpd'
+])
 
 PLAYLIST_STATE_CHANGE = 'playlist:state_change'
 

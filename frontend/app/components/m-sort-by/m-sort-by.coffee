@@ -1,4 +1,4 @@
-mod = angular.module('mothership')
+mod = angular.module('mothership.mSortBy', [])
 
 mod.directive 'mSortBy', ->
   restrict: 'E'

@@ -1,4 +1,6 @@
-mod = angular.module 'mothership'
+mod = angular.module('mothership.mNavigation', [
+  'mothership.playlist'
+])
 
 mod.directive 'mNavigation', ->
   restrict: 'A'

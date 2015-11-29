@@ -1,5 +1,5 @@
 describe 'remember', ->
-  beforeEach module('mothership')
+  beforeEach module('mothership.remember')
 
   remember = null
 

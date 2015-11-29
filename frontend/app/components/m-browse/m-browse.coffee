@@ -1,4 +1,10 @@
-mod = angular.module('mothership')
+mod = angular.module('mothership.mBrowse', [
+  'mothership.library'
+  'mothership.remember'
+  'mothership.mSortBy'
+  'mothership.mPagination'
+  'mothership.mBrowseActions'
+])
 
 mod.directive 'mBrowse', ->
   restrict: 'E'

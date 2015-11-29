@@ -1,4 +1,7 @@
-mod = angular.module 'mothership'
+mod = angular.module('mothership.mHeader', [
+  'mothership.mPlayerControls'
+  'mothership.mNavigation'
+])
 
 mod.directive 'mHeader', ->
   restrict: 'E'

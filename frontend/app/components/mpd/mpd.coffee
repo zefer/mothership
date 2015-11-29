@@ -1,4 +1,4 @@
-mod = angular.module('mothership')
+mod = angular.module('mothership.mpd', [])
 
 MPD_STATUS = 'mpd:status'
 CONN_STATUS = 'conn:status'

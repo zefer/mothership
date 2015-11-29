@@ -1,7 +1,7 @@
 # Calculates the elapsed time for the current track & updates the scope directly
 # to allow the UI to update.
 
-mod = angular.module('mothership')
+mod = angular.module('mothership.progress', [])
 
 mod.factory 'progress', ($interval) ->
   'use strict'

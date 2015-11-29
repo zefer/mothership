@@ -1,7 +1,12 @@
-mod = angular.module 'mothership', [
+mod = angular.module('mothership', [
+  'ng'
   'ui.router'
   'ui.bootstrap'
-]
+  'mothership.mHeader'
+  'mothership.mPlaying'
+  'mothership.mPlaylist'
+  'mothership.mBrowse'
+])
 
 mod.config (
   $stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider

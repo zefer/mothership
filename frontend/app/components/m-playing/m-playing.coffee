@@ -1,4 +1,6 @@
-mod = angular.module 'mothership'
+mod = angular.module('mothership.mPlaying', [
+  'mothership.player'
+])
 
 mod.directive 'mPlaying', ->
   restrict: 'E'

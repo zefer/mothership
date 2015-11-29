@@ -1,4 +1,6 @@
-mod = angular.module('mothership')
+mod = angular.module('mothership.library', [
+  'mothership.mpd'
+])
 
 mod.factory 'library', ($q, mpd) ->
   'use strict'

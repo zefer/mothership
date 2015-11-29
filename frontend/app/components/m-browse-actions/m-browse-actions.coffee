@@ -1,4 +1,7 @@
-mod = angular.module('mothership')
+mod = angular.module('mothership.mBrowseActions', [
+  'mothership.playlist'
+  'mothership.library'
+])
 
 mod.directive 'mBrowseActions', ->
   restrict: 'E'

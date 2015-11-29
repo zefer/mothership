@@ -1,4 +1,4 @@
-mod = angular.module('mothership')
+mod = angular.module('mothership.remember', [])
 
 mod.factory 'remember', ->
   'use strict'

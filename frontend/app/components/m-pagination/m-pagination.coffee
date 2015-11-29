@@ -1,4 +1,4 @@
-mod = angular.module 'mothership'
+mod = angular.module('mothership.mPagination', [])
 
 mod.directive 'mPagination', ->
   restrict: 'E'

@@ -1,4 +1,7 @@
-mod = angular.module('mothership')
+mod = angular.module('mothership.player', [
+  'mothership.mpd'
+  'mothership.progress'
+])
 
 PLAYER_STATE_CHANGE = 'player:state_change'
 
