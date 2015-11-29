@@ -1,4 +1,4 @@
-@import "../../bower_components/bootstrap/less/bootstrap.less";
+@import "../bower_components/bootstrap/less/bootstrap.less";
 
 @bg: #fff;
 @white: #fff;
@@ -13,6 +13,8 @@
 @brand-primary: @green;
 @btn-primary-border: @green;
 @link-hover-color: @brown;
+
+@import "components/**/*.less";
 
 body {
   background: @bg;
@@ -48,35 +50,6 @@ main .fa { color: @green; }
 nav m-player-controls {
   float: left;
   margin-right: 10px;
-}
-
-header .navbar {
-  padding-top: 10px;
-  background-color: @white;
-  border: 0;
-  .badge {
-    margin: 1px 0 0 4px;
-    background: @green;
-  }
-
-  .burger {
-    float: right;
-  }
-
-  .btn {
-    &:hover, &:focus {
-      background: @white;
-      color: @green;
-      i { color: @green; }
-    }
-  }
-
-  .nav a, .nav .active a, .nav .active a:focus { color: @brown; }
-  .nav a:hover, .nav .active a:hover { color: @green; }
-  .nav .active>a, .nav .active>a:hover, .nav .active>a:focus {
-    background: none;
-    font-weight: bold;
-  }
 }
 
 .dropdown-menu {

@@ -48,15 +48,11 @@ module.exports = (grunt) ->
     # grunt less
     less:
       compile:
+        src: 'app/app.less'
+        dest: '<%= config.dist_dir %>/app.css'
         options:
+          plugins: [require('less-plugin-glob')]
           style: 'expanded'
-        files: [
-          expand: true
-          cwd: 'app'
-          src: ['**/*.less']
-          dest: '<%= config.build_dir %>/css'
-          ext: '.css'
-        ]
 
     # grunt coffee
     coffee:
@@ -83,9 +79,6 @@ module.exports = (grunt) ->
           '<%= config.build_dir %>/js/**/*.js'
         ]
         dest: '<%= config.dist_dir %>/app.js'
-      css:
-        src: ['<%= config.build_dir %>/css/**/*.css']
-        dest: '<%= config.dist_dir %>/style.css'
 
     shell:
       toBinData:
@@ -97,8 +90,8 @@ module.exports = (grunt) ->
         files: ['**/*.html']
         tasks: ['copy:main', 'shell:toBinData']
       less:
-        files: '<%= less.compile.files[0].src %>'
-        tasks: ['less', 'concat:css', 'shell:toBinData']
+        files: '**/*.less'
+        tasks: ['less', 'shell:toBinData']
       coffee:
         files: '<%= coffee.compile.src %>'
         tasks: ['coffee', 'concat:js', 'shell:toBinData']

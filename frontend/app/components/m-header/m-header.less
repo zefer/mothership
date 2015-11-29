@@ -1,0 +1,29 @@
+m-header .navbar {
+  padding-top: 10px;
+  background-color: @white;
+  border: 0;
+  .badge {
+    margin: 1px 0 0 4px;
+    background: @green;
+  }
+
+  .burger {
+    float: right;
+  }
+
+  .btn {
+    &:hover, &:focus {
+      background: @white;
+      color: @green;
+      i { color: @green; }
+    }
+  }
+
+  .nav a, .nav .active a, .nav .active a:focus { color: @brown; }
+  .nav a:hover, .nav .active a:hover { color: @green; }
+  .nav .active>a, .nav .active>a:hover, .nav .active>a:focus {
+    background: none;
+    font-weight: bold;
+  }
+}
+
