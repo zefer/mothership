@@ -62,12 +62,24 @@ module.exports = (grunt) ->
         src: [
           'app.coffee'
           '**/*.coffee'
+          '!**/*.spec.coffee'
         ]
         dest: '<%= config.build_dir %>/js'
         ext: '.js'
         options:
           bare: true
           preserve_dirs: true
+          sourceMap: false
+      compile_specs:
+        expand: true
+        cwd: 'app'
+        src: ['**/*.spec.coffee']
+        dest: '<%= config.build_dir %>/spec'
+        ext: '.spec.js'
+        options:
+          bare: true
+          preserve_dirs: true
+          sourceMap: true
 
     # combine js
     concat:
@@ -84,6 +96,13 @@ module.exports = (grunt) ->
       toBinData:
         command: 'go-bindata -debug -o ../frontend.go -prefix "dist/" <%= config.dist_dir %>/...'
 
+    karma:
+      unit:
+        configFile: 'karma.conf.js'
+        singleRun: true
+        reporters: 'progress'
+        runnerPort: 9998
+
     # grunt watch (or simply grunt)
     watch:
       html:
@@ -93,8 +112,8 @@ module.exports = (grunt) ->
         files: '**/*.less'
         tasks: ['less', 'shell:toBinData']
       coffee:
-        files: '<%= coffee.compile.src %>'
-        tasks: ['coffee', 'concat:js', 'shell:toBinData']
+        files: '**/*.coffee'
+        tasks: ['coffee', 'karma:unit', 'concat:js', 'shell:toBinData']
       options:
         livereload: true
 
@@ -105,7 +124,8 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-copy'
   grunt.loadNpmTasks 'grunt-contrib-concat'
   grunt.loadNpmTasks 'grunt-shell'
+  grunt.loadNpmTasks 'grunt-karma'
 
   # tasks
   grunt.registerTask 'build',   ['copy', 'less', 'coffee', 'concat', 'shell']
-  grunt.registerTask 'default', ['build', 'watch']
+  grunt.registerTask 'default', ['build', 'karma:unit', 'watch']
