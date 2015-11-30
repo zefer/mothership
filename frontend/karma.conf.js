@@ -4,7 +4,7 @@ module.exports = function (config) {
 
     basePath: '',
 
-    frameworks: ['mocha', 'chai'],
+    frameworks: ['mocha', 'chai', 'sinon-chai'],
 
     files: [
       'bower_components/angular/angular.min.js',
