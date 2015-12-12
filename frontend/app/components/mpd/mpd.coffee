@@ -50,10 +50,10 @@ mod.factory 'mpd', ($rootScope, $http, $interval, $q) ->
         replace: replace
         play: play
 
-    ls: (uri, sort, direction) ->
+    ls: (uri, sort, direction, filter) ->
       deferred = $q.defer()
       $http.get(
-        "/files?uri=#{escape(uri)}&sort=#{sort}&direction=#{direction}"
+        "/files?uri=#{escape(uri)}&sort=#{sort}&direction=#{direction}&filter=#{filter}"
       ).success (data) ->
         deferred.resolve(data)
       deferred.promise

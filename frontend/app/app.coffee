@@ -41,14 +41,14 @@ mod.config (
 
   $stateProvider.state
     name: 'browse',
-    url: '/browse?page&sort&direction'
+    url: '/browse?page&sort&direction&filter'
     parent: 'layout'
     template: '<m-browse></m-browse>'
 
   # This needs to be the last state, because of the wildcard url match.
   $stateProvider.state
     name: 'browse.uri'
-    url: '/{uri:nonURIEncoded}?page&sort&direction'
+    url: '/{uri:nonURIEncoded}?page&sort&direction&filter'
     parent: 'layout'
     template: '<m-browse></m-browse>'
 

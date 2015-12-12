@@ -11,20 +11,20 @@ mod.factory 'library', ($q, mpd) ->
     key: null
     items: null
 
-  cacheKey = (uri, sort, direction) ->
-    "#{uri}-#{sort}-#{direction}"
+  cacheKey = (uri, sort, direction, filter) ->
+    "#{uri}-#{sort}-#{direction}-#{filter}"
 
   api =
     update: (uri) -> mpd.update(uri)
 
-    ls: (uri, sort, direction) ->
+    ls: (uri, sort, direction, filter) ->
       deferred = $q.defer()
-      key = cacheKey(uri, sort, direction)
-      if key == cache.key
+      key = cacheKey(uri, sort, direction, filter)
+      if key == cache.key && false
         # Requesting the same path, return the data from the cache.
         deferred.resolve(cache.items)
       else
-        mpd.ls(uri, sort, direction).then (items) ->
+        mpd.ls(uri, sort, direction, filter).then (items) ->
           deferred.resolve(items)
           cache.key = key
           cache.items = items

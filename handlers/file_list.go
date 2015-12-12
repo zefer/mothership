@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"path"
 	"sort"
+	"strings"
 
 	"github.com/zefer/gompd/mpd"
 	"gopkg.in/airbrake/glog.v1"
@@ -33,6 +34,29 @@ func (a ByName) Len() int           { return len(a) }
 func (a ByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ByName) Less(i, j int) bool { return a[i].Path < a[j].Path }
 
+func contains(item mpd.Attrs, keyword string) bool {
+	fields := []string{
+		"directory", "file", "artist", "album", "title", "albumartist", "playlist",
+	}
+	keyword = strings.ToLower(keyword)
+	for _, f := range fields {
+		if strings.Contains(strings.ToLower(item[f]), keyword) {
+			return true
+		}
+	}
+	return false
+}
+
+func filter(orig []mpd.Attrs, keyword string) []mpd.Attrs {
+	filtered := make([]mpd.Attrs, 0)
+	for _, item := range orig {
+		if contains(item, keyword) {
+			filtered = append(filtered, item)
+		}
+	}
+	return filtered
+}
+
 func FileListHandler(c FileLister) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
@@ -52,6 +76,12 @@ func FileListHandler(c FileLister) http.Handler {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
+
+		f := r.FormValue("filter")
+		if f != "" {
+			data = filter(data, f)
+		}
+
 		out := make([]*FileListEntry, len(data))
 		for i, item := range data {
 			for _, t := range []string{"file", "directory", "playlist"} {

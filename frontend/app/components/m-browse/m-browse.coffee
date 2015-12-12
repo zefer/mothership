@@ -6,6 +6,7 @@ mod = angular.module('mothership.mBrowse', [
   'mothership.mSortBy'
   'mothership.mPagination'
   'mothership.mBrowseActions'
+  'mothership.mSearch'
 ])
 
 mod.directive 'mBrowse', ->
@@ -18,8 +19,9 @@ mod.directive 'mBrowse', ->
 
     MAX_PER_PAGE = 200
 
-    do init = ->
+    list = ->
       params = $state.params
+      params.filter ?= ''
       params.uri ?= '/'
       params.uri = '/' if params.uri == ''
       params.page ?= 1
@@ -27,9 +29,18 @@ mod.directive 'mBrowse', ->
       params.direction ?= remember.get('direction', 'desc')
       remember.set('sort', params.sort)
       remember.set('direction', params.direction)
-      library.ls(params.uri, params.sort, params.direction).then (items) ->
+      library.ls(
+        params.uri, params.sort, params.direction, params.filter
+      ).then (items) ->
         paginate(items, parseInt(params.page))
         $scope.breadcrumbs = breadcrumbs(params.uri)
+
+    do events = ->
+      $scope.$on 'search:filter', ->
+        list()
+
+    do init = ->
+      list()
 
     breadcrumbs = (uri) ->
       parts = uri.split('/')
@@ -43,6 +54,7 @@ mod.directive 'mBrowse', ->
     paginate = (items, page) ->
       if !items? or items.length < 1
         $scope.pages = []
+        $scope.items = []
         return
 
       pages = Math.ceil(items.length / MAX_PER_PAGE)

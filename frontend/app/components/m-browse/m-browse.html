@@ -6,12 +6,13 @@
 </ol>
 
 <nav>
+  <m-search></m-search>
   <m-sort-by></m-sort-by>
   <m-pagination pages="pages" page="page"></m-pagination>
 </nav>
 
 <div class="list-group">
-  <div ng-repeat="item in ::items" ui-sref="browse.uri({ uri: item.path })"
+  <div ng-repeat="item in items" ui-sref="browse.uri({ uri: item.path })"
     class="list-group-item">
 
     <i ng-show="item.type == 'directory'" class="type fa fa-folder-o"></i>

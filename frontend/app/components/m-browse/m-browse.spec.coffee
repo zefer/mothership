@@ -3,6 +3,7 @@ describe 'mBrowse', ->
   beforeEach module('mothership.templates')
 
   $q = null
+  $rootScope = null
   $scope = null
   $compile = null
   $state = null
@@ -26,9 +27,12 @@ describe 'mBrowse', ->
     lastModified: "2015-11-21T12:08:18Z"
   }]
 
-  beforeEach inject (_$q_, $rootScope, _$compile_, $window, _$state_, _library_) ->
+  beforeEach inject (
+    _$q_, _$rootScope_, _$compile_, $window, _$state_, _library_
+  ) ->
     $q = _$q_
     $compile = _$compile_
+    $rootScope = _$rootScope_
     $scope = $rootScope.$new()
     $state = _$state_
     library = _library_
@@ -50,11 +54,27 @@ describe 'mBrowse', ->
     $state.params.uri = '/somewhere'
     $state.params.sort = 'date'
     $state.params.direction = 'desc'
+    $state.params.filter = 'bob m'
     renderDirective(files)
 
     expect(library.ls).to.have.been.calledWithExactly(
-      '/somewhere', 'date', 'desc'
+      '/somewhere', 'date', 'desc', 'bob m'
     )
+
+  describe 'on "search:filter" event', ->
+    it 'fetches the library listing for the current state params', ->
+      $state.params.uri = '/somewhere'
+      $state.params.sort = 'date'
+      $state.params.direction = 'desc'
+      $state.params.filter = 'bob m'
+      renderDirective(files)
+
+      $state.params.filter = 'curtis ma'
+      $rootScope.$broadcast('search:filter')
+
+      expect(library.ls).to.have.been.calledWithExactly(
+        '/somewhere', 'date', 'desc', 'curtis ma'
+      )
 
   describe 'pagination', ->
     context 'when there is 1 page of items to list', ->
@@ -96,6 +116,9 @@ describe 'mBrowse', ->
       it 'hides the bottom pagination, since there are no more pages', ->
         pagination = angular.element(elem.find('m-pagination')[1]).find('ul')
         expect(pagination.hasClass('ng-hide')).to.be.true
+
+      it 'does not render any list items', ->
+        expect(elem.html()).not.to.contain('list-group-item')
 
     context 'when there are multiple pages of items to list', ->
       beforeEach ->

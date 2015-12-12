@@ -81,31 +81,61 @@ var _ = Describe("FileListHandler", func() {
 	})
 
 	Describe("the response", func() {
-		BeforeEach(func() {
-			req, _ := http.NewRequest("GET", "/files?uri=random", nil)
-			handler.ServeHTTP(w, req)
+		Context("when no filter string is specified", func() {
+			BeforeEach(func() {
+				req, _ := http.NewRequest("GET", "/files?uri=random", nil)
+				handler.ServeHTTP(w, req)
+			})
+
+			It("responds with a 200 OK", func() {
+				Expect(w.Code).To(Equal(http.StatusOK))
+			})
+
+			It("responds with the JSON content-type", func() {
+				Expect(w.HeaderMap["Content-Type"][0]).To(Equal("application/json"))
+			})
+
+			It("returns a JSON array of the items", func() {
+				var files []map[string]interface{}
+				if err := json.NewDecoder(w.Body).Decode(&files); err != nil {
+					Fail(fmt.Sprintf("Could not parse JSON %v", err))
+				}
+				Expect(len(files)).To(Equal(3))
+				for _, file := range files {
+					Expect(len(file)).To(Equal(4))
+					for _, field := range []string{"path", "type", "base", "lastModified"} {
+						Expect(file[field]).NotTo(BeNil())
+					}
+				}
+			})
 		})
 
-		It("responds with a 200 OK", func() {
-			Expect(w.Code).To(Equal(http.StatusOK))
-		})
+		Context("when a filter string is specified", func() {
+			BeforeEach(func() {
+				req, _ := http.NewRequest("GET", "/files?uri=random&filter=ze", nil)
+				handler.ServeHTTP(w, req)
+			})
 
-		It("responds with the JSON content-type", func() {
-			Expect(w.HeaderMap["Content-Type"][0]).To(Equal("application/json"))
-		})
+			It("responds with a 200 OK", func() {
+				Expect(w.Code).To(Equal(http.StatusOK))
+			})
 
-		It("returns a JSON array of the items", func() {
-			var files []map[string]interface{}
-			if err := json.NewDecoder(w.Body).Decode(&files); err != nil {
-				Fail(fmt.Sprintf("Could not parse JSON %v", err))
-			}
-			Expect(len(files)).To(Equal(3))
-			for _, file := range files {
+			It("responds with the JSON content-type", func() {
+				Expect(w.HeaderMap["Content-Type"][0]).To(Equal("application/json"))
+			})
+
+			It("returns a JSON array of the items", func() {
+				var files []map[string]interface{}
+				if err := json.NewDecoder(w.Body).Decode(&files); err != nil {
+					Fail(fmt.Sprintf("Could not parse JSON %v", err))
+				}
+				Expect(len(files)).To(Equal(1))
+				file := files[0]
 				Expect(len(file)).To(Equal(4))
 				for _, field := range []string{"path", "type", "base", "lastModified"} {
 					Expect(file[field]).NotTo(BeNil())
 				}
-			}
+			})
 		})
 	})
 
