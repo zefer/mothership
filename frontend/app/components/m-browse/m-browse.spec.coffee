@@ -57,44 +57,101 @@ describe 'mBrowse', ->
     )
 
   describe 'pagination', ->
-    beforeEach ->
-      $state.params.page = '2'
-      files = ({
-        path: "path#{i}",
-        type: 'directory',
-        base: "base#{i}",
-        lastModified: "2015-11-21T12:08:18Z"
-      } for i in [1..202])
-      expect(files.length).to.eq(202)
-      elem = renderDirective(files)
+    context 'when there is 1 page of items to list', ->
+      beforeEach ->
+        $state.params.page = '1'
+        files = ({
+          path: "path#{i}",
+          type: 'directory',
+          base: "base#{i}",
+          lastModified: "2015-11-21T12:08:18Z"
+        } for i in [1..3])
+        expect(files.length).to.eq(3)
+        elem = renderDirective(files)
 
-    it 'renders list items from the current page', ->
-      expect(elem.html()).to.contain(path) for path in [
-        'base201', 'base202'
-      ]
+      it 'renders list items from the current page', ->
+        expect(elem.html()).to.contain(path) for path in [
+          'base1', 'base2', 'base3'
+        ]
 
-    it 'does not render list items from other pages', ->
-      expect(elem.html()).not.to.contain(path) for path in [
-        'base1', 'base200', 'base203'
-      ]
+      it 'hides the top pagination, since there are no more pages', ->
+        pagination = angular.element(elem.find('m-pagination')[0]).find('ul')
+        expect(pagination.hasClass('ng-hide')).to.be.true
 
-    it 'renders top pagination links for all the pages', ->
-      pagination = angular.element(elem.find('m-pagination')[0])
-      items = pagination.find('li')
-      expect(items.length).to.eq(4)
-      expect(angular.element(items[0]).text().trim()).to.eq('«')
-      expect(angular.element(items[1]).text().trim()).to.eq('1')
-      expect(angular.element(items[2]).text().trim()).to.eq('2')
-      expect(angular.element(items[3]).text().trim()).to.eq('»')
+      it 'hides the bottom pagination, since there are no more pages', ->
+        pagination = angular.element(elem.find('m-pagination')[1]).find('ul')
+        expect(pagination.hasClass('ng-hide')).to.be.true
 
-    it 'renders bottom pagination links for all the pages', ->
-      pagination = angular.element(elem.find('m-pagination')[1])
-      items = pagination.find('li')
-      expect(items.length).to.eq(4)
-      expect(angular.element(items[0]).text().trim()).to.eq('«')
-      expect(angular.element(items[1]).text().trim()).to.eq('1')
-      expect(angular.element(items[2]).text().trim()).to.eq('2')
-      expect(angular.element(items[3]).text().trim()).to.eq('»')
+    context 'when there are no items to list', ->
+      beforeEach ->
+        $state.params.page = '1'
+        files = []
+        expect(files.length).to.eq(0)
+        elem = renderDirective(files)
+
+      it 'hides the top pagination, since there are no more pages', ->
+        pagination = angular.element(elem.find('m-pagination')[0]).find('ul')
+        expect(pagination.hasClass('ng-hide')).to.be.true
+
+      it 'hides the bottom pagination, since there are no more pages', ->
+        pagination = angular.element(elem.find('m-pagination')[1]).find('ul')
+        expect(pagination.hasClass('ng-hide')).to.be.true
+
+    context 'when there are multiple pages of items to list', ->
+      beforeEach ->
+        $state.params.page = '2'
+        files = ({
+          path: "path#{i}",
+          type: 'directory',
+          base: "base#{i}",
+          lastModified: "2015-11-21T12:08:18Z"
+        } for i in [1..202])
+        expect(files.length).to.eq(202)
+        elem = renderDirective(files)
+
+      it 'renders list items from the current page', ->
+        expect(elem.html()).to.contain(path) for path in [
+          'base201', 'base202'
+        ]
+
+      it 'does not render list items from other pages', ->
+        expect(elem.html()).not.to.contain(path) for path in [
+          'base1', 'base200', 'base203'
+        ]
+
+      context 'top pagination', ->
+        pagination = null
+
+        beforeEach ->
+          pagination = angular.element(elem.find('m-pagination')[0])
+
+          it 'is not hidden', ->
+            expect(pagination.find('ul').hasClass('ng-hide')).to.be.false
+
+          it 'renders links for all the pages', ->
+            items = pagination.find('li')
+            expect(items.length).to.eq(4)
+            expect(angular.element(items[0]).text().trim()).to.eq('«')
+            expect(angular.element(items[1]).text().trim()).to.eq('1')
+            expect(angular.element(items[2]).text().trim()).to.eq('2')
+            expect(angular.element(items[3]).text().trim()).to.eq('»')
+
+      context 'bottom pagination', ->
+        pagination = null
+
+        beforeEach ->
+          pagination = angular.element(elem.find('m-pagination')[1])
+
+          it 'is not hidden', ->
+            expect(pagination.find('ul').hasClass('ng-hide')).to.be.false
+
+          it 'renders links for all the pages', ->
+            items = pagination.find('li')
+            expect(items.length).to.eq(4)
+            expect(angular.element(items[0]).text().trim()).to.eq('«')
+            expect(angular.element(items[1]).text().trim()).to.eq('1')
+            expect(angular.element(items[2]).text().trim()).to.eq('2')
+            expect(angular.element(items[3]).text().trim()).to.eq('»')
 
   # TODO: make breadcrumbs a directive.
   describe 'breadcrumbs', ->

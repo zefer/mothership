@@ -41,6 +41,10 @@ mod.directive 'mBrowse', ->
       crumbs
 
     paginate = (items, page) ->
+      if !items? or items.length < 1
+        $scope.pages = []
+        return
+
       pages = Math.ceil(items.length / MAX_PER_PAGE)
       page = pages if page > pages
       page = 1 if page < 1
