@@ -12,11 +12,18 @@ module.exports = function (config) {
       'bower_components/angular-ui-router/release/angular-ui-router.min.js',
       'bower_components/angular-bootstrap/ui-bootstrap.min.js',
       'build/js/**/*.js',
-      'build/spec/**/*.js'
+      'build/spec/**/*.js',
+      'dist/**/*.html'
     ],
 
     preprocessors: {
-      'build/spec/**/*.js': ['sourcemap']
+      'build/spec/**/*.js': ['sourcemap'],
+      'dist/**/*.html': ['ng-html2js']
+    },
+
+    ngHtml2JsPreprocessor: {
+      stripPrefix: 'dist/',
+      moduleName: "mothership.templates"
     },
 
     reporters: ['spec'],

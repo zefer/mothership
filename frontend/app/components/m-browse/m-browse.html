@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
   <li ng-repeat="crumb in ::breadcrumbs">
-    <a ng-hide="$last" ui-sref="{ uri: crumb.path }">{{::crumb.label}}</a>
+    <a ng-hide="$last" ui-sref=".({ uri: crumb.path })">{{::crumb.label}}</a>
     <span ng-show="$last">{{::crumb.label}}</span>
   </li>
 </ol>

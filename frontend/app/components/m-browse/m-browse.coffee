@@ -1,4 +1,6 @@
 mod = angular.module('mothership.mBrowse', [
+  'ui.router'
+
   'mothership.library'
   'mothership.remember'
   'mothership.mSortBy'
