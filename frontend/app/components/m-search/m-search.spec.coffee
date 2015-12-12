@@ -39,5 +39,26 @@ describe 'mSearch', ->
         '.', {filter: 'elvis'}, {notify: false}
       )
 
-    it 'broadcasts the "search"filter" event', ->
+    it 'broadcasts the "search:filter" event', ->
+      expect($rootScope.$broadcast).to.have.been.calledWith('search:filter')
+
+  describe 'clear', ->
+    beforeEach ->
+      ctrl.filter = 'elvis'
+      $state.params.filter = ctrl.filter
+      ctrl.clear()
+      $timeout.flush()
+
+    it 'clears the "filter" input', ->
+      expect(ctrl.filter).to.eq('')
+
+    it 'clears "filter" in state params', ->
+      expect($state.params.filter).to.eq('')
+
+    it 'navigates to the state with an empty filter', ->
+      expect($state.go).to.have.been.calledWithExactly(
+        '.', {filter: ''}, {notify: false}
+      )
+
+    it 'broadcasts the "search:filter" event', ->
       expect($rootScope.$broadcast).to.have.been.calledWith('search:filter')

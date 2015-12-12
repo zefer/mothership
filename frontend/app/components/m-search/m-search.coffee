@@ -28,5 +28,8 @@ mod.controller 'mSearchController', (
   filter = debounce(filter, 200)
 
   vm.search = ->
-    $state.params.filter = vm.filter
     filter(vm.filter)
+
+  vm.clear = ->
+    vm.filter = ''
+    vm.search()
