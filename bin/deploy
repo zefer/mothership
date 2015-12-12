@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# This is how I deploy to Raspberry Pi 2 (server).
+
+server_host=music
+
+echo 'Compiling assets to go-bindata'
+go-bindata -o frontend.go -prefix "frontend/dist/" frontend/dist/...
+
+echo 'Compiling for Rasperry Pi'
+# GOOS=linux GOARM=6 GOARCH=arm go build
+GOOS=linux GOARM=7 GOARCH=arm go build
+
+echo 'Sending binary to music server'
+scp mothership $server_host:/home/joe
+
+echo 'Running commands on music server'
+ssh $server_host -t '\
+  sudo systemctl stop mothership \
+  && sleep 1 \
+  && sudo mv /home/joe/mothership /usr/bin \
+  && sudo setcap cap_net_bind_service=ep /usr/bin/mothership \
+  && sudo systemctl start mothership \
+  && sleep 1
+'

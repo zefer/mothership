@@ -4,4 +4,3 @@ frontend/build/
 frontend/dist/
 mothership
 frontend.go
-deploy.sh
