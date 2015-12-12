@@ -1,6 +1,9 @@
 <div class="input-group col-md-12">
-  <span class="fa fa-remove" ng-click="vm.clear()"></span>
-  <input type="text" class="search-query form-control" placeholder="search"
+  <span class="fa fa-remove"
+    ng-click="vm.clear()"
+    ng-show="vm.filter"
+  ></span>
+  <input type="text" class="search-query form-control" placeholder="filter"
     ng-model="vm.filter",
     ng-keyup="vm.search()"
   />
