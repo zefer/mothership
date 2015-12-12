@@ -3,6 +3,9 @@
 A web UI for [MPD](http://www.musicpd.org/) built with Go, AngularJS &
 WebSockets.
 
+Designed for people who like to browse their music in its original directory
+structure.
+
 MPD state changes are broadcasted to all connected clients via WebSockets, which
 keeps all users in sync with what is currently playing.
 
