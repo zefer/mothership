@@ -1,5 +1,7 @@
 # Mothership
 
+[![Build Status](https://circleci.com/gh/zefer/mothership.svg?&style=shield&circle-token=dda6e9c06dc6669905748812449c2e0f13fd7aa7)
+
 A web UI for [MPD](http://www.musicpd.org/) built with Go, AngularJS &
 WebSockets.
 
