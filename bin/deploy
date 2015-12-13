@@ -1,6 +1,7 @@
 #!/bin/sh
 
-# This is how I deploy to Raspberry Pi 2 (server).
+# This is how I deploy to Raspberry Pi 2 (server). You can also find my server
+# configuration here: https://github.com/zefer/ansible/tree/master/roles/mothership
 
 server_host=music
 

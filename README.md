@@ -2,48 +2,100 @@
 
 [![Build Status](https://circleci.com/gh/zefer/mothership.svg?&style=shield)](https://circleci.com/gh/zefer/mothership)
 
-A web UI for [MPD](http://www.musicpd.org/) built with Go, AngularJS &
-WebSockets.
-
-Designed for people who like to browse their music in its original directory
+Mothership is a music player interface for [MPD][mpd],
+optimised for browsing your music collection in its original directory
 structure.
 
-MPD state changes are broadcasted to all connected clients via WebSockets, which
-keeps all users in sync with what is currently playing.
+Mothership is built with Go, AngularJS & WebSockets providing a snappy,
+real-time user experience. All connected clients keep in sync with what is
+currently playing.
 
-Builds to a single, self-contained binary making it easy to run on any platform.
+Mothership is cross-platform & extremely portable, building to a single,
+self-contained binary with no external dependencies other than an [MPD][mpd]
+server to point it to.
 
-## Dev usage (does not package assets in binary)
+![screenshots](https://dl.dropboxusercontent.com/u/89410/project_images/mothership.png)
+
+## Build
+
+To build the Mothership binary, install the [development
+prerequisites](#development-prerequisites), then:
 
 ```
-# Build the Angular static html front-end app
 (cd frontend && grunt build)
-# Run the API & serve the static front-end
-go build && mothership -logtostderr=true -mpdaddr=192.168.33.20:6600 -port :8080
-# open the app in your browser
-open localhost:8080
-```
-
-## Build (with assets packaged in the binary)
-
-```
-# Build the Angular static html front-end app
-(cd frontend && grunt build)
-# Compile the assets (dev mode used the go-bindata -debug flag)
 go-bindata frontend.go -prefix "frontend/dist/" frontend/dist/...
-# Build the binary
 go build
-# Run it
-mothership -logtostderr=true -mpdaddr=192.168.33.20:6600 -port :8080
-# open the app in your browser
+```
+
+Cross-compilation is achieved by modifying the `go build` command. For example:
+
+* Build for a Raspberry Pi 2: `GOOS=linux GOARM=7 GOARCH=arm go build`
+* Build for a Raspberry Pi 1: `GOOS=linux GOARM=6 GOARCH=arm go build`
+* Build for linux/386: `GOOS=linux GOARCH=386 go build`
+* Build for darwin/386: `GOOS=darwin GOARCH=386 go build`
+* Build for windows/386: `GOOS=windows GOARCH=386 go build`
+
+## Run
+
+Firstly, [build Mothership](#build), then:
+
+```
+mothership -gobrake.logtostderr=true -mpdaddr=music:6600 -port :8080
 open localhost:8080
 ```
 
-To cross-compile for a Raspberry Pi use `GOOS=linux GOARM=7 GOARCH=arm go build`
+Modify `-mpdaddr` to point to the host:port (or ip:port) of your running MPD
+server.
 
-Note that `GOARM=6` should be used for the Raspberry Pi 1 range, `GOARM=7` for
-the Raspberry Pi 2 range (released early 2015).
+## Deploy
 
-## Work in progress
+Deployment is simple, transfer the binary & run it. A complete example is
+provided below:
 
-![UI](https://dl.dropboxusercontent.com/u/89410/mothership.gif)
+* [Example server configuration](https://github.com/zefer/ansible/tree/master/roles/mothership)
+  (using Ansible)
+* [Example deploy script](bin/deploy)
+
+## Develop
+
+While developing, the assets are not packaged into a binary, this allows us to
+make front-end changes without rebuilding the back-end.
+
+Install the [development prerequisites](#development-prerequisites), then:
+
+```
+(cd frontend && grunt)
+go build && mothership -gobrake.logtostderr=true -mpdaddr=music:6600 -port :8080
+open localhost:8080
+```
+
+`grunt` watches for changes and runs all front-end tests.
+
+`go test ./...` runs all the back-end tests, or run a single package with a
+command like `(cd handlers && go test)`.
+
+## Development prerequisites
+
+* [Go][go]
+* [Node.js][nodejs] & npm
+* `go get github.com/jteeuwen/go-bindata/...`
+* `npm install`
+* `bower install`
+
+## Extras
+
+* Add an LCD with [Flashlight][flashlight]
+* Build a multi-room audio system with Raspberry Pis, [MPD][mpd] &
+  [PulseAudio][pulseaudio]:
+  * [Server](https://github.com/zefer/ansible/blob/master/music_server.yml)
+  * [Clients](https://github.com/zefer/ansible/blob/master/music_client_pulse.yml)
+
+## License
+
+This project uses the MIT License. See [LICENSE](LICENSE).
+
+[MPD]: http://www.musicpd.org/
+[go]: https://golang.org/
+[nodejs]: https://nodejs.org/
+[pulseaudio]: http://www.freedesktop.org/wiki/Software/PulseAudio/
+[flashlight]: https://github.com/zefer/flashlight
