@@ -1,0 +1,13 @@
+dependencies:
+  override:
+    - (cd frontend && npm install)
+    - go get -t -d -v ./...
+    - go get github.com/jteeuwen/go-bindata/...
+    - (cd frontend && grunt build)
+    - go-bindata -o frontend.go -prefix "frontend/dist/" frontend/dist/...
+    - go build -v
+
+test:
+  override:
+    - (cd frontend && grunt test)
+    - go test ./...
