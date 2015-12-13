@@ -128,4 +128,5 @@ module.exports = (grunt) ->
 
   # tasks
   grunt.registerTask 'build',   ['copy', 'less', 'coffee', 'concat', 'shell']
+  grunt.registerTask 'test', ['build', 'karma:unit']
   grunt.registerTask 'default', ['build', 'karma:unit', 'watch']
