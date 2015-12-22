@@ -7,8 +7,8 @@ optimised for browsing your music collection in its original directory
 structure.
 
 Mothership is built with Go, AngularJS & WebSockets providing a snappy,
-real-time user experience. All connected clients keep in sync with what is
-currently playing.
+real-time user experience. All connected clients keep the UI in sync with the
+player state.
 
 Mothership is cross-platform & extremely portable, building to a single,
 self-contained binary with no external dependencies other than an [MPD][mpd]
