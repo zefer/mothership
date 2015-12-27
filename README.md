@@ -22,6 +22,7 @@ To build the Mothership binary, install the [development
 prerequisites](#development-prerequisites), then:
 
 ```
+export GO15VENDOREXPERIMENT=1
 (cd frontend && grunt build)
 go-bindata frontend.go -prefix "frontend/dist/" frontend/dist/...
 go build
@@ -64,6 +65,7 @@ make front-end changes without rebuilding the back-end.
 Install the [development prerequisites](#development-prerequisites), then:
 
 ```
+export GO15VENDOREXPERIMENT=1
 (cd frontend && grunt)
 go build && mothership -gobrake.logtostderr=true -mpdaddr=music:6600 -port :8080
 open localhost:8080

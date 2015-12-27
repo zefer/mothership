@@ -1,13 +1,26 @@
+machine:
+  environment:
+    GO15VENDOREXPERIMENT: 1
+    PROJECT_PATH: ${GOPATH%%:*}/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+  pre:
+    - wget https://storage.googleapis.com/golang/go1.5.2.linux-amd64.tar.gz
+    - sudo rm -rf /usr/local/go
+    - sudo tar -C /usr/local -xzf go1.5.2.linux-amd64.tar.gz
+  post:
+    - ln -sf ~/${CIRCLE_PROJECT_REPONAME} $PROJECT_PATH
+
 dependencies:
+  cache_directories:
+    - ~/go1.5.2.linux-amd64.tar.gz
   override:
-    - (cd frontend && npm install)
-    - go get -t -d -v ./...
     - go get github.com/jteeuwen/go-bindata/...
-    - (cd frontend && grunt build)
-    - go-bindata -o frontend.go -prefix "frontend/dist/" frontend/dist/...
-    - go build -v
+    - cd $PROJECT_PATH/frontend && npm install
+    - cd $PROJECT_PATH/frontend && grunt build
+    - cd $PROJECT_PATH && go-bindata -o frontend.go -prefix "frontend/dist/" frontend/dist/...
+    - cd $PROJECT_PATH && go build -v
 
 test:
   override:
-    - (cd frontend && grunt test)
-    - go test ./...
+    - go version
+    - cd $PROJECT_PATH/frontend && grunt test
+    - cd $PROJECT_PATH && go test -v $(go list ./... | grep -v /vendor/)

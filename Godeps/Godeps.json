@@ -1,0 +1,42 @@
+{
+	"ImportPath": "github.com/zefer/mothership",
+	"GoVersion": "go1.5",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/elazarl/go-bindata-assetfs",
+			"Rev": "d5cac425555ca5cf00694df246e04f05e6a55150"
+		},
+		{
+			"ImportPath": "github.com/gorilla/websocket",
+			"Rev": "844dd6d40e1a9215ef4c8a204bfc839fcf5dd5dd"
+		},
+		{
+			"ImportPath": "github.com/onsi/ginkgo",
+			"Comment": "v1.1.0-41-g38caab9",
+			"Rev": "38caab951a9ff39f0e61294a1dbaaa074a39228b"
+		},
+		{
+			"ImportPath": "github.com/onsi/gomega",
+			"Comment": "v1.0-33-ge7b2cd9",
+			"Rev": "e7b2cd96b5633fbc5f0c221159a5c1e85323f770"
+		},
+		{
+			"ImportPath": "github.com/zefer/gompd/mpd",
+			"Comment": "release-151-gf0351de",
+			"Rev": "f0351de92ad948620dd36d525ba26b06c2be14a1"
+		},
+		{
+			"ImportPath": "gopkg.in/airbrake/glog.v1",
+			"Comment": "v1",
+			"Rev": "d02413bc7ab4fc1572dc112f0873c8f824069367"
+		},
+		{
+			"ImportPath": "gopkg.in/airbrake/gobrake.v1",
+			"Comment": "v1.1",
+			"Rev": "f12667a6c3bda272083682a04a05ee7a14e55378"
+		}
+	]
+}
