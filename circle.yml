@@ -23,4 +23,5 @@ test:
   override:
     - go version
     - cd $PROJECT_PATH/frontend && grunt test
-    - cd $PROJECT_PATH && go test -v $(go list ./... | grep -v /vendor/)
+    - cd $PROJECT_PATH && go vet $(go list ./... | grep -v /vendor/)
+    - cd $PROJECT_PATH && go test -v $(go list ./... | grep -v /vendor/) -race
