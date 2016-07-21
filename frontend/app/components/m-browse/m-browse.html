@@ -1,7 +1,7 @@
 <ol class="breadcrumb">
   <li ng-repeat="crumb in ::breadcrumbs">
     <a ng-hide="$last" ui-sref=".({ uri: crumb.path })">{{::crumb.label}}</a>
-    <span ng-show="$last">{{::crumb.label}}</span>
+    <span ng-if="$last">{{::crumb.label}}</span>
   </li>
 </ol>
 
@@ -15,9 +15,9 @@
   <div ng-repeat="item in items" ui-sref="browse.uri({ uri: item.path })"
     class="list-group-item">
 
-    <i ng-show="item.type == 'directory'" class="type fa fa-folder-o"></i>
-    <i ng-show="item.type == 'file'"      class="type fa fa-music"></i>
-    <i ng-show="item.type == 'playlist'"  class="type fa fa-file-audio-o"></i>
+    <i ng-if="item.type == 'directory'" class="type fa fa-folder-o"></i>
+    <i ng-if="item.type == 'file'"      class="type fa fa-music"></i>
+    <i ng-if="item.type == 'playlist'"  class="type fa fa-file-audio-o"></i>
 
     {{::item.base}}
 

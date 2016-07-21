@@ -14,8 +14,8 @@
     <li><a ng-click="ctrl.addReplacePlay($event)">
       <i class="fa fa-share"></i>Add, replace &amp; play</a>
     </li>
-    <li ng-show="type == 'directory'" class="divider"></li>
-    <li ng-show="type == 'directory'">
+    <li ng-if="type == 'directory'" class="divider"></li>
+    <li ng-if="type == 'directory'">
       <a ng-click="ctrl.update($event)">
         <i class="fa fa-refresh"></i>Update this folder
       </a>
