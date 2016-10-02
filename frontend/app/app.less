@@ -28,15 +28,15 @@ main .fa { color: @green; }
   border: 0;
   i { color: @white }
 
-  &:hover, &:focus {
-    background: @gold;
-  }
   &:active, &.active {
     box-shadow: none;
     -webkit-box-shadow: none;
     background: @green;
     color: @brown;
     i { color: @brown; }
+  }
+  &:hover, &:focus {
+    background: @gold;
   }
 }
 .open>.btn.dropdown-toggle {
