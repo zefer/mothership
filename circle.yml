@@ -1,18 +1,18 @@
 machine:
   environment:
-    GO15VENDOREXPERIMENT: 1
     PROJECT_PATH: ${GOPATH%%:*}/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
   pre:
-    - wget https://storage.googleapis.com/golang/go1.5.2.linux-amd64.tar.gz
+    - wget https://storage.googleapis.com/golang/go1.7.4.linux-amd64.tar.gz
     - sudo rm -rf /usr/local/go
-    - sudo tar -C /usr/local -xzf go1.5.2.linux-amd64.tar.gz
-  post:
-    - ln -sf ~/${CIRCLE_PROJECT_REPONAME} $PROJECT_PATH
+    - sudo tar -C /usr/local -xzf go1.7.4.linux-amd64.tar.gz
 
 dependencies:
   cache_directories:
-    - ~/go1.5.2.linux-amd64.tar.gz
+    - ~/go1.7.4.linux-amd64.tar.gz
   override:
+    - mkdir -p $PROJECT_PATH
+    - rm -rf $PROJECT_PATH
+    - ln -sf ~/${CIRCLE_PROJECT_REPONAME} $PROJECT_PATH
     - go get github.com/jteeuwen/go-bindata/...
     - cd $PROJECT_PATH/frontend && npm install
     - cd $PROJECT_PATH/frontend && grunt build
