@@ -23,22 +23,20 @@ module.exports = (grunt) ->
         files: [
           expand: true
           flatten: true
-          cwd: 'bower_components/',
+          cwd: 'node_modules/',
           dest: '<%= config.dist_dir %>/vendor/'
           src: [
             'angular/angular.min.js'
             'angular/angular.min.js.map'
             'angular-ui-router/release/angular-ui-router.min.js'
-            'jquery/dist/jquery.min.js'
-            'jquery/dist/jquery.min.map'
-            'angular-bootstrap/ui-bootstrap-tpls.min.js'
+            'angular-ui-bootstrap/dist/ui-bootstrap-tpls.js'
             'font-awesome/css/font-awesome.min.css'
           ]
         ]
       fonts:
         files: [
           expand: true
-          cwd: 'bower_components/font-awesome',
+          cwd: 'node_modules/font-awesome',
           dest: '<%= config.dist_dir %>/'
           src: [
             'fonts/*'

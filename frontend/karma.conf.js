@@ -7,10 +7,10 @@ module.exports = function (config) {
     frameworks: ['mocha', 'chai', 'sinon-chai'],
 
     files: [
-      'bower_components/angular/angular.min.js',
-      'bower_components/angular-mocks/angular-mocks.js',
-      'bower_components/angular-ui-router/release/angular-ui-router.min.js',
-      'bower_components/angular-bootstrap/ui-bootstrap.min.js',
+      'node_modules/angular/angular.min.js',
+      'node_modules/angular-mocks/angular-mocks.js',
+      'node_modules/angular-ui-router/release/angular-ui-router.min.js',
+      'node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js',
       'build/js/**/*.js',
       'build/spec/**/*.js',
       'dist/**/*.html'

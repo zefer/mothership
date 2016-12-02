@@ -82,7 +82,6 @@ command like `(cd handlers && go test)`.
 * [Node.js][nodejs] & npm
 * `go get github.com/jteeuwen/go-bindata/...`
 * `npm install`
-* `bower install`
 
 ## Extras
 
