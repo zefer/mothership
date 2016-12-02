@@ -36,8 +36,6 @@
     "phantomjs": "^1.9.19"
   },
   "scripts": {
-    "prestart": "npm install",
-    "pretest": "npm install",
     "test": "grunt test"
   }
 }
