@@ -24,3 +24,14 @@ ssh $server_host -t '\
   && sudo systemctl start mothership \
   && sleep 1
 '
+
+# Register the deploy with Airbrake.
+env=home
+deployer=$(whoami)
+revision=$(git rev-parse HEAD)
+repo=https://github.com/zefer/mothership
+project_id=$AIRBRAKE_PROJECT_ID
+project_key=$AIRBRAKE_PROJECT_KEY
+curl -iX POST -H "Content-Type: application/json" \
+  -d '{"environment":"'$env'","username":"'$deployer'","revision":"'$revision'","repository":"'$repo'"}' \
+  "https://airbrake.io/api/v4/projects/$project_id/deploys?key=$project_key"
