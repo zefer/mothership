@@ -4,7 +4,7 @@ import (
 	"time"
 
 	websock "github.com/gorilla/websocket"
-	"gopkg.in/airbrake/glog.v1"
+	"gopkg.in/airbrake/glog.v2"
 )
 
 // Time allowed to write a message to the peer.

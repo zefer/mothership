@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"gopkg.in/airbrake/glog.v1"
+	"gopkg.in/airbrake/glog.v2"
 )
 
 type Pauser interface {

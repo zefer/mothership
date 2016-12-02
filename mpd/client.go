@@ -4,7 +4,7 @@ import (
 	"time"
 
 	gompd "github.com/zefer/gompd/mpd"
-	"gopkg.in/airbrake/glog.v1"
+	"gopkg.in/airbrake/glog.v2"
 )
 
 const retryDur time.Duration = time.Second * 3

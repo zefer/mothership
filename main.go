@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	assetfs "github.com/elazarl/go-bindata-assetfs"
-	"gopkg.in/airbrake/glog.v1"
-	"gopkg.in/airbrake/gobrake.v1"
+	"gopkg.in/airbrake/glog.v2"
+	"gopkg.in/airbrake/gobrake.v2"
 
 	"github.com/zefer/mothership/handlers"
 	"github.com/zefer/mothership/mpd"
@@ -25,11 +25,17 @@ var (
 
 func main() {
 	flag.Parse()
+	defer glog.Flush()
 	glog.Infof("Starting API for MPD at %s.", *mpdAddr)
 
 	if *abProjectID > int64(0) && *abApiKey != "" {
 		airbrake := gobrake.NewNotifier(*abProjectID, *abApiKey)
-		airbrake.SetContext("environment", *abEnv)
+		defer airbrake.Close()
+		defer airbrake.NotifyOnPanic()
+		airbrake.AddFilter(func(n *gobrake.Notice) *gobrake.Notice {
+			n.Context["environment"] = *abEnv
+			return n
+		})
 		glog.Gobrake = airbrake
 	}
 
