@@ -1,14 +1,14 @@
+$q = null
+$rootScope = null
+$scope = null
+$compile = null
+$state = null
+library = null
+elem = null
+
 describe 'mBrowse', ->
   beforeEach module('mothership.mBrowse')
   beforeEach module('mothership.templates')
-
-  $q = null
-  $rootScope = null
-  $scope = null
-  $compile = null
-  $state = null
-  library = null
-  elem = null
 
   compile = (markup) ->
     elem = $compile(angular.element(markup))($scope)

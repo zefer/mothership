@@ -1,8 +1,8 @@
+player = null
+mpd = null
+
 describe 'player', ->
   beforeEach module('mothership.player')
-
-  player = null
-  mpd = null
 
   beforeEach inject (_player_, _mpd_) ->
     player = _player_

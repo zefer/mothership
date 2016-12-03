@@ -1,7 +1,7 @@
+remember = null
+
 describe 'remember', ->
   beforeEach module('mothership.remember')
-
-  remember = null
 
   beforeEach inject (_remember_) ->
     remember = _remember_
