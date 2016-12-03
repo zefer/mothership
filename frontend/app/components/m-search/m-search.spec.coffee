@@ -1,26 +1,24 @@
+markup = '<m-search></m-search>'
+$rootScope = null
+$state = null
+$timeout = null
+ctrl = null
+
 describe 'mSearch', ->
   beforeEach module('mothership.mSearch')
   beforeEach module('mothership.templates')
 
-  $rootScope = null
-  $scope = null
-  $state = null
-  $timeout = null
-  ctrl = null
-
   beforeEach inject (
-    _$rootScope_, _$state_, _$controller_, _$timeout_
+    _$rootScope_, _$state_, _$timeout_, $compile
   ) ->
     $rootScope = _$rootScope_
-    $scope = $rootScope.$new()
+    scope = $rootScope.$new()
     $state = _$state_
     $timeout = _$timeout_
 
-    ctrl = _$controller_ 'mSearchController', {
-      $rootScope: $rootScope
-      $scope: $scope
-      $state: $state
-    }, {}
+    elem = $compile(markup)(scope)
+    scope.$digest()
+    ctrl = elem.controller('mSearch')
 
     sinon.stub($state, 'go')
     sinon.spy($rootScope, '$broadcast')

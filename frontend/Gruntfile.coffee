@@ -75,7 +75,7 @@ module.exports = (grunt) ->
         dest: '<%= config.build_dir %>/spec'
         ext: '.spec.js'
         options:
-          bare: true
+          bare: false
           preserve_dirs: true
           sourceMap: true
 

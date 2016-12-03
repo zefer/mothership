@@ -1,23 +1,23 @@
-<div class="actions btn-group" uib-dropdown is-open="ctrl.open">
+<div class="actions btn-group" uib-dropdown is-open="$ctrl.open">
   <button type="button" class="btn btn-primary btn-sm dropdown-toggle"
     uib-dropdown-toggle
-    ng-click="ctrl.showActions($event)"
+    ng-click="$ctrl.showActions($event)"
   >
     <i class="fa fa-navicon"></i>
   </button>
   <ul class="dropdown-menu" role="menu">
-    <li><a ng-click="ctrl.add($event)">
+    <li><a ng-click="$ctrl.add($event);">
       <i class="fa fa-plus"></i>Add</a>
     </li>
-    <li><a ng-click="ctrl.addPlay($event)">
+    <li><a ng-click="$ctrl.addPlay($event)">
       <i class="fa fa-play"></i>Add &amp; play</a>
     </li>
-    <li><a ng-click="ctrl.addReplacePlay($event)">
+    <li><a ng-click="$ctrl.addReplacePlay($event)">
       <i class="fa fa-share"></i>Add, replace &amp; play</a>
     </li>
-    <li ng-if="type == 'directory'" class="divider"></li>
-    <li ng-if="type == 'directory'">
-      <a ng-click="ctrl.update($event)">
+    <li ng-if="$ctrl.type == 'directory'" class="divider"></li>
+    <li ng-if="$ctrl.type == 'directory'">
+      <a ng-click="$ctrl.update($event)">
         <i class="fa fa-refresh"></i>Update this folder
       </a>
     </li>

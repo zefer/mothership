@@ -3,43 +3,42 @@ mod = angular.module('mothership.mBrowseActions', [
   'mothership.library'
 ])
 
-mod.directive 'mBrowseActions', ->
-  restrict: 'E'
+mod.component 'mBrowseActions',
   templateUrl: 'components/m-browse-actions/m-browse-actions.html'
 
-  scope:
-    path: '='
-    type: '='
+  bindings:
+    path: '<'
+    type: '<'
 
-  controllerAs: 'ctrl'
-
-  controller: ($scope, playlist, library) ->
-    vm = this
+  controller: (playlist, library) ->
+    ctrl = this
 
     stopEvent = (e) ->
       e.preventDefault()
       e.stopPropagation()
 
-    hide = -> vm.open = false
+    hide = -> ctrl.open = false
 
-    vm.showActions = (e) -> stopEvent(e)
+    ctrl.showActions = (e) -> stopEvent(e)
 
-    vm.add = (e) ->
-      playlist.add($scope.path, $scope.type)
+    ctrl.add = (e) ->
+      playlist.add(ctrl.path, ctrl.type)
       hide()
       stopEvent(e)
 
-    vm.addPlay = (e) ->
-      playlist.addPlay($scope.path, $scope.type)
+    ctrl.addPlay = (e) ->
+      playlist.addPlay(ctrl.path, ctrl.type)
       hide()
       stopEvent(e)
 
-    vm.addReplacePlay = (e) ->
-      playlist.addReplacePlay($scope.path, $scope.type)
+    ctrl.addReplacePlay = (e) ->
+      playlist.addReplacePlay(ctrl.path, ctrl.type)
       hide()
       stopEvent(e)
 
-    vm.update = (e) ->
-      library.update($scope.path)
+    ctrl.update = (e) ->
+      library.update(ctrl.path)
       hide()
       stopEvent(e)
+
+    return ctrl

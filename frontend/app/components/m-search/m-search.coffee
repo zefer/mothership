@@ -4,32 +4,29 @@ mod = angular.module('mothership.mSearch', [
   'mothership.debounce'
 ])
 
-mod.directive 'mSearch', ->
-  restrict: 'E'
+mod.component 'mSearch',
   templateUrl: 'components/m-search/m-search.html'
-  scope: {}
-  controller: 'mSearchController'
-  bindToController: true
-  controllerAs: 'vm'
 
-mod.controller 'mSearchController', (
-  $rootScope, $scope, $state, debounce
-) ->
-  vm = this
+  bindings: {}
 
-  vm.filter = $state.params.filter
+  controller: ($rootScope, $state, debounce) ->
+    ctrl = this
 
-  filter = (filterString) ->
-    $state.params.filter = filterString
-    $state.go('.', { filter: $state.params.filter }, notify: false)
-    $rootScope.$broadcast('search:filter')
+    ctrl.filter = $state.params.filter
 
-  # Don't fire more than once in this many milliseconds, people type fast!
-  filter = debounce(filter, 200)
+    filter = (filterString) ->
+      $state.params.filter = filterString
+      $state.go('.', { filter: $state.params.filter }, notify: false)
+      $rootScope.$broadcast('search:filter')
 
-  vm.search = ->
-    filter(vm.filter)
+    # Don't fire more than once in this many milliseconds, people type fast!
+    filter = debounce(filter, 200)
 
-  vm.clear = ->
-    vm.filter = ''
-    vm.search()
+    ctrl.search = ->
+      filter(ctrl.filter)
+
+    ctrl.clear = ->
+      ctrl.filter = ''
+      ctrl.search()
+
+    return ctrl
