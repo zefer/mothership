@@ -47,7 +47,7 @@ describe 'mBrowse', ->
     # TODO: make breadcrumbs a directive.
     expect(html).to.contain('breadcrumb')
     expect(html).to.contain('<m-sort-by ')
-    expect(html).to.contain('<m-pagination pages="pages" page="page" ')
+    expect(html).to.contain('<m-pagination pages="$ctrl.pages" page="$ctrl.page" ')
     expect(html).to.contain('<m-browse-actions ')
 
   it 'fetches the library listing for the current state params', ->

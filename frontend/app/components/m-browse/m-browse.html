@@ -1,5 +1,5 @@
 <ol class="breadcrumb">
-  <li ng-repeat="crumb in ::breadcrumbs">
+  <li ng-repeat="crumb in ::$ctrl.breadcrumbs">
     <a ng-hide="$last" ui-sref=".({ uri: crumb.path })">{{::crumb.label}}</a>
     <span ng-if="$last">{{::crumb.label}}</span>
   </li>
@@ -8,11 +8,11 @@
 <nav>
   <m-search></m-search>
   <m-sort-by></m-sort-by>
-  <m-pagination pages="pages" page="page"></m-pagination>
+  <m-pagination pages="$ctrl.pages" page="$ctrl.page"></m-pagination>
 </nav>
 
 <div class="list-group">
-  <div ng-repeat="item in items" ui-sref="browse.uri({ uri: item.path })"
+  <div ng-repeat="item in $ctrl.items" ui-sref="browse.uri({ uri: item.path })"
     class="list-group-item">
 
     <i ng-if="item.type == 'directory'" class="type fa fa-folder-o"></i>
@@ -27,5 +27,5 @@
 
 <nav>
   <m-sort-by></m-sort-by>
-  <m-pagination pages="pages" page="page"></m-pagination>
+  <m-pagination pages="$ctrl.pages" page="$ctrl.page"></m-pagination>
 </nav>

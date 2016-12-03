@@ -3,10 +3,11 @@ mod = angular.module('mothership.mHeader', [
   'mothership.mNavigation'
 ])
 
-mod.directive 'mHeader', ->
-  restrict: 'E'
-  scope: {}
+mod.component 'mHeader',
+  bindings: {}
   templateUrl: 'components/m-header/m-header.html'
 
   controller: ->
-    vm = this
+    ctrl = this
+
+    return ctrl

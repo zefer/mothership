@@ -2,12 +2,13 @@ mod = angular.module('mothership.mPlayerControls', [
   'mothership.player'
 ])
 
-mod.directive 'mPlayerControls', ->
-  restrict: 'E'
-  scope: {}
+mod.component 'mPlayerControls',
+  bindings: {}
   templateUrl: 'components/m-player-controls/m-player-controls.html'
 
-  controller: ($scope, player) ->
-    vm = this
+  controller: (player) ->
+    ctrl = this
 
-    $scope.player = player
+    ctrl.player = player
+
+    return ctrl
