@@ -5,6 +5,9 @@
 
 server_host=music
 
+echo 'Building frontend'
+(cd frontend && grunt build)
+
 echo 'Compiling assets to go-bindata'
 go-bindata -o frontend.go -prefix "frontend/dist/" frontend/dist/...
 
