@@ -14,7 +14,7 @@ Mothership is cross-platform & extremely portable, building to a single,
 self-contained binary with no external dependencies other than an [MPD][mpd]
 server to point it to.
 
-![screenshots](https://dl.dropboxusercontent.com/u/89410/project_images/mothership.png)
+![screenshots](https://user-images.githubusercontent.com/101193/28209521-b7a2e07a-688a-11e7-8a47-ecac04bb9844.png)
 
 ## Build
 
