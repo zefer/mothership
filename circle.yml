@@ -4,9 +4,9 @@ machine:
   environment:
     PROJECT_PATH: ${GOPATH%%:*}/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
   pre:
-    - wget https://storage.googleapis.com/golang/go1.7.4.linux-amd64.tar.gz
+    - wget https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz
     - sudo rm -rf /usr/local/go
-    - sudo tar -C /usr/local -xzf go1.7.4.linux-amd64.tar.gz
+    - sudo tar -C /usr/local -xzf go1.8.3.linux-amd64.tar.gz
 
 dependencies:
   cache_directories:
