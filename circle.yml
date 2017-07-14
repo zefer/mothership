@@ -16,7 +16,6 @@ dependencies:
     - rm -rf $PROJECT_PATH
     - ln -sf ~/${CIRCLE_PROJECT_REPONAME} $PROJECT_PATH
     - go get github.com/jteeuwen/go-bindata/...
-    - cd $PROJECT_PATH/frontend && npm install grunt-cli
     - cd $PROJECT_PATH/frontend && npm install
     - cd $PROJECT_PATH/frontend && grunt build
     - cd $PROJECT_PATH && go-bindata -o frontend.go -prefix "frontend/dist/" frontend/dist/...
