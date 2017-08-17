@@ -6,6 +6,7 @@ mod = angular.module('mothership', [
   'mothership.mPlaying'
   'mothership.mPlaylist'
   'mothership.mBrowse'
+  'mothership.mKeyboard'
 ])
 
 mod.config (
@@ -52,5 +53,5 @@ mod.config (
     parent: 'layout'
     template: '<m-browse></m-browse>'
 
-mod.run ($rootScope, $state) ->
+mod.run ($rootScope, $state, mKeyboard) ->
   $rootScope.$state = $state
