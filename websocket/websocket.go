@@ -3,7 +3,7 @@ package websocket
 import (
 	"net/http"
 
-	"gopkg.in/airbrake/glog.v2"
+	"github.com/airbrake/glog"
 )
 
 func init() {

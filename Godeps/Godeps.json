@@ -1,8 +1,28 @@
 {
 	"ImportPath": "github.com/zefer/mothership",
-	"GoVersion": "go1.7",
-	"GodepVersion": "v75",
+	"GoVersion": "go1.11",
+	"GodepVersion": "v79",
 	"Deps": [
+		{
+			"ImportPath": "github.com/airbrake/glog",
+			"Comment": "v3.0.0-1-g6a45d52",
+			"Rev": "6a45d5271e31f82b24e3f2567d5a20ef3afa2395"
+		},
+		{
+			"ImportPath": "github.com/airbrake/gobrake",
+			"Comment": "v3.6.1-27-gd8ce78c",
+			"Rev": "d8ce78ccfb6ae5c35be07e90c2a48a05fc0ad78a"
+		},
+		{
+			"ImportPath": "github.com/airbrake/gobrake/internal/lrucache",
+			"Comment": "v3.6.1-27-gd8ce78c",
+			"Rev": "d8ce78ccfb6ae5c35be07e90c2a48a05fc0ad78a"
+		},
+		{
+			"ImportPath": "github.com/caio/go-tdigest",
+			"Comment": "v2.3.0",
+			"Rev": "f3c8d94f65d3096ac96eda54ffcd10c0fe1477f1"
+		},
 		{
 			"ImportPath": "github.com/elazarl/go-bindata-assetfs",
 			"Rev": "d5cac425555ca5cf00694df246e04f05e6a55150"
@@ -146,19 +166,14 @@
 			"Rev": "e7b2cd96b5633fbc5f0c221159a5c1e85323f770"
 		},
 		{
+			"ImportPath": "github.com/pkg/errors",
+			"Comment": "v0.8.0-17-g059132a",
+			"Rev": "059132a15dd08d6704c67711dae0cf35ab991756"
+		},
+		{
 			"ImportPath": "github.com/zefer/gompd/mpd",
 			"Comment": "release-151-gf0351de",
 			"Rev": "f0351de92ad948620dd36d525ba26b06c2be14a1"
-		},
-		{
-			"ImportPath": "gopkg.in/airbrake/glog.v2",
-			"Comment": "v2.0.6",
-			"Rev": "799a11c280a5df1a58baff5dd3e1be8dfa92af57"
-		},
-		{
-			"ImportPath": "gopkg.in/airbrake/gobrake.v2",
-			"Comment": "v2.0.9",
-			"Rev": "668876711219e8b0206e2994bf0a59d889c775aa"
 		}
 	]
 }

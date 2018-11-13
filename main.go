@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	assetfs "github.com/elazarl/go-bindata-assetfs"
-	"gopkg.in/airbrake/glog.v2"
-	"gopkg.in/airbrake/gobrake.v2"
+	"github.com/airbrake/glog"
+	"github.com/airbrake/gobrake"
 
 	"github.com/zefer/mothership/handlers"
 	"github.com/zefer/mothership/mpd"

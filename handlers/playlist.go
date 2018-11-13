@@ -9,7 +9,7 @@ import (
 	"strconv"
 
 	"github.com/zefer/gompd/mpd"
-	"gopkg.in/airbrake/glog.v2"
+	"github.com/airbrake/glog"
 )
 
 type Playlister interface {
