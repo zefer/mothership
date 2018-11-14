@@ -2,6 +2,7 @@ mod = angular.module('mothership', [
   'ng'
   'ui.router'
   'ui.bootstrap'
+  'mothership.airbrake'
   'mothership.mHeader'
   'mothership.mPlaying'
   'mothership.mPlaylist'
@@ -53,5 +54,43 @@ mod.config (
     parent: 'layout'
     template: '<m-browse></m-browse>'
 
-mod.run ($rootScope, $state, mKeyboard) ->
+mod.factory '$exceptionHandler', ($log, airbrake) ->
+  (exception, cause) ->
+    $log.error(exception)
+    airbrake.notify({error: exception, params: {angular_cause: cause}})
+
+mod.run ($rootScope, $state, airbrake, mKeyboard) ->
   $rootScope.$state = $state
+
+  $rootScope.$on '$stateChangeStart', (
+    _event, toState, _toParams, _fromState, _fromParams
+  ) ->
+    toState.data = {} if !toState.data
+    toState.data.start = new Date()
+
+  $rootScope.$on '$stateChangeSuccess', (event, toState, toParams, fromState, fromParams) ->
+    airbrake.incRequest(
+      method: "GET",
+      route: toState.url,
+      statusCode: 200,
+      start: toState.data.start,
+      end: new Date()
+    )
+
+  $rootScope.$on '$stateChangeError', (event, toState, toParams, fromState, fromParams) ->
+    airbrake.incRequest(
+      method: "GET",
+      route: toState.url,
+      statusCode: 500,
+      start: toState.data.start,
+      end: new Date()
+    )
+
+  $rootScope.$on '$stateNotFound', (event, toState, toParams, fromState, fromParams) ->
+    airbrake.incRequest(
+      method: "GET",
+      route: toState.url,
+      statusCode: 404,
+      start: toState.data.start,
+      end: new Date()
+    )

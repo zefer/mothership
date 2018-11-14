@@ -31,6 +31,9 @@ module.exports = (grunt) ->
             'angular-ui-router/release/angular-ui-router.min.js'
             'angular-ui-bootstrap/dist/ui-bootstrap-tpls.js'
             'font-awesome/css/font-awesome.min.css'
+            'airbrake-js/dist/client.min.js'
+            'airbrake-js/dist/client.min.js.map'
+            'tdigest/dist/tdigest.js'
           ]
         ]
       fonts:
