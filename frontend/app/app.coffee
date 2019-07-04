@@ -69,7 +69,7 @@ mod.run ($rootScope, $state, airbrake, mKeyboard) ->
     toState.data.start = new Date()
 
   $rootScope.$on '$stateChangeSuccess', (event, toState, toParams, fromState, fromParams) ->
-    airbrake.incRequest(
+    airbrake.notifyRequest(
       method: "GET",
       route: toState.url,
       statusCode: 200,
@@ -78,7 +78,7 @@ mod.run ($rootScope, $state, airbrake, mKeyboard) ->
     )
 
   $rootScope.$on '$stateChangeError', (event, toState, toParams, fromState, fromParams) ->
-    airbrake.incRequest(
+    airbrake.notifyRequest(
       method: "GET",
       route: toState.url,
       statusCode: 500,
@@ -87,7 +87,7 @@ mod.run ($rootScope, $state, airbrake, mKeyboard) ->
     )
 
   $rootScope.$on '$stateNotFound', (event, toState, toParams, fromState, fromParams) ->
-    airbrake.incRequest(
+    airbrake.notifyRequest(
       method: "GET",
       route: toState.url,
       statusCode: 404,
