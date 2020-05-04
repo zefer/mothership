@@ -4,7 +4,7 @@ import (
 	"time"
 
 	websock "github.com/gorilla/websocket"
-	"github.com/airbrake/glog"
+	log "github.com/sirupsen/logrus"
 )
 
 // Time allowed to write a message to the peer.
@@ -51,7 +51,7 @@ func (c *Conn) readPump() {
 	c.ws.SetReadDeadline(time.Now().Add(pongWait))
 	c.ws.SetPongHandler(func(string) error {
 		c.ws.SetReadDeadline(time.Now().Add(pongWait))
-		glog.Infof("Received pong")
+		log.Infof("Received pong")
 		return nil
 	})
 	for {
@@ -87,9 +87,9 @@ func (c *Conn) writePump() {
 				return
 			}
 		case <-ticker.C:
-			glog.Infof("Sending ping")
+			log.Infof("Sending ping")
 			if err := c.write(websock.PingMessage, []byte{}); err != nil {
-				glog.Errorf("Ping error %v: ", err)
+				log.Errorf("Ping error %v: ", err)
 				return
 			}
 		}

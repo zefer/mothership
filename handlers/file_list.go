@@ -8,8 +8,8 @@ import (
 	"sort"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/zefer/gompd/mpd"
-	"github.com/airbrake/glog"
 )
 
 type FileLister interface {
@@ -72,7 +72,7 @@ func FileListHandler(c FileLister) http.Handler {
 
 		data, err := c.ListInfo(r.FormValue("uri"))
 		if err != nil {
-			glog.Errorln(err)
+			log.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}

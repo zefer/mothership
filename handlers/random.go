@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/airbrake/glog"
+	log "github.com/sirupsen/logrus"
 )
 
 type Randomer interface {
@@ -13,7 +13,7 @@ type Randomer interface {
 func random(c Randomer, on bool, w http.ResponseWriter) {
 	err := c.Random(on)
 	if err != nil {
-		glog.Errorln(err)
+		log.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

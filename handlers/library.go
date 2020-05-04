@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/airbrake/glog"
+	log "github.com/sirupsen/logrus"
 )
 
 type LibraryUpdater interface {
@@ -22,7 +22,7 @@ func LibraryUpdateHandler(c LibraryUpdater) http.Handler {
 		var params map[string]interface{}
 		err := decoder.Decode(&params)
 		if err != nil {
-			glog.Errorln(err)
+			log.Errorln(err)
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -39,7 +39,7 @@ func LibraryUpdateHandler(c LibraryUpdater) http.Handler {
 
 		_, err = c.Update(uri)
 		if err != nil {
-			glog.Errorln(err)
+			log.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}

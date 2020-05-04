@@ -3,7 +3,7 @@ package websocket
 import (
 	"net/http"
 
-	"github.com/airbrake/glog"
+	log "github.com/sirupsen/logrus"
 )
 
 func init() {
@@ -30,7 +30,7 @@ func Serve(w http.ResponseWriter, r *http.Request) {
 	}
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		glog.Error(err)
+		log.Error(err)
 		return
 	}
 	c := &Conn{send: make(chan []byte, 256), ws: ws}

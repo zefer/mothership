@@ -3,8 +3,8 @@ package mpd
 import (
 	"time"
 
+	log "github.com/sirupsen/logrus"
 	gompd "github.com/zefer/gompd/mpd"
-	"github.com/airbrake/glog"
 )
 
 type watcher struct {
@@ -37,10 +37,10 @@ func (w *watcher) connect() {
 			w.watcher = watcher
 			go w.errorLoop()
 			go w.eventLoop()
-			glog.Infof("MPD watcher: connected to %s", w.addr)
+			log.Infof("MPD watcher: connected to %s", w.addr)
 			return
 		}
-		glog.Errorf("MPD watcher: connect failed. Waiting then retrying. %v", err)
+		log.Errorf("MPD watcher: connect failed. Waiting then retrying. %v", err)
 		time.Sleep(retryDur)
 	}
 }
@@ -55,7 +55,7 @@ func (w *watcher) eventLoop() {
 
 func (w *watcher) errorLoop() {
 	for err := range w.watcher.Error {
-		glog.Errorf("Watcher: %v", err)
+		log.Errorf("Watcher: %v", err)
 		w.Close()
 		w.connect()
 	}

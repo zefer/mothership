@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/airbrake/glog"
+	log "github.com/sirupsen/logrus"
 )
 
 type Pauser interface {
@@ -14,7 +14,7 @@ func PauseHandler(c Pauser) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		err := c.Pause(true)
 		if err != nil {
-			glog.Errorln(err)
+			log.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}

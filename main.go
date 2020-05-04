@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	assetfs "github.com/elazarl/go-bindata-assetfs"
-	"github.com/airbrake/glog"
-	"github.com/airbrake/gobrake"
+	log "github.com/sirupsen/logrus"
+	airbrake "gopkg.in/gemnasium/logrus-airbrake-hook.v4"
 
 	"github.com/zefer/mothership/handlers"
 	"github.com/zefer/mothership/mpd"
@@ -25,18 +25,10 @@ var (
 
 func main() {
 	flag.Parse()
-	defer glog.Flush()
-	glog.Infof("Starting API for MPD at %s.", *mpdAddr)
+	log.Infof("Starting API for MPD at %s.", *mpdAddr)
 
 	if *abProjectID > int64(0) && *abApiKey != "" {
-		airbrake := gobrake.NewNotifier(*abProjectID, *abApiKey)
-		defer airbrake.Close()
-		defer airbrake.NotifyOnPanic()
-		airbrake.AddFilter(func(n *gobrake.Notice) *gobrake.Notice {
-			n.Context["environment"] = *abEnv
-			return n
-		})
-		glog.Gobrake = airbrake
+		log.AddHook(airbrake.NewHook(*abProjectID, *abApiKey, *abEnv))
 	}
 
 	// Send the browser the MPD state when they first connect.
@@ -52,10 +44,10 @@ func main() {
 	defer watch.Close()
 	// When mpd state changes, broadcast it to all websockets.
 	watch.OnStateChange(func(s string) {
-		glog.Info("MPD state change in subsystem: ", s)
+		log.Info("MPD state change in subsystem: ", s)
 		b, err := mpdStatusJSON(client.C)
 		if err != nil {
-			glog.Errorln(err)
+			log.Errorln(err)
 			return
 		}
 		websocket.Broadcast(b)
@@ -81,10 +73,10 @@ func main() {
 		Asset: Asset, AssetDir: AssetDir, Prefix: "",
 	}))
 
-	glog.Infof("Listening on %s.", *port)
+	log.Infof("Listening on %s.", *port)
 	err := http.ListenAndServe(*port, nil)
 	if err != nil {
-		glog.Errorf("http.ListenAndServe %s failed: %s", *port, err)
+		log.Errorf("http.ListenAndServe %s failed: %s", *port, err)
 		return
 	}
 }

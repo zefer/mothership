@@ -8,8 +8,8 @@ import (
 	"path"
 	"strconv"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/zefer/gompd/mpd"
-	"github.com/airbrake/glog"
 )
 
 type Playlister interface {
@@ -84,14 +84,14 @@ func playlistRange(c Playlister) ([2]int, error) {
 func playListList(c Playlister, w http.ResponseWriter, r *http.Request) {
 	rng, err := playlistRange(c)
 	if err != nil {
-		glog.Errorln(err)
+		log.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	// Fetch all, or a slice of the current playlist.
 	data, err := c.PlaylistInfo(rng[0], rng[1])
 	if err != nil {
-		glog.Errorln(err)
+		log.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -128,7 +128,7 @@ func playListUpdate(c Playlister, w http.ResponseWriter, r *http.Request) {
 	var params map[string]interface{}
 	err := decoder.Decode(&params)
 	if err != nil {
-		glog.Errorln(err)
+		log.Errorln(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -155,7 +155,7 @@ func playListUpdate(c Playlister, w http.ResponseWriter, r *http.Request) {
 	if replace {
 		err := c.Clear()
 		if err != nil {
-			glog.Errorln(err)
+			log.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -166,17 +166,17 @@ func playListUpdate(c Playlister, w http.ResponseWriter, r *http.Request) {
 	if !replace {
 		data, err := c.Status()
 		if err != nil {
-			glog.Errorln(err)
+			log.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 		pos, err = strconv.Atoi(data["playlistlength"])
 		if err != nil {
-			glog.Errorln(err)
+			log.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		glog.Infof("pos: %d", pos)
+		log.Infof("pos: %d", pos)
 	}
 
 	// Add to the playlist.
@@ -186,7 +186,7 @@ func playListUpdate(c Playlister, w http.ResponseWriter, r *http.Request) {
 		err = c.Add(uri)
 	}
 	if err != nil {
-		glog.Errorln(err)
+		log.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -195,7 +195,7 @@ func playListUpdate(c Playlister, w http.ResponseWriter, r *http.Request) {
 	if play {
 		err := c.Play(pos)
 		if err != nil {
-			glog.Errorln(err)
+			log.Errorln(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}

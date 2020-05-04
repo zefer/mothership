@@ -3,8 +3,8 @@ package mpd
 import (
 	"time"
 
+	log "github.com/sirupsen/logrus"
 	gompd "github.com/zefer/gompd/mpd"
-	"github.com/airbrake/glog"
 )
 
 const retryDur time.Duration = time.Second * 3
@@ -34,10 +34,10 @@ func (c *Client) connect() {
 				c.C.Close()
 			}
 			c.C = client
-			glog.Infof("MPD client: connected to %s", c.addr)
+			log.Infof("MPD client: connected to %s", c.addr)
 			return
 		}
-		glog.Errorf("MPD client: connect failed. Waiting then retrying. %v", err)
+		log.Errorf("MPD client: connect failed. Waiting then retrying. %v", err)
 		time.Sleep(retryDur)
 	}
 }
@@ -46,7 +46,7 @@ func (c *Client) keepAlive() {
 	for {
 		err := c.C.Ping()
 		if err != nil {
-			glog.Errorf("MPD client: ping failed, reconnecting")
+			log.Errorf("MPD client: ping failed, reconnecting")
 			// Leave the old connection open until we have a new one because trying to
 			// call commands on a closed client will panic.
 			c.connect()
