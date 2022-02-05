@@ -40,7 +40,7 @@ Cross-compilation is achieved by modifying the `go build` command. For example:
 Firstly, [build Mothership](#build), then:
 
 ```
-mothership -gobrake.logtostderr=true -mpdaddr=music:6600 -port :8080
+mothership -mpdaddr=music:6600 -port :8080
 open localhost:8080
 ```
 
@@ -65,7 +65,7 @@ Install the [development prerequisites](#development-prerequisites), then:
 
 ```
 (cd frontend && grunt)
-go build && mothership -gobrake.logtostderr=true -mpdaddr=music:6600 -port :8080
+go build && mothership -mpdaddr=music:6600 -port :8080
 open localhost:8080
 ```
 
