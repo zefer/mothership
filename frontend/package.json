@@ -21,7 +21,7 @@
     "grunt-contrib-concat": "~1.0.x",
     "grunt-contrib-copy": "~1.0.x",
     "grunt-contrib-less": "~1.4.x",
-    "grunt-contrib-watch": "~1.0.x",
+    "grunt-contrib-watch": "~1.1.x",
     "grunt-karma": "^2.0.x",
     "grunt-shell": "~2.1.x",
     "karma": "~5.0.x",
