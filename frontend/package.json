@@ -21,7 +21,7 @@
     "grunt-contrib-concat": "~1.0.x",
     "grunt-contrib-copy": "~1.0.x",
     "grunt-contrib-less": "~1.4.x",
-    "grunt-contrib-watch": "~1.0.x",
+    "grunt-contrib-watch": "~1.1.x",
     "grunt-karma": "^2.0.x",
     "grunt-shell": "~2.1.x",
     "karma": "~5.0.x",
@@ -32,9 +32,9 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-spec-reporter": "0.0.26",
     "less-plugin-glob": "1.1.x",
-    "mocha": "^3.2.0",
+    "mocha": "^10.2.0",
     "angular-mocks": "~1.5.9",
-    "phantomjs-prebuilt": "~2.1.14"
+    "phantomjs-prebuilt": "~2.1.16"
   },
   "scripts": {
     "test": "grunt test"
