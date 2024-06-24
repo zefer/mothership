@@ -13,6 +13,7 @@ go-bindata -o frontend.go -prefix "frontend/dist/" frontend/dist/...
 
 echo 'Compiling for Rasperry Pi'
 # GOOS=linux GOARM=6 GOARCH=arm go build
+# Pi 4
 GOOS=linux GOARM=7 GOARCH=arm go build
 
 echo 'Sending binary to music server'
