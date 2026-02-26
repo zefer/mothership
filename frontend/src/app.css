@@ -230,6 +230,10 @@ nav a.active {
   margin-bottom: 1rem;
 }
 
+.browse-toolbar .browse-actions {
+  margin-left: auto;
+}
+
 /* Search input. */
 .search-wrapper {
   position: relative;
