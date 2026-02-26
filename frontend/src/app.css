@@ -1,9 +1,3 @@
-:root {
-  --m-green: #2BAF2B;
-  --m-brown: #543729;
-  --m-gold: #FFCC2F;
-}
-
 /* Space for fixed header. */
 main {
   padding-top: 80px;
@@ -16,8 +10,8 @@ header nav {
   left: 0;
   right: 0;
   z-index: 100;
-  background: #fff;
-  border-bottom: 1px solid #eee;
+  background: var(--pico-background-color);
+  border-bottom: 1px solid var(--pico-muted-border-color);
   padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
@@ -31,8 +25,8 @@ header nav {
 }
 
 .player-controls button {
-  background: var(--m-green);
-  color: #fff;
+  background: var(--pico-primary-background);
+  color: var(--pico-primary-inverse);
   border: none;
   width: 2.5rem;
   height: 2.5rem;
@@ -46,23 +40,24 @@ header nav {
 }
 
 .player-controls button:hover {
-  background: var(--m-gold);
+  background: var(--pico-primary-hover-background);
 }
 
 .player-controls button.active {
-  background: var(--m-brown);
+  background: var(--pico-contrast);
+  color: var(--pico-contrast-inverse);
 }
 
 /* Navigation links. */
 nav a {
   text-decoration: none;
-  color: var(--m-brown);
+  color: var(--pico-color);
   font-weight: normal;
   padding: 0.25rem 0.5rem;
 }
 
 nav a:hover {
-  color: var(--m-gold);
+  color: var(--pico-primary);
 }
 
 nav a.active {
@@ -77,8 +72,8 @@ nav a.active {
 }
 
 .nav-badge {
-  background: var(--m-green);
-  color: #fff;
+  background: var(--pico-primary-background);
+  color: var(--pico-primary-inverse);
   border-radius: 10px;
   padding: 0.1rem 0.5rem;
   font-size: 0.75rem;
@@ -86,7 +81,7 @@ nav a.active {
 }
 
 .connection-lost {
-  color: red;
+  color: var(--pico-del-color);
   font-size: 0.8rem;
 }
 
@@ -101,13 +96,13 @@ nav a.active {
   display: flex;
   align-items: center;
   padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--pico-muted-border-color);
   cursor: pointer;
   gap: 0.5rem;
 }
 
 .browse-item:hover {
-  background: #f8f8f8;
+  background: var(--pico-card-background-color);
 }
 
 .browse-item-name {
@@ -118,7 +113,7 @@ nav a.active {
 }
 
 .browse-item-icon {
-  color: var(--m-green);
+  color: var(--pico-primary);
   width: 1.5rem;
   text-align: center;
   flex-shrink: 0;
@@ -135,7 +130,7 @@ nav a.active {
   border: none;
   cursor: pointer;
   padding: 0.25rem 0.5rem;
-  color: var(--m-brown);
+  color: var(--pico-color);
   font-size: 1.2rem;
 }
 
@@ -143,16 +138,18 @@ nav a.active {
   position: absolute;
   right: 0;
   top: 100%;
-  background: #fff;
-  border: 1px solid #ddd;
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-muted-border-color);
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: var(--pico-card-box-shadow);
   z-index: 200;
   min-width: 180px;
 }
 
 .browse-actions-menu button {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   width: 100%;
   text-align: left;
   padding: 0.5rem 1rem;
@@ -160,22 +157,16 @@ nav a.active {
   background: none;
   cursor: pointer;
   font-size: 0.9rem;
-  color: var(--m-brown);
+  color: var(--pico-color);
 }
 
 .browse-actions-menu button:hover {
-  background: #f0f0f0;
-}
-
-.browse-actions-menu button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  background: var(--pico-background-color);
 }
 
 /* Progress bar. */
 .progress-bar {
-  background: #eee;
+  background: var(--pico-muted-border-color);
   border-radius: 4px;
   height: 1.5rem;
   overflow: hidden;
@@ -184,7 +175,7 @@ nav a.active {
 }
 
 .progress-fill {
-  background: var(--m-green);
+  background: var(--pico-primary-background);
   height: 100%;
   transition: width 1s linear;
 }
@@ -193,7 +184,7 @@ nav a.active {
   display: flex;
   justify-content: space-between;
   font-size: 0.85rem;
-  color: #666;
+  color: var(--pico-muted-color);
 }
 
 /* Breadcrumbs. */
@@ -209,7 +200,7 @@ nav a.active {
 .breadcrumbs li::after {
   content: '/';
   margin-left: 0.5rem;
-  color: #999;
+  color: var(--pico-muted-color);
 }
 
 .breadcrumbs li:last-child::after {
@@ -217,7 +208,7 @@ nav a.active {
 }
 
 .breadcrumbs a {
-  color: var(--m-green);
+  color: var(--pico-primary);
   text-decoration: none;
 }
 
@@ -234,13 +225,6 @@ nav a.active {
   margin-bottom: 1rem;
 }
 
-.browse-toolbar select {
-  padding: 0.35rem 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
-
 /* Search input. */
 .search-wrapper {
   position: relative;
@@ -250,9 +234,11 @@ nav a.active {
 .search-wrapper input {
   width: 100%;
   padding: 0.35rem 2rem 0.35rem 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--pico-form-element-border-color);
   border-radius: 4px;
   font-size: 0.9rem;
+  background: var(--pico-form-element-background-color);
+  color: var(--pico-color);
 }
 
 .search-clear {
@@ -263,7 +249,7 @@ nav a.active {
   background: none;
   border: none;
   cursor: pointer;
-  color: #999;
+  color: var(--pico-muted-color);
   font-size: 1rem;
   padding: 0;
 }
@@ -277,33 +263,39 @@ nav a.active {
 
 .pagination button {
   padding: 0.25rem 0.5rem;
-  border: 1px solid #ccc;
-  background: #fff;
+  border: 1px solid var(--pico-muted-border-color);
+  background: var(--pico-background-color);
+  color: var(--pico-color);
   cursor: pointer;
   border-radius: 4px;
   font-size: 0.85rem;
 }
 
 .pagination button.active {
-  background: var(--m-green);
-  color: #fff;
-  border-color: var(--m-green);
+  background: var(--pico-primary-background);
+  color: var(--pico-primary-inverse);
+  border-color: var(--pico-primary-background);
 }
 
 .pagination button:hover:not(.active) {
-  background: #f0f0f0;
+  background: var(--pico-card-background-color);
+}
+
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 /* Playlist. */
 .playlist-item {
   padding: 0.4rem 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--pico-muted-border-color);
   cursor: default;
 }
 
 .playlist-item.active {
   font-weight: bold;
-  color: var(--m-green);
+  color: var(--pico-primary);
 }
 
 /* Alert styles. */
@@ -314,13 +306,13 @@ nav a.active {
 }
 
 .alert-error {
-  background: #fdd;
-  color: #c00;
+  background: var(--pico-del-color);
+  color: var(--pico-background-color);
 }
 
 .alert-warning {
-  background: #ffd;
-  color: #880;
+  background: var(--pico-mark-background-color);
+  color: var(--pico-mark-color);
 }
 
 /* Mobile hamburger menu. */
@@ -330,7 +322,7 @@ nav a.active {
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: var(--m-brown);
+  color: var(--pico-color);
   padding: 0.25rem;
 }
 
@@ -339,10 +331,10 @@ nav a.active {
   position: fixed;
   top: 3.5rem;
   right: 1rem;
-  background: #fff;
-  border: 1px solid #ddd;
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-muted-border-color);
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: var(--pico-card-box-shadow);
   z-index: 200;
   padding: 0.5rem;
   flex-direction: column;
