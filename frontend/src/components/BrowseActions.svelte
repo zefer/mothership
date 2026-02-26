@@ -39,7 +39,7 @@
   }
 </script>
 
-<div class="browse-actions" role="group" onclick={stop} onkeydown={stop}>
+<div class="browse-actions" onclick={stop}>
   <button onclick={toggle}><EllipsisVertical size={18} /></button>
   {#if open}
     <div class="browse-actions-menu">

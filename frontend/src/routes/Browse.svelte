@@ -115,7 +115,7 @@
   {:else}
     <div class="browse-list">
       {#each pagedItems as item}
-        <div class="browse-item" role="button" tabindex="0" onclick={() => item.type === 'directory' ? navigate(item.path) : null} onkeydown={(e) => { if (e.key === 'Enter' && item.type === 'directory') navigate(item.path); }}>
+        <div class="browse-item" onclick={() => item.type === 'directory' ? navigate(item.path) : null}>
           <span class="browse-item-icon">
             {#if item.type === 'directory'}
               <Folder size={18} />
