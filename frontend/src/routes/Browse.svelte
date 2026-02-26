@@ -106,6 +106,7 @@
     <Search value={filter} onSearch={setFilter} />
     <SortBy {sort} {direction} onChange={setSort} />
     <Pagination {pages} currentPage={page} onChange={setPage} />
+
   </div>
 
   {#if loading}
