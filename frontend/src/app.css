@@ -1,0 +1,358 @@
+:root {
+  --m-green: #2BAF2B;
+  --m-brown: #543729;
+  --m-gold: #FFCC2F;
+}
+
+/* Space for fixed header. */
+main {
+  padding-top: 80px;
+}
+
+/* Header nav bar. */
+header nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Player control buttons. */
+.player-controls {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.player-controls button {
+  background: var(--m-green);
+  color: #fff;
+  border: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.player-controls button:hover {
+  background: var(--m-gold);
+}
+
+.player-controls button.active {
+  background: var(--m-brown);
+}
+
+/* Navigation links. */
+nav a {
+  text-decoration: none;
+  color: var(--m-brown);
+  font-weight: normal;
+  padding: 0.25rem 0.5rem;
+}
+
+nav a:hover {
+  color: var(--m-gold);
+}
+
+nav a.active {
+  font-weight: bold;
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-left: auto;
+}
+
+.nav-badge {
+  background: var(--m-green);
+  color: #fff;
+  border-radius: 10px;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.75rem;
+  margin-left: 0.25rem;
+}
+
+.connection-lost {
+  color: red;
+  font-size: 0.8rem;
+}
+
+/* Browse list. */
+.browse-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.browse-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  gap: 0.5rem;
+}
+
+.browse-item:hover {
+  background: #f8f8f8;
+}
+
+.browse-item-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.browse-item-icon {
+  color: var(--m-green);
+  width: 1.5rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* Browse actions dropdown. */
+.browse-actions {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.browse-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  color: var(--m-brown);
+  font-size: 1.2rem;
+}
+
+.browse-actions-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 200;
+  min-width: 180px;
+}
+
+.browse-actions-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--m-brown);
+}
+
+.browse-actions-menu button:hover {
+  background: #f0f0f0;
+}
+
+/* Progress bar. */
+.progress-bar {
+  background: #eee;
+  border-radius: 4px;
+  height: 1.5rem;
+  overflow: hidden;
+  position: relative;
+  margin: 1rem 0;
+}
+
+.progress-fill {
+  background: var(--m-green);
+  height: 100%;
+  transition: width 1s linear;
+}
+
+.progress-text {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* Breadcrumbs. */
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0;
+  list-style: none;
+  margin: 1rem 0;
+}
+
+.breadcrumbs li::after {
+  content: '/';
+  margin-left: 0.5rem;
+  color: #999;
+}
+
+.breadcrumbs li:last-child::after {
+  content: '';
+}
+
+.breadcrumbs a {
+  color: var(--m-green);
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+  text-decoration: underline;
+}
+
+/* Browse toolbar. */
+.browse-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.browse-toolbar select {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+/* Search input. */
+.search-wrapper {
+  position: relative;
+  width: 250px;
+}
+
+.search-wrapper input {
+  width: 100%;
+  padding: 0.35rem 2rem 0.35rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.search-clear {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #999;
+  font-size: 1rem;
+  padding: 0;
+}
+
+/* Pagination. */
+.pagination {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.pagination button {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.pagination button.active {
+  background: var(--m-green);
+  color: #fff;
+  border-color: var(--m-green);
+}
+
+.pagination button:hover:not(.active) {
+  background: #f0f0f0;
+}
+
+/* Playlist. */
+.playlist-item {
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #eee;
+  cursor: default;
+}
+
+.playlist-item.active {
+  font-weight: bold;
+  color: var(--m-green);
+}
+
+/* Alert styles. */
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin: 0.5rem 0;
+}
+
+.alert-error {
+  background: #fdd;
+  color: #c00;
+}
+
+.alert-warning {
+  background: #ffd;
+  color: #880;
+}
+
+/* Mobile hamburger menu. */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--m-brown);
+  padding: 0.25rem;
+}
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 3.5rem;
+  right: 1rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 200;
+  padding: 0.5rem;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.mobile-menu.open {
+  display: flex;
+}
+
+@media (max-width: 520px) {
+  .nav-links {
+    display: none;
+  }
+  .hamburger {
+    display: block;
+    margin-left: auto;
+  }
+}

@@ -1,19 +1,15 @@
 #!/bin/sh
 
-# This is how I deploy to Raspberry Pi 2 (server). You can also find my server
+# This is how I deploy to Raspberry Pi (server). You can also find my server
 # configuration here: https://github.com/zefer/ansible/tree/master/roles/mothership
 
 server_host=music
 
 echo 'Building frontend'
-(cd frontend && grunt build)
+(cd frontend && npm run build)
 
-echo 'Compiling assets to go-bindata'
-go-bindata -o frontend.go -prefix "frontend/dist/" frontend/dist/...
-
-echo 'Compiling for Rasperry Pi'
-# GOOS=linux GOARM=6 GOARCH=arm go build
-# Pi 4
+echo 'Compiling for Raspberry Pi'
+# Pi 4 (ARMv7). For older Pi, use GOARM=6.
 GOOS=linux GOARM=7 GOARCH=arm go build
 
 echo 'Sending binary to music server'

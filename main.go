@@ -1,10 +1,12 @@
 package main
 
 import (
+	"embed"
 	"flag"
+	"io/fs"
 	"net/http"
+	"os"
 
-	assetfs "github.com/elazarl/go-bindata-assetfs"
 	log "github.com/sirupsen/logrus"
 	airbrake "gopkg.in/gemnasium/logrus-airbrake-hook.v4"
 
@@ -12,6 +14,9 @@ import (
 	"github.com/zefer/mothership/mpd"
 	"github.com/zefer/mothership/websocket"
 )
+
+//go:embed frontend/dist/*
+var frontendFS embed.FS
 
 var (
 	client  *mpd.Client
@@ -25,6 +30,15 @@ var (
 
 func main() {
 	flag.Parse()
+
+	// Allow env var to override the default MPD address, while still
+	// respecting an explicit -mpdaddr flag.
+	if env := os.Getenv("MPD_ADDR"); env != "" && !isFlagSet("mpdaddr") {
+		*mpdAddr = env
+	}
+	if env := os.Getenv("PORT"); env != "" && !isFlagSet("port") {
+		*port = ":" + env
+	}
 	log.Infof("Starting API for MPD at %s.", *mpdAddr)
 
 	if *abProjectID > int64(0) && *abApiKey != "" {
@@ -68,15 +82,28 @@ func main() {
 	http.Handle("/playlist", handlers.PlayListHandler(client))
 	http.Handle("/library/updated", handlers.LibraryUpdateHandler(client))
 
-	// The front-end assets are served from a go-bindata file.
-	http.Handle("/", http.FileServer(&assetfs.AssetFS{
-		Asset: Asset, AssetDir: AssetDir, Prefix: "",
-	}))
+	// Serve the embedded frontend assets.
+	distFS, err := fs.Sub(frontendFS, "frontend/dist")
+	if err != nil {
+		log.Fatalf("Failed to create sub filesystem: %s", err)
+	}
+	http.Handle("/", http.FileServer(http.FS(distFS)))
 
 	log.Infof("Listening on %s.", *port)
-	err := http.ListenAndServe(*port, nil)
+	err = http.ListenAndServe(*port, nil)
 	if err != nil {
 		log.Errorf("http.ListenAndServe %s failed: %s", *port, err)
 		return
 	}
+}
+
+// isFlagSet returns true if the named flag was explicitly set on the command line.
+func isFlagSet(name string) bool {
+	found := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == name {
+			found = true
+		}
+	})
+	return found
 }
