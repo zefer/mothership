@@ -1,6 +1,7 @@
 <script>
   import { location } from 'svelte-spa-router';
   import { connected, player } from '../lib/stores.js';
+  import { Menu } from 'lucide-svelte';
   import PlayerControls from './PlayerControls.svelte';
 
   let menuOpen = $state(false);
@@ -30,7 +31,7 @@
         <span class="connection-lost">disconnected</span>
       {/if}
     </div>
-    <button class="hamburger" onclick={toggleMenu}>☰</button>
+    <button class="hamburger" onclick={toggleMenu}><Menu size={24} /></button>
   </nav>
   <div class="mobile-menu" class:open={menuOpen}>
     <a href="#/playing" onclick={closeMenu}>Playing</a>

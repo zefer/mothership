@@ -1,5 +1,6 @@
 <script>
   import { addToPlaylist, updateLibrary } from '../lib/mpd.js';
+  import { EllipsisVertical, Plus, Play, CornerUpRight, RefreshCw } from 'lucide-svelte';
 
   let { path, type } = $props();
   let open = $state(false);
@@ -39,14 +40,14 @@
 </script>
 
 <div class="browse-actions" role="group" onclick={stop} onkeydown={stop}>
-  <button onclick={toggle}>☰</button>
+  <button onclick={toggle}><EllipsisVertical size={18} /></button>
   {#if open}
     <div class="browse-actions-menu">
-      <button onclick={add}>Add</button>
-      <button onclick={addPlay}>Add & play</button>
-      <button onclick={addReplacePlay}>Add, replace & play</button>
+      <button onclick={add}><Plus size={15} /> Add</button>
+      <button onclick={addPlay}><Play size={15} /> Add & play</button>
+      <button onclick={addReplacePlay}><CornerUpRight size={15} /> Add, replace & play</button>
       {#if type === 'directory'}
-        <button onclick={update}>Update this folder</button>
+        <button onclick={update}><RefreshCw size={15} /> Update this folder</button>
       {/if}
     </div>
   {/if}

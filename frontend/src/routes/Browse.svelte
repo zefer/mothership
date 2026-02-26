@@ -1,6 +1,7 @@
 <script>
   import { querystring } from 'svelte-spa-router';
   import { ls } from '../lib/mpd.js';
+  import { Folder, Music, ListMusic } from 'lucide-svelte';
   import Breadcrumbs from '../components/Breadcrumbs.svelte';
   import Search from '../components/Search.svelte';
   import SortBy from '../components/SortBy.svelte';
@@ -96,11 +97,6 @@
     window.location.hash = `/browse/${uri === '/' ? '' : uri}?${qs}`;
   }
 
-  function itemIcon(type) {
-    if (type === 'directory') return '📁';
-    if (type === 'playlist') return '📋';
-    return '🎵';
-  }
 </script>
 
 <section>
@@ -120,7 +116,15 @@
     <div class="browse-list">
       {#each pagedItems as item}
         <div class="browse-item" role="button" tabindex="0" onclick={() => item.type === 'directory' ? navigate(item.path) : null} onkeydown={(e) => { if (e.key === 'Enter' && item.type === 'directory') navigate(item.path); }}>
-          <span class="browse-item-icon">{itemIcon(item.type)}</span>
+          <span class="browse-item-icon">
+            {#if item.type === 'directory'}
+              <Folder size={18} />
+            {:else if item.type === 'playlist'}
+              <ListMusic size={18} />
+            {:else}
+              <Music size={18} />
+            {/if}
+          </span>
           <span class="browse-item-name">{item.base}</span>
           <BrowseActions path={item.path} type={item.type} />
         </div>

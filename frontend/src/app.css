@@ -167,6 +167,12 @@ nav a.active {
   background: #f0f0f0;
 }
 
+.browse-actions-menu button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 /* Progress bar. */
 .progress-bar {
   background: #eee;

@@ -1,4 +1,6 @@
 <script>
+  import { X } from 'lucide-svelte';
+
   let { value = '', onSearch } = $props();
   let input = $state('');
   let timeout;
@@ -27,6 +29,6 @@
     oninput={handleInput}
   />
   {#if input}
-    <button class="search-clear" onclick={clear}>✕</button>
+    <button class="search-clear" onclick={clear}><X size={16} /></button>
   {/if}
 </div>
