@@ -9,8 +9,11 @@ export const playerStatus = writable({});
 // Current playlist items (fetched via HTTP).
 export const playlist = writable([]);
 
+// Client-side elapsed time, updated by progress.js timer.
+export const elapsedTime = writable(0);
+
 // Derived player state.
-export const player = derived(playerStatus, ($status) => {
+export const player = derived([playerStatus, elapsedTime], ([$status, $elapsed]) => {
   const state = $status.state || 'stop';
   const error = $status.error || '';
   const randomOn = $status.random === '1';
@@ -36,9 +39,8 @@ export const player = derived(playerStatus, ($status) => {
   }
 
   // Progress.
-  const elapsed = parseFloat($status.elapsed) || 0;
   const duration = parseFloat($status.duration) || parseFloat($status.Time) || 0;
-  const percentage = duration > 0 ? Math.round((elapsed / duration) * 100) : 0;
+  const percentage = duration > 0 ? Math.round(($elapsed / duration) * 100) : 0;
 
   return {
     state,
@@ -47,7 +49,7 @@ export const player = derived(playerStatus, ($status) => {
     now,
     sub,
     quality,
-    elapsed: formatTime(elapsed),
+    elapsed: formatTime($elapsed),
     total: formatTime(duration),
     percentage,
     // Raw position in playlist (1-indexed, from MPD status).

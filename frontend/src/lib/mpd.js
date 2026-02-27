@@ -1,6 +1,7 @@
 // WebSocket + HTTP API client for MPD backend.
 
 import { connected, playerStatus, playlist } from './stores.js';
+import './progress.js';
 
 let ws = null;
 let retryInterval = null;
